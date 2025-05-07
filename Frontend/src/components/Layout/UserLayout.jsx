@@ -1,5 +1,5 @@
 import Footer from '../Common/Footer';
-import Header from '../Common/Header'
+import {Header} from '../Common/Header'
 import NavBar from '../Common/NavBar';
 import { Outlet } from 'react-router-dom';
 import React from 'react'
@@ -7,13 +7,8 @@ import React from 'react'
 const UserLayout = () => {
   return (
    <>
-   {/*Header*/}
-   <Header/>
-   {/*Main content*/}
-   <NavBar/>  
-   <main>
-       <Outlet /> {/* This is essential to render nested routes */}
-     </main>
+   {/*Header*/}<header><Header/>
+   <NavBar/>  </header>
    {/*Footer*/}
    <Footer/>
    </>

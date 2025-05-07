@@ -39,7 +39,12 @@ const NavBar = () => {
             <Link to="/profile" className="hover:text-black">
             <HiOutlineUser className="h-6 w-6 text-gray-700"/></Link>
             <button className="relative hover:text-black">
-                <HiOutlineShoppingbag/>
+                <HiOutlineShoppingbag classname="h-6 w-6 text-gray-700"/>
+            <span className="absolute -top-1 bg-red-600 text-white test-xs rounded-full px-2">4</span>
+            </button>
+            {/*Search */}
+            <button className="md:hidden">
+                <HiBars3BottomRight className="h-6 w-6 text-gray-700"/>
             </button>
         </div>
     </div>
