@@ -1,14 +1,19 @@
-import React from 'react'
+import NavBar from './NavBar';
+import React from 'react';
 import TopBar from '../Layout/TopBar'
 
- const Header = () => {
+const Header = () => {
   return (
  <>
-    {/*Topbar*/}
-    <TopBar/>
+    <header> {/*Topbar*/}
+       <TopBar/>
    {/*Nav bar*/}
-   {/*Cart drawer*/}</>
-  )
-}
+   <NavBar/>
+   {/*Cart drawer*/}
+   </header>
+ </>
+
+  );
+};
 
 export default Header
