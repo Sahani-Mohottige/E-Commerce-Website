@@ -3,12 +3,25 @@ import {
     HiOutlineShoppingBag,
     HiOutlineUser,
 } from "react-icons/hi2"
+import React, { useState } from "react"
 
+import CartDrawer from "../Layout/CartDrawer"
+import { IoMdClose } from "react-icons/io"
 import {Link} from "react-router-dom"
-import React from "react"
 import SearchBar from "./SearchBar"
 
 const NavBar = () => {
+        const [drawerOpen,setDrawerOpen] = useState(false);
+        const [navDrawerOpen,setNavDrawerOpen] = useState(false);
+      
+        const toggleNavDrawer = () =>{
+            setNavDrawerOpen(!navDrawerOpen);
+        }
+        
+        const toggleCartDrawer = () =>{
+            setDrawerOpen(!drawerOpen);
+        }
+        
   return (
   <>
   <nav className="containter mx-auto flex items-center 
@@ -39,23 +52,65 @@ const NavBar = () => {
         <div className="flex items-center space-x-4">
             <Link to="/profile" className="hover:text-black">
             <HiOutlineUser className="h-6 w-6 text-gray-700"/></Link>
-            <button className="relative hover:text-black">
+            <button onClick={toggleCartDrawer} className="relative hover:text-black">
                 <HiOutlineShoppingBag className="h-6 w-6 text-gray-700"/>
-            <span className="absolute -top-1 bg-red-600 text-white test-xs rounded-full px-2">4</span>
+            <span className="absolute -top-1 bg-red-600 text-white text-xs rounded-full px-2">4</span>
             </button>
             {/*Search */}
             <div className="overflow-hidden">
             <SearchBar/>
             </div>
            
-            <button className="md:hidden">
+            <button className="md:hidden" onClick={toggleNavDrawer}>
                 <HiBars3BottomRight className="h-6 w-6 text-gray-700"/>
             </button>
         </div>
     </div>
   </nav>
+  <CartDrawer drawerOpen={drawerOpen} toggleCartDrawer={toggleCartDrawer}/>
+  
+  {/*Mobile Navigation */}
+  <div className={`fixed top-0 text-xl bottom-0 left-0 h-full w-3/4 sm:w-1/2 md:w-1/3 bg-white border-t shadow-lg z-50 transform transition-transform duration-300 
+  ${navDrawerOpen ? "translate-x-0": "-translate-x-full"}`}>
+        
+  <div className="flex justify-end p-4">
+    
+    <button onClick={toggleNavDrawer}>
+        <IoMdClose className="h-6 w-6 text-gray-600"/>
+    </button>
+  </div>
+  <div className="p-4">
+    <h2 className="text-2xl font-semibold mb-4">Menu</h2>
+    <nav className="space-y-4"><br></br>
+        <Link 
+        to="#"
+        onClick={toggleNavDrawer}
+        className="block text-gray-600 hover:text-black">
+            Men
+        </Link>
+        <Link 
+        to="#"
+        onClick={toggleNavDrawer}
+        className="block text-gray-600 hover:text-black">
+            Women
+        </Link>
+        <Link 
+        to="#"
+        onClick={toggleNavDrawer}
+        className="block text-gray-600 hover:text-black">
+            Top Wear
+        </Link>
+        <Link 
+        to="#"
+        onClick={toggleNavDrawer}
+        className="block text-gray-600 hover:text-black">
+            Bottom Wear
+        </Link>
+    </nav>
+  </div>
+  </div>
   </>
-  )
-}
+  );
+};
 
 export default NavBar
