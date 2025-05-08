@@ -8,7 +8,9 @@ const UserLayout = () => {
    <>
    <Header/>
   
-   <NavBar/> 
+ <main>
+  <p></p>
+ </main>
    
    
    <Footer/>
