@@ -1,11 +1,12 @@
 import {
     HiBars3BottomRight,
-    HiOutlineShoppingbag,
+    HiOutlineShoppingBag,
     HiOutlineUser,
 } from "react-icons/hi2"
 
 import {Link} from "react-router-dom"
 import React from "react"
+import SearchBar from "./SearchBar"
 
 const NavBar = () => {
   return (
@@ -39,10 +40,14 @@ const NavBar = () => {
             <Link to="/profile" className="hover:text-black">
             <HiOutlineUser className="h-6 w-6 text-gray-700"/></Link>
             <button className="relative hover:text-black">
-                <HiOutlineShoppingbag classname="h-6 w-6 text-gray-700"/>
+                <HiOutlineShoppingBag className="h-6 w-6 text-gray-700"/>
             <span className="absolute -top-1 bg-red-600 text-white test-xs rounded-full px-2">4</span>
             </button>
             {/*Search */}
+            <div className="overflow-hidden">
+            <SearchBar/>
+            </div>
+           
             <button className="md:hidden">
                 <HiBars3BottomRight className="h-6 w-6 text-gray-700"/>
             </button>
