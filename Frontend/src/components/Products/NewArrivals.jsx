@@ -113,7 +113,7 @@ const handleOnMouseMove = (e) =>{
   if (!isDragging)return;
   const x = e.pageX - scrollRef.current.offsetLeft;
   const walk =x-startX;
-  scrollRef.current.scrollLeft = scroll - walk;
+  scrollRef.current.scrollLeft = scrollLeft - walk;
 }
 
 const handleOnMouseUpOrLeave = () =>{
