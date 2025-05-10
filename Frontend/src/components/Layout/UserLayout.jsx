@@ -1,6 +1,6 @@
 import Footer from '../Common/Footer';
 import Header from '../Common/Header'
-import NavBar from '../Common/NavBar';
+import { Outlet } from 'react-router-dom';
 import React from 'react'
 
 const UserLayout = () => {
@@ -9,7 +9,7 @@ const UserLayout = () => {
    <Header/>
   
  <main>
-  <p></p>
+<Outlet/>
  </main>
    
    
