@@ -60,7 +60,7 @@ const CartContents = () => {
               <div>
                 <p>$ {product.price.toLocaleString()}</p>
                 <button className="mt-4 text-red-500 hover:text-red-700 transition-colors" aria-label="Remove item">
-                    <RiDeleteBin3Line classNmae="h-5 w-5"/></button>
+                    <RiDeleteBin3Line className="h-5 w-5"/></button>
             </div>
             </div>
           ))}
