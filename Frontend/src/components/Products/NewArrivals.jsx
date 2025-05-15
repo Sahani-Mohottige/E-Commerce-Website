@@ -136,12 +136,6 @@ const updateScrollButtons=()=>{
         setCanScrollLeft(leftScroll>0);
         setCanScrollRight(rightScrollable);
     }
-    console.log({
-        scrollLeft:container.scrollLeft,
-         clientWidth:container.clientWidth,
-          containerScrollWidth:container.scrollWidth,
-          offsetLeft:scrollRef.current.offsetLeft
-    })
 }
 
 useEffect(() => {
@@ -188,7 +182,8 @@ useEffect(() => {
         className={`container mx-auto overflow-x-scroll flex space-x-4 relative ${isDragging ? "cursor-grabbing":"cursor-grab"}`}
         onMouseDown={handleOnMouseDown}
         onMouseMove={handleOnMouseMove}
-        onMouseUpOrLeave={handleOnMouseUpOrLeave}
+        onMouseLeave={handleOnMouseUpOrLeave}
+        onMouseUp={handleOnMouseUpOrLeave}
         >
           {newArrivals.map((product) => (
             <div

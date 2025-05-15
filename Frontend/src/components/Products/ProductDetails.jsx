@@ -109,11 +109,12 @@ const ProductDetails = () => {
           {/*main image */}
           <div className="md:w-1/2">
             <div className="mb-4">
+              {mainImage && ( 
               <img 
               src={mainImage}
               alt="Main Product"
               className="w-full h-auto md:h- object-cover rounded-lg"
-              />
+              />)}
             </div>
           </div>
            {/*Mobile version*/}
@@ -200,11 +201,11 @@ const ProductDetails = () => {
                   <table className="w-full text-left border border-gray-200 rounded-lg overflow-hidden">
                     <tbody>
                   <tr>
-                    <td className="p-3 font-medium text-gray-700">Brand</td>
+                    <td className="p-3 font-medium text-gray-700">Brand :</td>
                     <td className="p-3 text-gray-900">{selectedProduct.brand}</td>
                   </tr>
                   <tr>
-                    <td className="p-3 font-medium text-gray-700">Material</td>
+                    <td className="p-3 font-medium text-gray-700">Material :</td>
                     <td className="p-3 text-gray-900">{selectedProduct.material}</td>
                   </tr>
                 </tbody>
