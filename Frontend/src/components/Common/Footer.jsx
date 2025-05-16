@@ -7,7 +7,7 @@ import { TbBrandMeta } from 'react-icons/tb';
 
 const Footer = () => {
   return (
-    <footer className="bg-white border-t">
+    <footer className="bg-white border-t border-gray-300">
       <div className="max-w-7xl mx-auto px-6 py-12">
         {/* Grid container */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10">
