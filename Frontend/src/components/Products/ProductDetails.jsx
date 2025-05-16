@@ -217,7 +217,9 @@ const ProductDetails = () => {
           <h2 className="text-2xl text-center font-medium mb-4">
             You May Also Like
           </h2>
+          <div className="[&_.w-full]:w-60 [&>div]:gap-10 [&_img]:rounded-md">
           <ProductGrid products={similarProducts}/>
+          </div>
         </div>
       </div>
     </div>
