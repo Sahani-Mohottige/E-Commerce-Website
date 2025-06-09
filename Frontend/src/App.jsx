@@ -1,5 +1,6 @@
 import {BrowserRouter, Route, Routes} from "react-router-dom"
 
+import CollectionPage from "./pages/CollectionPage";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
@@ -20,6 +21,7 @@ const App= () => {
        <Route path="login" element={<Login/>}/>
        <Route path="register" element={<Register/>}/>
        <Route path="profile" element={<Profile/>}/>
+        <Route path="collections/:collection" element={<CollectionPage/>}/>
        </Route>
       <Route>{/*Admin Layout*/}</Route>
     </Routes>
