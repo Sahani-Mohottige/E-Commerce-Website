@@ -1,8 +1,10 @@
 import {BrowserRouter, Route, Routes} from "react-router-dom"
 
+import Checkout from "./components/Cart/Checkout";
 import CollectionPage from "./pages/CollectionPage";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import ProductDetails from "./components/Products/ProductDetails";
 import Profile from "./pages/Profile";
 import React from "react";
 import Register from "./pages/Register";
@@ -22,7 +24,9 @@ const App= () => {
        <Route path="register" element={<Register/>}/>
        <Route path="profile" element={<Profile/>}/>
         <Route path="collections/:collection" element={<CollectionPage/>}/>
-       </Route>
+        <Route path="product/:id" element={<ProductDetails/>}/>
+        <Route path="checkout" element={<Checkout/>}/>
+</Route>
       <Route>{/*Admin Layout*/}</Route>
     </Routes>
 </BrowserRouter>
