@@ -11,7 +11,7 @@ const cart = {
       color:"Black",
       name: "Stylish Jacket",
       price: 100,
-      images: [{ url: 'https://picsum.photos/500/500?random=1' }],
+      images:'https://picsum.photos/500/500?random=1',
     },
     {
       id: 2,
@@ -19,7 +19,7 @@ const cart = {
       color:"Red",
       name: "Casual Jacket",
       price: 100,
-      images: [{ url: 'https://picsum.photos/500/500?random=2' }],
+      images: 'https://picsum.photos/500/500?random=2' ,
     },
     {
       id: 3,
@@ -27,7 +27,7 @@ const cart = {
       color:"Black",
       name: "Stylish Jacket",
       price: 100,
-      images: [{ url: 'https://picsum.photos/500/500?random=3' }],
+      images: 'https://picsum.photos/500/500?random=3' ,
     },
     {
       id: 4,
@@ -35,7 +35,7 @@ const cart = {
       color:"Red",
       name: "Casual Jacket",
       price: 100,
-      images: [{ url: 'https://picsum.photos/500/500?random=4' }],
+      images: 'https://picsum.photos/500/500?random=4',
     },
   ],
   totalPrice: 195,
@@ -210,7 +210,7 @@ const Checkout = () => {
           >
             <div className="flex items-start">
             <img 
-            src={product.images[0].url} 
+            src={product.images} 
             alt={product.name} 
             className="w-20 h-20 rounded object-cover" 
             />

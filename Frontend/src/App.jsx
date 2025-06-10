@@ -4,6 +4,7 @@ import Checkout from "./components/Cart/Checkout";
 import CollectionPage from "./pages/CollectionPage";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
+import OderConfirmationPage from "./pages/OderConfirmationPage";
 import ProductDetails from "./components/Products/ProductDetails";
 import Profile from "./pages/Profile";
 import React from "react";
@@ -26,6 +27,7 @@ const App= () => {
         <Route path="collections/:collection" element={<CollectionPage/>}/>
         <Route path="product/:id" element={<ProductDetails/>}/>
         <Route path="checkout" element={<Checkout/>}/>
+        <Route path="order-confirmation" element={<OderConfirmationPage/>}/>
 </Route>
       <Route>{/*Admin Layout*/}</Route>
     </Routes>
