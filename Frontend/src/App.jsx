@@ -5,6 +5,7 @@ import CollectionPage from "./pages/CollectionPage";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import OderConfirmationPage from "./pages/OderConfirmationPage";
+import OrderDetailsPage from "./pages/OrderDetailspage";
 import ProductDetails from "./components/Products/ProductDetails";
 import Profile from "./pages/Profile";
 import React from "react";
@@ -28,6 +29,7 @@ const App= () => {
         <Route path="product/:id" element={<ProductDetails/>}/>
         <Route path="checkout" element={<Checkout/>}/>
         <Route path="order-confirmation" element={<OderConfirmationPage/>}/>
+        <Route path="order/:id" element={<OrderDetailsPage/>}/>
 </Route>
       <Route>{/*Admin Layout*/}</Route>
     </Routes>
