@@ -62,7 +62,7 @@ const UserManagement = () => {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="mt-12 lg:mt-0 space-y-8">
       {/* Page Header */}
       <div className="mb-8">
         <h1 className="text-3xl font-semibold text-slate-800">User Management</h1>

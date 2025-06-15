@@ -48,7 +48,7 @@ const checkout = {
     }
 } 
 
-const OderConfirmationPage = () => {
+const OrderConfirmationPage = () => {
 
   const calculateEstimateDelivery = (createdAt)=>{
     const orderDate = new Date(createdAt);
@@ -114,4 +114,4 @@ const OderConfirmationPage = () => {
   )
 }
 
-export default OderConfirmationPage
+export default OrderConfirmationPage

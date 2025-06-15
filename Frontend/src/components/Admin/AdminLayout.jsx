@@ -1,17 +1,19 @@
-import React, { useState } from 'react';
-
-import ProductManagement from './ProductManagement';
-import UserManagement from './UserManagement'; // Import the UserManagement component
+import { LogOut, Package, ShoppingCart, Store, Users } from 'lucide-react';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
 
 const AdminLayout = () => {
-  const [activeNav, setActiveNav] = useState('Products');
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [activeNav, setActiveNav] = useState('Dashboard');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navigationItems = [
-    { name: 'Users', icon: '👥' },
-    { name: 'Products', icon: '📦' },
-    { name: 'Orders', icon: '📋' },
-    { name: 'Shop', icon: '🏪' }
+    { name: 'Dashboard', icon: Users, path: '/admin' },
+    { name: 'Users', icon: Users, path: '/admin/users' },
+    { name: 'Products', icon: Package, path: '/admin/products' },
+    { name: 'Orders', icon: ShoppingCart, path: '/admin/orders' },
+    { name: 'Shop', icon: Store, path: '/', external: true }
   ];
 
   const statsData = [
@@ -36,39 +38,57 @@ const AdminLayout = () => {
 
   const ordersData = [
     {
-      id: '1',
+      id: '67540ced337612fb361a0ed0',
       user: 'Admin User',
       price: '$199.96',
       status: 'Processing'
     },
     {
-      id: '2',
+      id: '67540d3ca67b4a70e434e092',
       user: 'Admin User',
       price: '$40',
       status: 'Processing'
     },
     {
-      id: '3',
+      id: '675bf2c6ca77bd83eefd7a18',
       user: 'Admin User',
       price: '$39.99',
       status: 'Processing'
     },
     {
-      id: '4',
+      id: '675c24b09b88827304bd5cc1',
       user: 'Admin User',
       price: '$39.99',
       status: 'Processing'
     }
   ];
 
-  const handleNavClick = (navName) => {
-    setActiveNav(navName);
+  // Update active nav based on current route
+  useEffect(() => {
+    const currentPath = location.pathname;
+    const currentNav = navigationItems.find(item => item.path === currentPath);
+    if (currentNav) {
+      setActiveNav(currentNav.name);
+    } else if (currentPath === '/admin') {
+      setActiveNav('Dashboard');
+    }
+  }, [location.pathname]);
+
+  const handleNavClick = (navItem) => {
+    if (navItem.external) {
+      // For external links like Shop, navigate directly without setting active state
+      navigate(navItem.path);
+    } else {
+      setActiveNav(navItem.name);
+      navigate(navItem.path);
+    }
     setIsMobileMenuOpen(false);
   };
 
   const handleLogout = () => {
     if (window.confirm('Are you sure you want to logout?')) {
       alert('Logged out successfully!');
+      navigate('/login');
     }
   };
 
@@ -78,7 +98,11 @@ const AdminLayout = () => {
 
   const handleStatCardClick = (link) => {
     if (link) {
-      alert(`Navigating to ${link}`);
+      if (link === 'Manage Orders') {
+        navigate('/admin/orders');
+      } else if (link === 'Manage Products') {
+        navigate('/admin/products');
+      }
     }
   };
 
@@ -86,24 +110,11 @@ const AdminLayout = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  // Function to render content based on active navigation
-  const renderContent = () => {
-    switch (activeNav) {
-      case 'Users':
-        return <UserManagement />;
-      case 'Products':
-        return <ProductManagement/>;
-      case 'Orders':
-        return <div>Orders Management Content</div>;
-      case 'Shop':
-        return <div>Shop Management Content</div>;
-      default:
-        return renderDashboard();
-    }
-  };
+  // Check if we're on the dashboard route
+  const isDashboard = location.pathname === '/admin' || location.pathname === '/admin/';
 
-  // Original dashboard content
-  const renderDashboard = () => (
+  // Dashboard content component
+  const DashboardContent = () => (
     <>
       {/* Header */}
       <div className="mb-8 mt-12 lg:mt-0">
@@ -227,44 +238,49 @@ const AdminLayout = () => {
         ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
       `}>
         {/* Sidebar Header */}
-        <div className="p-5 bg-slate-700 border-b border-slate-600">
-          <h2 className="text-xl font-semibold">Rabbit</h2>
+        <div className="p-6 bg-slate-700 border-b border-slate-600">
+          <h2 className="text-2xl font-bold">Rabbit</h2>
           <p className="text-slate-300 text-sm mt-1">Admin Dashboard</p>
         </div>
         
         {/* Navigation */}
         <div className="py-5">
-          {navigationItems.map((item) => (
-            <button
-              key={item.name}
-              onClick={() => handleNavClick(item.name)}
-              className={`
-                w-full px-5 py-3 text-left flex items-center transition-all duration-300
-                ${activeNav === item.name
-                  ? 'bg-blue-600 text-white'
-                  : 'text-slate-300 hover:bg-slate-700 hover:text-white hover:translate-x-1'
-                }
-              `}
-            >
-              <span className="mr-3">{item.icon}</span>
-              {item.name}
-            </button>
-          ))}
+          {navigationItems.map((item) => {
+            const IconComponent = item.icon;
+            return (
+              <button
+                key={item.name}
+                onClick={() => handleNavClick(item)}
+                className={`
+                  w-full px-6 py-3 text-left flex items-center transition-all duration-300
+                  ${activeNav === item.name && !item.external
+                    ? 'bg-blue-600 text-white border-r-4 border-blue-400'
+                    : 'text-slate-300 hover:bg-slate-700 hover:text-white'
+                  }
+                `}
+              >
+                <IconComponent className="w-5 h-5 mr-3" />
+                <span className="text-sm font-medium">{item.name}</span>
+              </button>
+            );
+          })}
         </div>
         
         {/* Logout Button */}
-        <button 
-          onClick={handleLogout}
-          className="absolute bottom-5 left-5 right-5 bg-red-600 hover:bg-red-700 text-white py-3 px-4 rounded-lg transition-all duration-300 hover:-translate-y-1 flex items-center justify-center"
-        >
-          <span className="mr-2">🚪</span>
-          Logout
-        </button>
+        <div className="absolute bottom-0 w-64">
+          <button 
+            onClick={handleLogout}
+            className="flex items-center w-full px-6 py-3 text-red-400 hover:bg-red-600 hover:text-white transition-colors"
+          >
+            <LogOut className="w-5 h-5 mr-3" />
+            <span className="text-sm font-medium">Logout</span>
+          </button>
+        </div>
       </nav>
 
       {/* Main Content */}
       <main className="flex-1 lg:ml-64 p-4 lg:p-8">
-        {renderContent()}
+        {isDashboard ? <DashboardContent /> : <Outlet />}
       </main>
 
       {/* CSS for animations */}

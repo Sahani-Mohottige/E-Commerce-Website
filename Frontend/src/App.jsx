@@ -6,9 +6,9 @@ import CollectionPage from "./pages/CollectionPage";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
 import MyOrdersPage from "./pages/MyOrdersPage";
-import MyOrderspage from "./pages/MyOrdersPage";
-import OderConfirmationPage from "./pages/OderConfirmationPage";
+import OderConfirmationPage from "./pages/OrderConfirmationPage";
 import OrderDetailsPage from "./pages/OrderDetailspage";
+import OrderManagement from "./components/Admin/OrderMangement";
 import ProductDetails from "./components/Products/ProductDetails";
 import ProductManagement from "./components/Admin/ProductManagement";
 import Profile from "./pages/Profile";
@@ -37,10 +37,14 @@ const App= () => {
         <Route path="order/:id" element={<OrderDetailsPage/>}/>
         <Route path="my-orders" element={<MyOrdersPage/>}/>
 </Route>
-      <Route path="/admin-dashboard" element={<AdminLayout/>}>{/*Admin Layout*/}</Route>
-      <Route path="/user" element={<UserManagement/>}>{/*User*/}</Route>
-      <Route path="/product" element={<ProductManagement/>}>{/*Product*/}</Route>
-</Routes>
+ {/* Admin Layout Routes */}
+        <Route path="/admin" element={<AdminLayout />}>
+          {/* Dashboard is handled internally by AdminLayout */}
+          <Route path="users" element={<UserManagement />} />
+          <Route path="products" element={<ProductManagement />} />
+          <Route path="orders" element={<OrderManagement />} />
+        </Route>
+      </Routes>
 </BrowserRouter>
   );
 };

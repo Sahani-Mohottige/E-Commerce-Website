@@ -134,7 +134,7 @@ const ProductManagement = () => {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="mt-12 lg:mt-0 space-y-8">
       {/* Page Header */}
       <div className="mb-8">
         <div className="flex justify-between items-center">
