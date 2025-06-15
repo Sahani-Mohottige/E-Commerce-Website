@@ -1,8 +1,11 @@
 import React, { useEffect, useState } from 'react';
 
-const MyOrderspage = () => {
+import { useNavigate } from 'react-router-dom';
+
+const MyOrdersPage = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate= useNavigate();
 
   useEffect(() => {
     // Simulate fetch orders
@@ -40,6 +43,10 @@ const MyOrderspage = () => {
     }, 1000);
   }, []);
 
+  const handleRowClick=(orderId) =>{
+    navigate(`/order/${orderId}`);
+  }
+  
   return (
     <div className="overflow-x-auto">
       <h2 className="text-xl font-semibold mb-4">My Orders</h2>
@@ -62,7 +69,9 @@ const MyOrderspage = () => {
           <tbody className="bg-white divide-y divide-gray-200">
             {orders.length > 0 ? (
               orders.map((order) => (
-                <tr key={order.id}>
+                <tr key={order.id}
+                onClick={()=>handleRowClick(order._id)}
+                >
                   <td className="px-4 py-3">
                     <img
                       src={order.orderItems[0].image}
@@ -113,4 +122,4 @@ const MyOrderspage = () => {
   );
 };
 
-export default MyOrderspage;
+export default MyOrdersPage;

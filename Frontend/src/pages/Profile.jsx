@@ -1,4 +1,4 @@
-import MyOrderspage from './MyOrderspage';
+import MyOrderspage from './MyOrdersPage';
 import React from 'react';
 
 const Profile = () => {
