@@ -48,12 +48,12 @@ const MyOrdersPage = () => {
   
   return (
     <div className="overflow-x-auto">
-      <h2 className="text-xl font-semibold mb-4">My Orders</h2>
+      <h2 className="text-xl font-semibold mb-4 ml-8 mt-6">My Orders</h2>
 
       {loading ? (
         <p className="text-gray-500">Loading orders...</p>
       ) : (
-        <table className="min-w-full divide-y divide-gray-200 shadow-sm rounded-lg overflow-hidden">
+        <table className="min-w-full divide-y divide-gray-200 shadow-sm rounded-lg overflow-hidden ml-6 mr-10">
           <thead className="bg-gray-100">
             <tr>
               <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Image</th>
