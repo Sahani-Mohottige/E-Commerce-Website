@@ -28,7 +28,7 @@ const NavBar = () => {
   justify-between py-4 px-6">
     {/*Left - Logo */}
     <div>
-        <Link to ="/" className="text-2xl font-medium">Rabbit</Link>
+        <Link to ="/" className="text-3xl text-green-800 font-semibold font-medium">Pickzy</Link>
     </div>
     {/*Center-Navigation Links*/}
     <div className="hidden md:flex space-x-6">
@@ -54,7 +54,7 @@ const NavBar = () => {
             <HiOutlineUser className="h-6 w-6 text-gray-700"/></Link>
             <button onClick={toggleCartDrawer} className="relative hover:text-black">
                 <HiOutlineShoppingBag className="h-6 w-6 text-gray-700"/>
-            <span className="absolute -top-1 bg-red-600 text-white text-xs rounded-full px-2">
+            <span className="absolute -top-1 bg-green-600 text-white text-xs rounded-full px-2">
                 4
             </span>
             </button>

@@ -190,6 +190,8 @@ const ProductDetails = () => {
                       </button>
                 </div>
               </div>
+
+              {/* Add to Cart Button */}
               <button 
               onClick={handleAddToCart}
               className={`bg-black text-white py-2 px-6 rounded w-full mb-4 ${isButtonDisabled? "cursor-not-allowed":"hover:bg-gray-900"}`}>
