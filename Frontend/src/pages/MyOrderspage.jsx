@@ -5,10 +5,9 @@ import { useNavigate } from 'react-router-dom';
 const MyOrdersPage = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
-  const navigate= useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    // Simulate fetch orders
     setTimeout(() => {
       const mockOrders = [
         {
@@ -43,7 +42,7 @@ const MyOrdersPage = () => {
     }, 1000);
   }, []);
 
-  const handleRowClick=(orderId) =>{
+  const handleRowClick = (orderId) => {
     navigate(`/order/${orderId}`);
   }
   
@@ -69,8 +68,10 @@ const MyOrdersPage = () => {
           <tbody className="bg-white divide-y divide-gray-200">
             {orders.length > 0 ? (
               orders.map((order) => (
-                <tr key={order.id}
-                onClick={()=>handleRowClick(order._id)}
+                <tr 
+                  key={order.id}
+                  onClick={() => handleRowClick(order.id)} // ✅ Fixed: using order.id
+                  className="cursor-pointer hover:bg-gray-50" // Added hover effect
                 >
                   <td className="px-4 py-3">
                     <img
@@ -87,21 +88,22 @@ const MyOrdersPage = () => {
                   </td>
                   <td className="px-4 py-3 text-sm text-gray-600">
                     {order.shippingAddress 
-                    ? `${order.shippingAddress.city}, ${order.shippingAddress.country}}`: "N/A"}
+                      ? `${order.shippingAddress.city}, ${order.shippingAddress.country}` // ✅ Fixed: removed extra }
+                      : "N/A"}
                   </td>
                   <td className="px-4 py-3 text-sm text-gray-700">
                     {order.orderItems.length}
                   </td>
                   <td className="px-4 py-3 text-sm font-medium text-gray-800">
                     ${order.totalPrice}
-                    </td>
+                  </td>
                   <td className="px-4 py-3">
                     <span
-                      className={`px-2 py-1 text-xs font-semibold rounded
-                         ${ order.isPaid
+                      className={`px-2 py-1 text-xs font-semibold rounded-full ${
+                        order.isPaid
                           ? 'bg-green-100 text-green-600'
                           : 'bg-yellow-100 text-red-600'
-                      } px-2 py-1 rounded-full text-xs sm:text-sm font-medium`}
+                      }`} // ✅ Fixed: cleaned up className logic
                     >
                       {order.isPaid ? 'Paid' : 'Pending'}
                     </span>
