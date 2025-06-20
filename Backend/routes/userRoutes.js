@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
+const {protect} = require("../middleware/authMiddleware")
 
 const router = express.Router();
 
@@ -58,9 +59,9 @@ router.post("/register", async (req, res) => {
 //@route POST /api/users/login
 //@desc Authenticate user
 //@access.Public
-router.post("/login",async(req,res)=>{
-    const{email,password}= req.body;
-    
+router.post("/login", async(req,res)=>{
+    const { email , password }= req.body;
+    console.log("REQ BODY:", req.body);
   try{
 // Find the user by email
 let user = await User. findOne({ email });
@@ -103,6 +104,13 @@ return res.status(400).json({ message: "Invalid Credentials" });
     console.error(error);
     res.status(500).send("Server Error");
 }
+})
+
+//@route GET /api/users/profile
+//@desc Get logged-in user's profile (Protected Route)
+//@access.private
+router.get("/profile", protect, async(req,res)=>{
+  res.json(req.user);
 })
 
 module.exports = router;
