@@ -6,14 +6,22 @@ const { protect } = require("../middleware/authMiddleware");
 const router = express.Router(); 
 
 // Helper.function to get.a.cart by user Id.or guest.ID
+const mongoose = require("mongoose");
+
 const getCart = async (userId, guestId) => {
-    if (userId) {
-        return await Cart.findOne({ user: userId });
+  try {
+    if (userId && mongoose.Types.ObjectId.isValid(userId)) {
+      return await Cart.findOne({ user: new mongoose.Types.ObjectId(userId) });
     } else if (guestId) {
-        return await Cart.findOne({ guestId });
+      return await Cart.findOne({ guestId });
     }
-    return null;
-}
+  } catch (err) {
+    console.error("Error in getCart:", err);
+  }
+  return null;
+};
+
+
 
 // @route POST /api/cart
 // @desc Add a product to the cart for a guest or logged in user
@@ -106,7 +114,6 @@ router.put("/", async (req, res) => {
         }
 
         cart.products[productIndex].quantity = quantity;
-
         // Recalculate total price
         cart.totalPrice = cart.products.reduce(
             (acc, item) => acc + item.price * item.quantity,
@@ -156,8 +163,25 @@ router.delete("/", async (req, res) => {
     }
 });
 
-router.get("/", (req, res) => {
-    res.send("Cart route working");
-  });
-  
+
+// @route GET /api/cart
+// @desc Get cart details for a guest or logged in user
+// @access Public (or use 'protect' if for authenticated users only)
+router.get("/", async (req, res) => {
+    
+    const { guestId, userId } = req.query;
+
+    try {
+        const cart = await getCart(userId, guestId);
+        if (!cart) {
+            return res.status(404).json({ message: "Cart not found" });
+        }
+
+        return res.status(200).json(cart);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server Error" });
+    }
+});
+
 module.exports = router
