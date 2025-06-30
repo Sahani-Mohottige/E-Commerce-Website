@@ -4,6 +4,7 @@ const dotenv=require("dotenv")
 const connectDB = require("./Config/db")
 const userRoutes = require("./routes/userRoutes")
 const productRoutes = require("./routes/productRoutes");
+const cartRoutes = require("./routes/cartRoutes");
 
 dotenv.config()
 
@@ -23,6 +24,7 @@ app.get("/",(req,res)=>{
 //API Routes
 app.use("/api/users",userRoutes);
 app.use("/api/products",productRoutes);
+app.use("/api/cart", cartRoutes);
 
 app.listen(PORT,()=>{
     console.log(`Server is Running on http://localhost:${PORT}`)

@@ -2,7 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
-const {protect} = require("../middleware/authMiddleware")
+const { protect } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
@@ -56,23 +56,25 @@ router.post("/register", async (req, res) => {
   }
 });
 
-//@route POST /api/users/login
-//@desc Authenticate user
-//@access.Public
-router.post("/login", async(req,res)=>{
-    const { email , password }= req.body;
-    console.log("REQ BODY:", req.body);
-  try{
-// Find the user by email
-let user = await User. findOne({ email });
+// @route   POST /api/users/login
+// @desc    Authenticate user
+// @access  Public
+router.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+  console.log("REQ BODY:", req.body);
 
-if (!user) return res. status(400).json({ message: "Invalid Credentials" });
-const isMatch = await user.matchPassword(password);
+  try {
+    // Find the user by email
+    let user = await User.findOne({ email });
 
-if (!isMatch)
-return res.status(400).json({ message: "Invalid Credentials" });
+    if (!user) return res.status(400).json({ message: "Invalid Credentials" });
 
-// Create JWT payload
+    const isMatch = await user.matchPassword(password);
+
+    if (!isMatch)
+      return res.status(400).json({ message: "Invalid Credentials" });
+
+    // Create JWT payload
     const payload = {
       user: {
         id: user._id,
@@ -99,18 +101,17 @@ return res.status(400).json({ message: "Invalid Credentials" });
         });
       }
     );
-    
-}catch (error) {
+  } catch (error) {
     console.error(error);
     res.status(500).send("Server Error");
-}
-})
+  }
+});
 
-//@route GET /api/users/profile
-//@desc Get logged-in user's profile (Protected Route)
-//@access.private
-router.get("/profile", protect, async(req,res)=>{
+// @route   GET /api/users/profile
+// @desc    Get logged-in user's profile (Protected Route)
+// @access  Private
+router.get("/profile", protect, async (req, res) => {
   res.json(req.user);
-})
+});
 
 module.exports = router;
