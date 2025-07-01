@@ -1,14 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const FilterSideBar = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
 
   const [filters, setFilters] = useState({
-    category: '',
-    gender: '',
-    color: '',
+    category: "",
+    gender: "",
+    color: "",
     size: [],
     material: [],
     brand: [],
@@ -18,30 +18,30 @@ const FilterSideBar = () => {
 
   const [priceRange, setPriceRange] = useState([0, 100]);
 
-  const categories = ['Top Wear', 'Bottom Wear', 'Shoes', 'Jackets'];
-  const genders = ['Men', 'Women'];
-  const colors = ['Red', 'Blue', 'Black', 'White', 'Gray'];
-  const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
-  const materials = ['Cotton', 'Denim', 'Leather'];
-  const brands = ['Nike', 'Adidas', 'Zara', 'H&M'];
+  const categories = ["Top Wear", "Bottom Wear", "Shoes", "Jackets"];
+  const genders = ["Men", "Women"];
+  const colors = ["Red", "Blue", "Black", "White", "Gray"];
+  const sizes = ["XS", "S", "M", "L", "XL", "XXL"];
+  const materials = ["Cotton", "Denim", "Leather"];
+  const brands = ["Nike", "Adidas", "Zara", "H&M"];
 
   // Sync filters from URL params on mount and when URL changes
- useEffect(() => {
-  const params = Object.fromEntries([...searchParams.entries()]);
+  useEffect(() => {
+    const params = Object.fromEntries([...searchParams.entries()]);
 
-  setFilters({
-    category: params.category || '',
-    gender: params.gender || '',
-    color: params.color || '',
-    size: params.size ? params.size.split(',') : [],
-    material: params.material ? params.material.split(',') : [],
-    brand: params.brand ? params.brand.split(',') : [],
-    minPrice: parseInt(params.minPrice) || 0,
-    maxPrice: parseInt(params.maxPrice) || 100,
-  });
+    setFilters({
+      category: params.category || "",
+      gender: params.gender || "",
+      color: params.color || "",
+      size: params.size ? params.size.split(",") : [],
+      material: params.material ? params.material.split(",") : [],
+      brand: params.brand ? params.brand.split(",") : [],
+      minPrice: parseInt(params.minPrice) || 0,
+      maxPrice: parseInt(params.maxPrice) || 100,
+    });
 
-  setPriceRange([0, parseInt(params.maxPrice) || 100]);
-}, [searchParams]);
+    setPriceRange([0, parseInt(params.maxPrice) || 100]);
+  }, [searchParams]);
   const handleFilterChange = (e) => {
     const { name, value, checked, type } = e.target;
     let newFilters = { ...filters };
@@ -70,8 +70,8 @@ const FilterSideBar = () => {
 
     Object.entries(newFilters).forEach(([key, val]) => {
       if (Array.isArray(val) && val.length > 0) {
-        params.set(key, val.join(','));
-      } else if (val !== '' && val !== null && val !== undefined) {
+        params.set(key, val.join(","));
+      } else if (val !== "" && val !== null && val !== undefined) {
         params.set(key, val);
       }
     });
@@ -94,7 +94,9 @@ const FilterSideBar = () => {
 
       {/* Category Filter */}
       <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Category
+        </label>
         {categories.map((category) => (
           <div key={category} className="flex items-center mb-2">
             <input
@@ -112,7 +114,9 @@ const FilterSideBar = () => {
 
       {/* Gender Filter */}
       <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-700 mb-2">Gender</label>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Gender
+        </label>
         {genders.map((gender) => (
           <div key={gender} className="flex items-center mb-2">
             <input
@@ -130,7 +134,9 @@ const FilterSideBar = () => {
 
       {/* Color Filter */}
       <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-700 mb-2">Color</label>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Color
+        </label>
         <div className="flex gap-2 flex-wrap">
           {colors.map((color) => (
             <button
@@ -143,7 +149,7 @@ const FilterSideBar = () => {
                 updateURLParams(newFilters);
               }}
               className={`h-6 w-6 rounded-full border-2 cursor-pointer transition ${
-                filters.color === color ? 'border-blue-500' : 'border-gray-300'
+                filters.color === color ? "border-blue-500" : "border-gray-300"
               }`}
               style={{ backgroundColor: color.toLowerCase() }}
               aria-label={color}
@@ -154,7 +160,9 @@ const FilterSideBar = () => {
 
       {/* Size Filter */}
       <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-700 mb-2">Size</label>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Size
+        </label>
         <div className="flex flex-wrap gap-2">
           {sizes.map((size) => (
             <div key={size} className="flex items-center mb-1">
@@ -174,7 +182,9 @@ const FilterSideBar = () => {
 
       {/* Material Filter */}
       <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-700 mb-2">Material</label>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Material
+        </label>
         <div className="flex flex-wrap gap-2">
           {materials.map((material) => (
             <div key={material} className="flex items-center mb-1">
@@ -194,7 +204,9 @@ const FilterSideBar = () => {
 
       {/* Brand Filter */}
       <div className="mb-6">
-        <label className="block text-sm font-medium text-gray-700 mb-2">Brand</label>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Brand
+        </label>
         <div className="flex flex-wrap gap-2">
           {brands.map((brand) => (
             <div key={brand} className="flex items-center mb-1">
@@ -214,7 +226,9 @@ const FilterSideBar = () => {
 
       {/* Price Range Filter */}
       <div className="mb-8">
-        <label className="block text-sm font-medium text-gray-700 mb-2">Price Range</label>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Price Range
+        </label>
         <input
           type="range"
           name="maxPrice"

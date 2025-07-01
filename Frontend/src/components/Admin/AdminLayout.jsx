@@ -1,76 +1,78 @@
-import { LogOut, Package, ShoppingCart, Store, Users } from 'lucide-react';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
-import React, { useEffect, useState } from 'react';
+import { LogOut, Package, ShoppingCart, Store, Users } from "lucide-react";
+import { Outlet, useLocation, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 
 const AdminLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [activeNav, setActiveNav] = useState('Dashboard');
+  const [activeNav, setActiveNav] = useState("Dashboard");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navigationItems = [
-    { name: 'Dashboard', icon: Users, path: '/admin' },
-    { name: 'Users', icon: Users, path: '/admin/users' },
-    { name: 'Products', icon: Package, path: '/admin/products' },
-    { name: 'Orders', icon: ShoppingCart, path: '/admin/orders' },
-    { name: 'Shop', icon: Store, path: '/', external: true }
+    { name: "Dashboard", icon: Users, path: "/admin" },
+    { name: "Users", icon: Users, path: "/admin/users" },
+    { name: "Products", icon: Package, path: "/admin/products" },
+    { name: "Orders", icon: ShoppingCart, path: "/admin/orders" },
+    { name: "Shop", icon: Store, path: "/", external: true },
   ];
 
   const statsData = [
     {
-      title: 'Revenue',
-      value: '$319.94',
-      borderColor: 'border-blue-500'
+      title: "Revenue",
+      value: "$319.94",
+      borderColor: "border-blue-500",
     },
     {
-      title: 'Total Orders',
-      value: '4',
-      link: 'Manage Orders',
-      borderColor: 'border-green-500'
+      title: "Total Orders",
+      value: "4",
+      link: "Manage Orders",
+      borderColor: "border-green-500",
     },
     {
-      title: 'Total Products',
-      value: '40',
-      link: 'Manage Products',
-      borderColor: 'border-purple-500'
-    }
+      title: "Total Products",
+      value: "40",
+      link: "Manage Products",
+      borderColor: "border-purple-500",
+    },
   ];
 
   const ordersData = [
     {
-      id: '67540ced337612fb361a0ed0',
-      user: 'Admin User',
-      price: '$199.96',
-      status: 'Processing'
+      id: "67540ced337612fb361a0ed0",
+      user: "Admin User",
+      price: "$199.96",
+      status: "Processing",
     },
     {
-      id: '67540d3ca67b4a70e434e092',
-      user: 'Admin User',
-      price: '$40',
-      status: 'Processing'
+      id: "67540d3ca67b4a70e434e092",
+      user: "Admin User",
+      price: "$40",
+      status: "Processing",
     },
     {
-      id: '675bf2c6ca77bd83eefd7a18',
-      user: 'Admin User',
-      price: '$39.99',
-      status: 'Processing'
+      id: "675bf2c6ca77bd83eefd7a18",
+      user: "Admin User",
+      price: "$39.99",
+      status: "Processing",
     },
     {
-      id: '675c24b09b88827304bd5cc1',
-      user: 'Admin User',
-      price: '$39.99',
-      status: 'Processing'
-    }
+      id: "675c24b09b88827304bd5cc1",
+      user: "Admin User",
+      price: "$39.99",
+      status: "Processing",
+    },
   ];
 
   // Update active nav based on current route
   useEffect(() => {
     const currentPath = location.pathname;
-    const currentNav = navigationItems.find(item => item.path === currentPath);
+    const currentNav = navigationItems.find(
+      (item) => item.path === currentPath,
+    );
     if (currentNav) {
       setActiveNav(currentNav.name);
-    } else if (currentPath === '/admin') {
-      setActiveNav('Dashboard');
+    } else if (currentPath === "/admin") {
+      setActiveNav("Dashboard");
     }
   }, [location.pathname]);
 
@@ -86,9 +88,9 @@ const AdminLayout = () => {
   };
 
   const handleLogout = () => {
-    if (window.confirm('Are you sure you want to logout?')) {
-      alert('Logged out successfully!');
-      navigate('/login');
+    if (window.confirm("Are you sure you want to logout?")) {
+      alert("Logged out successfully!");
+      navigate("/login");
     }
   };
 
@@ -98,10 +100,10 @@ const AdminLayout = () => {
 
   const handleStatCardClick = (link) => {
     if (link) {
-      if (link === 'Manage Orders') {
-        navigate('/admin/orders');
-      } else if (link === 'Manage Products') {
-        navigate('/admin/products');
+      if (link === "Manage Orders") {
+        navigate("/admin/orders");
+      } else if (link === "Manage Products") {
+        navigate("/admin/products");
       }
     }
   };
@@ -111,14 +113,17 @@ const AdminLayout = () => {
   };
 
   // Check if we're on the dashboard route
-  const isDashboard = location.pathname === '/admin' || location.pathname === '/admin/';
+  const isDashboard =
+    location.pathname === "/admin" || location.pathname === "/admin/";
 
   // Dashboard content component
   const DashboardContent = () => (
     <>
       {/* Header */}
       <div className="mb-8 mt-12 lg:mt-0">
-        <h1 className="text-3xl font-semibold text-slate-800">Admin Dashboard</h1>
+        <h1 className="text-3xl font-semibold text-slate-800">
+          Admin Dashboard
+        </h1>
       </div>
 
       {/* Stats Grid */}
@@ -132,9 +137,9 @@ const AdminLayout = () => {
               hover:shadow-lg hover:-translate-y-1 transition-all duration-300 cursor-pointer
               animate-fade-in-up opacity-0
             `}
-            style={{ 
+            style={{
               animation: `fadeInUp 0.6s ease forwards`,
-              animationDelay: `${index * 0.1}s`
+              animationDelay: `${index * 0.1}s`,
             }}
           >
             <h3 className="text-gray-500 text-sm font-medium uppercase tracking-wide mb-2">
@@ -144,8 +149,8 @@ const AdminLayout = () => {
               {stat.value}
             </div>
             {stat.link && (
-              <a 
-                href="#" 
+              <a
+                href="#"
                 className="text-blue-600 hover:text-blue-800 text-sm transition-colors duration-300"
                 onClick={(e) => e.preventDefault()}
               >
@@ -157,15 +162,17 @@ const AdminLayout = () => {
       </div>
 
       {/* Recent Orders Table */}
-      <div 
+      <div
         className="bg-white rounded-xl shadow-sm p-6 opacity-0 animate-fade-in-up"
-        style={{ 
-          animation: 'fadeInUp 0.6s ease forwards',
-          animationDelay: '0.3s'
+        style={{
+          animation: "fadeInUp 0.6s ease forwards",
+          animationDelay: "0.3s",
         }}
       >
-        <h2 className="text-xl font-semibold text-slate-800 mb-6">Recent Orders</h2>
-        
+        <h2 className="text-xl font-semibold text-slate-800 mb-6">
+          Recent Orders
+        </h2>
+
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
@@ -194,9 +201,7 @@ const AdminLayout = () => {
                   <td className="py-4 px-4 font-mono text-sm text-gray-600">
                     {order.id}
                   </td>
-                  <td className="py-4 px-4 text-slate-800">
-                    {order.user}
-                  </td>
+                  <td className="py-4 px-4 text-slate-800">{order.user}</td>
                   <td className="py-4 px-4 font-semibold text-green-600">
                     {order.price}
                   </td>
@@ -221,7 +226,7 @@ const AdminLayout = () => {
         onClick={toggleMobileMenu}
         className="lg:hidden fixed top-4 left-4 z-50 bg-slate-800 text-white p-2 rounded-md"
       >
-        <span className="text-xl">{isMobileMenuOpen ? '✕' : '☰'}</span>
+        <span className="text-xl">{isMobileMenuOpen ? "✕" : "☰"}</span>
       </button>
 
       {/* Mobile Overlay */}
@@ -233,16 +238,18 @@ const AdminLayout = () => {
       )}
 
       {/* Sidebar */}
-      <nav className={`
+      <nav
+        className={`
         w-64 bg-slate-800 text-white fixed h-full overflow-y-auto z-50 transition-transform duration-300
-        ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-      `}>
+        ${isMobileMenuOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
+      `}
+      >
         {/* Sidebar Header */}
         <div className="p-6 bg-slate-700 border-b border-slate-600">
           <h2 className="text-2xl font-bold">Rabbit</h2>
           <p className="text-slate-300 text-sm mt-1">Admin Dashboard</p>
         </div>
-        
+
         {/* Navigation */}
         <div className="py-5">
           {navigationItems.map((item) => {
@@ -253,9 +260,10 @@ const AdminLayout = () => {
                 onClick={() => handleNavClick(item)}
                 className={`
                   w-full px-6 py-3 text-left flex items-center transition-all duration-300
-                  ${activeNav === item.name && !item.external
-                    ? 'bg-blue-600 text-white border-r-4 border-blue-400'
-                    : 'text-slate-300 hover:bg-slate-700 hover:text-white'
+                  ${
+                    activeNav === item.name && !item.external
+                      ? "bg-blue-600 text-white border-r-4 border-blue-400"
+                      : "text-slate-300 hover:bg-slate-700 hover:text-white"
                   }
                 `}
               >
@@ -265,10 +273,10 @@ const AdminLayout = () => {
             );
           })}
         </div>
-        
+
         {/* Logout Button */}
         <div className="absolute bottom-0 w-64">
-          <button 
+          <button
             onClick={handleLogout}
             className="flex items-center w-full px-6 py-3 text-red-400 hover:bg-red-600 hover:text-white transition-colors"
           >
@@ -295,7 +303,7 @@ const AdminLayout = () => {
             transform: translateY(0);
           }
         }
-        
+
         .animate-fade-in-up {
           animation: fadeInUp 0.6s ease forwards;
         }

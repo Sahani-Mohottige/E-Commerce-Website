@@ -1,17 +1,14 @@
-import NavBar from './NavBar';
-import React from 'react';
-import TopBar from '../Layout/TopBar'
+import NavBar from "./NavBar";
+import React from "react";
+import TopBar from "../Layout/TopBar";
 
 const Header = () => {
   return (
- <>
-    
-   <TopBar/>
-   <NavBar/> 
-   
- </>
-
+    <>
+      <TopBar />
+      <NavBar />
+    </>
   );
 };
 
-export default Header
+export default Header;

@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 const MyOrdersPage = () => {
   const [orders, setOrders] = useState([]);
@@ -11,26 +11,26 @@ const MyOrdersPage = () => {
     setTimeout(() => {
       const mockOrders = [
         {
-          id: '12345',
+          id: "12345",
           createdAt: new Date(),
-          shippingAddress: { city: 'New York', country: 'USA' },
+          shippingAddress: { city: "New York", country: "USA" },
           orderItems: [
             {
-              name: 'Product 1',
-              image: 'https://picsum.photos/500/500?random=1',
+              name: "Product 1",
+              image: "https://picsum.photos/500/500?random=1",
             },
           ],
           totalPrice: 100,
           isPaid: true,
         },
         {
-          id: '67890',
+          id: "67890",
           createdAt: new Date(),
-          shippingAddress: { city: 'London', country: 'UK' },
+          shippingAddress: { city: "London", country: "UK" },
           orderItems: [
             {
-              name: 'Product 2',
-              image: 'https://picsum.photos/500/500?random=2',
+              name: "Product 2",
+              image: "https://picsum.photos/500/500?random=2",
             },
           ],
           totalPrice: 200,
@@ -44,8 +44,8 @@ const MyOrdersPage = () => {
 
   const handleRowClick = (orderId) => {
     navigate(`/order/${orderId}`);
-  }
-  
+  };
+
   return (
     <div className="overflow-x-auto">
       <h2 className="text-xl font-semibold mb-4 ml-8 mt-6">My Orders</h2>
@@ -56,19 +56,33 @@ const MyOrdersPage = () => {
         <table className="min-w-full divide-y divide-gray-200 shadow-sm rounded-lg overflow-hidden ml-6 mr-10">
           <thead className="bg-gray-100">
             <tr>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Image</th>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Order ID</th>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Created</th>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Shipping Address</th>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Items</th>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Price</th>
-              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">Status</th>
+              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+                Image
+              </th>
+              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+                Order ID
+              </th>
+              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+                Created
+              </th>
+              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+                Shipping Address
+              </th>
+              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+                Items
+              </th>
+              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+                Price
+              </th>
+              <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700">
+                Status
+              </th>
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {orders.length > 0 ? (
               orders.map((order) => (
-                <tr 
+                <tr
                   key={order.id}
                   onClick={() => handleRowClick(order.id)} // ✅ Fixed: using order.id
                   className="cursor-pointer hover:bg-gray-50" // Added hover effect
@@ -80,14 +94,15 @@ const MyOrdersPage = () => {
                       className="w-12 h-12 object-cover rounded-md"
                     />
                   </td>
-                  <td className="px-4 py-3 text-sm text-gray-700">{order.id}</td>
+                  <td className="px-4 py-3 text-sm text-gray-700">
+                    {order.id}
+                  </td>
                   <td className="px-4 py-3 text-sm text-gray-600">
-                    {new Date(order.createdAt).toLocaleDateString()}
-                    {" "}
+                    {new Date(order.createdAt).toLocaleDateString()}{" "}
                     {new Date(order.createdAt).toLocaleTimeString()}
                   </td>
                   <td className="px-4 py-3 text-sm text-gray-600">
-                    {order.shippingAddress 
+                    {order.shippingAddress
                       ? `${order.shippingAddress.city}, ${order.shippingAddress.country}` // ✅ Fixed: removed extra }
                       : "N/A"}
                   </td>
@@ -101,11 +116,11 @@ const MyOrdersPage = () => {
                     <span
                       className={`px-2 py-1 text-xs font-semibold rounded-full ${
                         order.isPaid
-                          ? 'bg-green-100 text-green-600'
-                          : 'bg-yellow-100 text-red-600'
+                          ? "bg-green-100 text-green-600"
+                          : "bg-yellow-100 text-red-600"
                       }`} // ✅ Fixed: cleaned up className logic
                     >
-                      {order.isPaid ? 'Paid' : 'Pending'}
+                      {order.isPaid ? "Paid" : "Pending"}
                     </span>
                   </td>
                 </tr>

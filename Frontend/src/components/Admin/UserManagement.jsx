@@ -1,33 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
 const UserManagement = () => {
   // User management state
   const [users, setUsers] = useState([
     {
       id: 1,
-      name: 'Admin User',
-      email: 'admin@example.com',
-      role: 'Admin'
+      name: "Admin User",
+      email: "admin@example.com",
+      role: "Admin",
     },
     {
       id: 2,
-      name: 'John Doe',
-      email: 'john@example.com',
-      role: 'Customer'
+      name: "John Doe",
+      email: "john@example.com",
+      role: "Customer",
     },
     {
       id: 3,
-      name: 'Jane Smith',
-      email: 'jane@example.com',
-      role: 'Customer'
-    }
+      name: "Jane Smith",
+      email: "jane@example.com",
+      role: "Customer",
+    },
   ]);
 
   const [newUser, setNewUser] = useState({
-    name: '',
-    email: '',
-    password: '',
-    role: 'Customer'
+    name: "",
+    email: "",
+    password: "",
+    role: "Customer",
   });
 
   // User management functions
@@ -38,92 +38,114 @@ const UserManagement = () => {
         id: users.length + 1,
         name: newUser.name,
         email: newUser.email,
-        role: newUser.role
+        role: newUser.role,
       };
       setUsers([...users, user]);
-      setNewUser({ name: '', email: '', password: '', role: 'Customer' });
-      alert('User added successfully!');
+      setNewUser({ name: "", email: "", password: "", role: "Customer" });
+      alert("User added successfully!");
     } else {
-      alert('Please fill in all fields');
+      alert("Please fill in all fields");
     }
   };
 
   const handleDeleteUser = (userId) => {
-    if (window.confirm('Are you sure you want to delete this user?')) {
-      setUsers(users.filter(user => user.id !== userId));
-      alert('User deleted successfully!');
+    if (window.confirm("Are you sure you want to delete this user?")) {
+      setUsers(users.filter((user) => user.id !== userId));
+      alert("User deleted successfully!");
     }
   };
 
   const handleRoleChange = (userId, newRole) => {
-    setUsers(users.map(user => 
-      user.id === userId ? { ...user, role: newRole } : user
-    ));
+    setUsers(
+      users.map((user) =>
+        user.id === userId ? { ...user, role: newRole } : user,
+      ),
+    );
   };
 
   return (
     <div className="mt-12 lg:mt-0 space-y-8">
       {/* Page Header */}
       <div className="mb-8">
-        <h1 className="text-3xl font-semibold text-slate-800">User Management</h1>
+        <h1 className="text-3xl font-semibold text-slate-800">
+          User Management
+        </h1>
         <p className="text-gray-600 mt-2">Manage users and their roles</p>
       </div>
 
       {/* Add New User Form */}
-      <div 
+      <div
         className="bg-white rounded-xl shadow-sm p-6 opacity-0 animate-fade-in-up"
-        style={{ 
-          animation: 'fadeInUp 0.6s ease forwards',
-          animationDelay: '0.1s'
+        style={{
+          animation: "fadeInUp 0.6s ease forwards",
+          animationDelay: "0.1s",
         }}
       >
-        <h2 className="text-xl font-semibold text-slate-800 mb-6">Add New User</h2>
-        
+        <h2 className="text-xl font-semibold text-slate-800 mb-6">
+          Add New User
+        </h2>
+
         <form onSubmit={handleAddUser} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Name</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Name
+              </label>
               <input
                 type="text"
                 value={newUser.name}
-                onChange={(e) => setNewUser({ ...newUser, name: e.target.value })}
+                onChange={(e) =>
+                  setNewUser({ ...newUser, name: e.target.value })
+                }
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                 placeholder="Enter user name"
                 required
               />
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Email
+              </label>
               <input
                 type="email"
                 value={newUser.email}
-                onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+                onChange={(e) =>
+                  setNewUser({ ...newUser, email: e.target.value })
+                }
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                 placeholder="Enter email address"
                 required
               />
             </div>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Password</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Password
+              </label>
               <input
                 type="password"
                 value={newUser.password}
-                onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+                onChange={(e) =>
+                  setNewUser({ ...newUser, password: e.target.value })
+                }
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                 placeholder="Enter password"
                 required
               />
             </div>
-            
+
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Role</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Role
+              </label>
               <select
                 value={newUser.role}
-                onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
+                onChange={(e) =>
+                  setNewUser({ ...newUser, role: e.target.value })
+                }
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
               >
                 <option value="Customer">Customer</option>
@@ -131,7 +153,7 @@ const UserManagement = () => {
               </select>
             </div>
           </div>
-          
+
           <button
             type="submit"
             className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
@@ -142,11 +164,11 @@ const UserManagement = () => {
       </div>
 
       {/* Users Table */}
-      <div 
+      <div
         className="bg-white rounded-xl shadow-sm p-6 opacity-0 animate-fade-in-up"
-        style={{ 
-          animation: 'fadeInUp 0.6s ease forwards',
-          animationDelay: '0.2s'
+        style={{
+          animation: "fadeInUp 0.6s ease forwards",
+          animationDelay: "0.2s",
         }}
       >
         <div className="flex justify-between items-center mb-6">
@@ -155,7 +177,7 @@ const UserManagement = () => {
             Total Users: {users.length}
           </div>
         </div>
-        
+
         <div className="overflow-x-auto">
           <table className="w-full">
             <thead>
@@ -176,24 +198,24 @@ const UserManagement = () => {
             </thead>
             <tbody className="divide-y divide-gray-100">
               {users.map((user, index) => (
-                <tr 
-                  key={user.id} 
+                <tr
+                  key={user.id}
                   className="hover:bg-gray-50 transition-colors duration-200 opacity-0 animate-fade-in-up"
-                  style={{ 
-                    animation: 'fadeInUp 0.6s ease forwards',
-                    animationDelay: `${0.3 + (index * 0.1)}s`
+                  style={{
+                    animation: "fadeInUp 0.6s ease forwards",
+                    animationDelay: `${0.3 + index * 0.1}s`,
                   }}
                 >
                   <td className="py-4 px-4 text-slate-800 font-medium">
                     {user.name}
                   </td>
-                  <td className="py-4 px-4 text-gray-600">
-                    {user.email}
-                  </td>
+                  <td className="py-4 px-4 text-gray-600">{user.email}</td>
                   <td className="py-4 px-4">
                     <select
                       value={user.role}
-                      onChange={(e) => handleRoleChange(user.id, e.target.value)}
+                      onChange={(e) =>
+                        handleRoleChange(user.id, e.target.value)
+                      }
                       className="px-2 py-1 border border-gray-300 rounded text-sm focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                     >
                       <option value="Customer">Customer</option>
@@ -233,7 +255,7 @@ const UserManagement = () => {
             transform: translateY(0);
           }
         }
-        
+
         .animate-fade-in-up {
           animation: fadeInUp 0.6s ease forwards;
         }

@@ -1,153 +1,153 @@
-import { FiChevronLeft, FiChevronRight } from 'react-icons/fi'
-import React, { useEffect, useRef, useState } from 'react'
+import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import React, { useEffect, useRef, useState } from "react";
 
-import { Link } from 'react-router-dom'
+import { Link } from "react-router-dom";
 
 const NewArrivals = () => {
-    const scrollRef= useRef(null);
-    const [isDragging,setIsDragging] = useState(false);
-    const [startX,setStartX] =useState(0);
-    const [scrollLeft,setScrollLeft] = useState(false);
-    const [canScrollLeft,setCanScrollLeft] = useState(false);
-    const [canScrollRight,setCanScrollRight] = useState(true);
+  const scrollRef = useRef(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [startX, setStartX] = useState(0);
+  const [scrollLeft, setScrollLeft] = useState(false);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
 
+  const newArrivals = [
+    {
+      id: "1",
+      name: "stylish Jacket",
+      price: 120,
+      images: [
+        {
+          url: "https://picsum.photos/500/500?random=1",
+          altText: "stylish Jacket",
+        },
+      ],
+    },
+    {
+      id: "2",
+      name: "stylish Jacket",
+      price: 120,
+      images: [
+        {
+          url: "https://picsum.photos/500/500?random=2",
+          altText: "stylish Jacket",
+        },
+      ],
+    },
+    {
+      id: "3",
+      name: "stylish Jacket",
+      price: 120,
+      images: [
+        {
+          url: "https://picsum.photos/500/500?random=3",
+          altText: "stylish Jacket",
+        },
+      ],
+    },
+    {
+      id: "4",
+      name: "stylish Jacket",
+      price: 120,
+      images: [
+        {
+          url: "https://picsum.photos/500/500?random=4",
+          altText: "stylish Jacket",
+        },
+      ],
+    },
+    {
+      id: "5",
+      name: "stylish Jacket",
+      price: 120,
+      images: [
+        {
+          url: "https://picsum.photos/500/500?random=5",
+          altText: "stylish Jacket",
+        },
+      ],
+    },
+    {
+      id: "6",
+      name: "stylish Jacket",
+      price: 120,
+      images: [
+        {
+          url: "https://picsum.photos/500/500?random=6",
+          altText: "stylish Jacket",
+        },
+      ],
+    },
+    {
+      id: "7",
+      name: "stylish Jacket",
+      price: 120,
+      images: [
+        {
+          url: "https://picsum.photos/500/500?random=7",
+          altText: "stylish Jacket",
+        },
+      ],
+    },
+    {
+      id: "8",
+      name: "stylish Jacket",
+      price: 120,
+      images: [
+        {
+          url: "https://picsum.photos/500/500?random=8",
+          altText: "stylish Jacket",
+        },
+      ],
+    },
+  ];
 
-    const newArrivals =[
-        {
-            id:"1",
-            name:"stylish Jacket",
-            price: 120,
-            images: [
-                {
-                    url:"https://picsum.photos/500/500?random=1",
-                    altText:"stylish Jacket"
-                }
-            ]
-        },
-        {
-            id:"2",
-            name:"stylish Jacket",
-            price: 120,
-            images: [
-                {
-                    url:"https://picsum.photos/500/500?random=2",
-                    altText:"stylish Jacket"
-                }
-            ]
-        },
-        {
-            id:"3",
-            name:"stylish Jacket",
-            price: 120,
-            images: [
-                {
-                    url:"https://picsum.photos/500/500?random=3",
-                    altText:"stylish Jacket"
-                }
-            ]
-        },
-        {
-            id:"4",
-            name:"stylish Jacket",
-            price: 120,
-            images: [
-                {
-                    url:"https://picsum.photos/500/500?random=4",
-                    altText:"stylish Jacket"
-                }
-            ]
-        },
-        {
-            id:"5",
-            name:"stylish Jacket",
-            price: 120,
-            images: [
-                {
-                    url:"https://picsum.photos/500/500?random=5",
-                    altText:"stylish Jacket"
-                }
-            ]
-        },
-        {
-            id:"6",
-            name:"stylish Jacket",
-            price: 120,
-            images: [
-                {
-                    url:"https://picsum.photos/500/500?random=6",
-                    altText:"stylish Jacket"
-                }
-            ]
-        },
-        {
-            id:"7",
-            name:"stylish Jacket",
-            price: 120,
-            images: [
-                {
-                    url:"https://picsum.photos/500/500?random=7",
-                    altText:"stylish Jacket"
-                }
-            ]
-        },
-        {
-            id:"8",
-            name:"stylish Jacket",
-            price: 120,
-            images: [
-                {
-                    url:"https://picsum.photos/500/500?random=8",
-                    altText:"stylish Jacket"
-                }
-            ]
-        }
-]
+  const handleOnMouseDown = (e) => {
+    setIsDragging(true);
+    setStartX(e.pageX - scrollRef.current.offsetLeft);
+    setScrollLeft(scrollRef.current.scrollLeft);
+  };
 
-const handleOnMouseDown = (e) =>{
-  setIsDragging(true);
-  setStartX(e.pageX - scrollRef.current.offsetLeft);
-  setScrollLeft(scrollRef.current.scrollLeft);
-}
+  const handleOnMouseMove = (e) => {
+    if (!isDragging) return;
+    const x = e.pageX - scrollRef.current.offsetLeft;
+    const walk = x - startX;
+    scrollRef.current.scrollLeft = scrollLeft - walk;
+  };
 
-const handleOnMouseMove = (e) =>{
-  if (!isDragging)return;
-  const x = e.pageX - scrollRef.current.offsetLeft;
-  const walk =x-startX;
-  scrollRef.current.scrollLeft = scrollLeft - walk;
-}
+  const handleOnMouseUpOrLeave = () => {
+    setIsDragging(false);
+  };
 
-const handleOnMouseUpOrLeave = () =>{
-  setIsDragging(false);
-}
-
-const scroll = (direction) =>{
+  const scroll = (direction) => {
     const scrollAmount = direction === "left" ? -300 : 300;
-    scrollRef.current.scrollBy({left: scrollAmount,behavior :"smooth"});
-}
+    scrollRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
+  };
 
-//update scroll buttons
-const updateScrollButtons=()=>{
-    const container =scrollRef.current;
+  //update scroll buttons
+  const updateScrollButtons = () => {
+    const container = scrollRef.current;
 
-    if(container){
-        const leftScroll = container.scrollLeft;
-        const rightScrollable = container.scrollWidth > leftScroll + container.clientWidth;
+    if (container) {
+      const leftScroll = container.scrollLeft;
+      const rightScrollable =
+        container.scrollWidth > leftScroll + container.clientWidth;
 
-        setCanScrollLeft(leftScroll>0);
-        setCanScrollRight(rightScrollable);
+      setCanScrollLeft(leftScroll > 0);
+      setCanScrollRight(rightScrollable);
     }
-}
+  };
 
-useEffect(() => {
-  const container = scrollRef.current;
-  if (container) {
-    container.addEventListener("scroll", updateScrollButtons);
+  useEffect(() => {
+    const container = scrollRef.current;
+    if (container) {
+      container.addEventListener("scroll", updateScrollButtons);
       updateScrollButtons();
-    return () => {
-      container.removeEventListener("scroll", updateScrollButtons);
-    };
-  }
-}, []);
+      return () => {
+        container.removeEventListener("scroll", updateScrollButtons);
+      };
+    }
+  }, []);
 
   return (
     <section className="py-16 px-4 lg:px-0">
@@ -161,16 +161,20 @@ useEffect(() => {
 
         {/* Scroll buttons */}
         <div className="absolute right-0 bottom-[-30px] flex space-x-2">
-          <button onClick={()=> scroll("left")}
-          disabled={!canScrollLeft}
-          className={`p-2 rounded-lg border-1
-           ${canScrollLeft? "bg-white text-black":"bg-gray-400 cursor-not-allowed"}`}>
+          <button
+            onClick={() => scroll("left")}
+            disabled={!canScrollLeft}
+            className={`p-2 rounded-lg border-1
+           ${canScrollLeft ? "bg-white text-black" : "bg-gray-400 cursor-not-allowed"}`}
+          >
             <FiChevronLeft size={20} />
           </button>
-          <button onClick={()=> scroll("right")}
-          disabled={!canScrollRight}
-           className={`p-2 rounded-lg border-1
-           ${canScrollRight? "bg-white text-black":"bg-gray-400 cursor-not-allowed"}`}>
+          <button
+            onClick={() => scroll("right")}
+            disabled={!canScrollRight}
+            className={`p-2 rounded-lg border-1
+           ${canScrollRight ? "bg-white text-black" : "bg-gray-400 cursor-not-allowed"}`}
+          >
             <FiChevronRight size={20} />
           </button>
         </div>
@@ -178,12 +182,13 @@ useEffect(() => {
 
       {/* Scrollable Product Cards */}
       <div className="overflow-x-scroll px-4">
-        <div ref={scrollRef} 
-        className={`container mx-auto overflow-x-scroll flex space-x-4 relative ${isDragging ? "cursor-grabbing":"cursor-grab"}`}
-        onMouseDown={handleOnMouseDown}
-        onMouseMove={handleOnMouseMove}
-        onMouseLeave={handleOnMouseUpOrLeave}
-        onMouseUp={handleOnMouseUpOrLeave}
+        <div
+          ref={scrollRef}
+          className={`container mx-auto overflow-x-scroll flex space-x-4 relative ${isDragging ? "cursor-grabbing" : "cursor-grab"}`}
+          onMouseDown={handleOnMouseDown}
+          onMouseMove={handleOnMouseMove}
+          onMouseLeave={handleOnMouseUpOrLeave}
+          onMouseUp={handleOnMouseUpOrLeave}
         >
           {newArrivals.map((product) => (
             <div
@@ -210,8 +215,7 @@ useEffect(() => {
         </div>
       </div>
     </section>
-  )
-   
-}
+  );
+};
 
-export default NewArrivals
+export default NewArrivals;

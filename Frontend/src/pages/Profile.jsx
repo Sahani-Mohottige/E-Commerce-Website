@@ -1,5 +1,5 @@
-import MyOrdersPage from './MyOrdersPage';
-import React from 'react';
+import MyOrdersPage from "./MyOrdersPage";
+import React from "react";
 
 const Profile = () => {
   return (
@@ -13,7 +13,9 @@ const Profile = () => {
               alt="Profile"
               className="w-24 h-24 rounded-full mb-4"
             />
-            <h1 className="text-2xl font-semibold text-gray-800 mb-1">John Doe</h1>
+            <h1 className="text-2xl font-semibold text-gray-800 mb-1">
+              John Doe
+            </h1>
             <p className="text-gray-600 mb-4">john@example.com</p>
             <button className="bg-red-500 text-white px-5 py-2 rounded-md hover:bg-red-600 transition">
               Logout
@@ -22,11 +24,11 @@ const Profile = () => {
 
           {/* Right section - Orders Table */}
           <div className="w-full md:w-2/3 lg:w-3/4">
-            <MyOrdersPage/>
-            </div>
+            <MyOrdersPage />
           </div>
         </div>
       </div>
+    </div>
   );
 };
 

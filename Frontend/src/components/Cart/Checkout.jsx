@@ -1,41 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-import PayPalButton from './PayPalButton';
-import { useNavigate } from 'react-router-dom';
+import PayPalButton from "./PayPalButton";
+import { useNavigate } from "react-router-dom";
 
 const cart = {
   products: [
     {
       id: 1,
-      size:"M",
-      color:"Black",
+      size: "M",
+      color: "Black",
       name: "Stylish Jacket",
       price: 100,
-      images:'https://picsum.photos/500/500?random=1',
+      images: "https://picsum.photos/500/500?random=1",
     },
     {
       id: 2,
-      size:"L",
-      color:"Red",
+      size: "L",
+      color: "Red",
       name: "Casual Jacket",
       price: 100,
-      images: 'https://picsum.photos/500/500?random=2' ,
+      images: "https://picsum.photos/500/500?random=2",
     },
     {
       id: 3,
-      size:"M",
-      color:"Black",
+      size: "M",
+      color: "Black",
       name: "Stylish Jacket",
       price: 100,
-      images: 'https://picsum.photos/500/500?random=3' ,
+      images: "https://picsum.photos/500/500?random=3",
     },
     {
       id: 4,
-      size:"L",
-      color:"Red",
+      size: "L",
+      color: "Red",
       name: "Casual Jacket",
       price: 100,
-      images: 'https://picsum.photos/500/500?random=4',
+      images: "https://picsum.photos/500/500?random=4",
     },
   ],
   totalPrice: 195,
@@ -44,32 +44,35 @@ const cart = {
 const Checkout = () => {
   const navigate = useNavigate();
   const [checkoutId, setCheckoutId] = useState(null);
-  const [paymentError, setPaymentError] = useState(''); 
+  const [paymentError, setPaymentError] = useState("");
   const [shippingAddress, setShippingAddress] = useState({
-    firstName: '',
-    lastName: '',
-    address: '',
-    city: '',
-    postalCode: '',
-    country: '',
-    phone: '',
+    firstName: "",
+    lastName: "",
+    address: "",
+    city: "",
+    postalCode: "",
+    country: "",
+    phone: "",
   });
 
   const handleCreateCheckout = (e) => {
     e.preventDefault();
-    setCheckoutId('123');
+    setCheckoutId("123");
   };
 
-  const handlePaymentSuccess = (details) =>{
-    console.log("Payment Successful.",details);
+  const handlePaymentSuccess = (details) => {
+    console.log("Payment Successful.", details);
     navigate("/order-confirmation");
-  }
-
-   const handlePaymentError = (err) => { // ✅ Better error handling
-    console.error('Payment error:', err);
-    setPaymentError('Payment failed. Please try again or use a different payment method.');
   };
-  
+
+  const handlePaymentError = (err) => {
+    // ✅ Better error handling
+    console.error("Payment error:", err);
+    setPaymentError(
+      "Payment failed. Please try again or use a different payment method.",
+    );
+  };
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 max-w-6xl mx-auto py-10 px-6">
       {/* Left Section */}
@@ -99,26 +102,36 @@ const Checkout = () => {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium mb-1">First Name</label>
+                <label className="block text-sm font-medium mb-1">
+                  First Name
+                </label>
                 <input
                   type="text"
                   className="w-full p-2 border rounded"
                   value={shippingAddress.firstName}
                   onChange={(e) =>
-                    setShippingAddress({ ...shippingAddress, firstName: e.target.value })
+                    setShippingAddress({
+                      ...shippingAddress,
+                      firstName: e.target.value,
+                    })
                   }
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">Last Name</label>
+                <label className="block text-sm font-medium mb-1">
+                  Last Name
+                </label>
                 <input
                   type="text"
                   className="w-full p-2 border rounded"
                   value={shippingAddress.lastName}
                   onChange={(e) =>
-                    setShippingAddress({ ...shippingAddress, lastName: e.target.value })
+                    setShippingAddress({
+                      ...shippingAddress,
+                      lastName: e.target.value,
+                    })
                   }
                   required
                 />
@@ -132,7 +145,10 @@ const Checkout = () => {
                 className="w-full p-2 border rounded"
                 value={shippingAddress.address}
                 onChange={(e) =>
-                  setShippingAddress({ ...shippingAddress, address: e.target.value })
+                  setShippingAddress({
+                    ...shippingAddress,
+                    address: e.target.value,
+                  })
                 }
                 required
               />
@@ -146,20 +162,28 @@ const Checkout = () => {
                   className="w-full p-2 border rounded"
                   value={shippingAddress.city}
                   onChange={(e) =>
-                    setShippingAddress({ ...shippingAddress, city: e.target.value })
+                    setShippingAddress({
+                      ...shippingAddress,
+                      city: e.target.value,
+                    })
                   }
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">Postal Code</label>
+                <label className="block text-sm font-medium mb-1">
+                  Postal Code
+                </label>
                 <input
                   type="text"
                   className="w-full p-2 border rounded"
                   value={shippingAddress.postalCode}
                   onChange={(e) =>
-                    setShippingAddress({ ...shippingAddress, postalCode: e.target.value })
+                    setShippingAddress({
+                      ...shippingAddress,
+                      postalCode: e.target.value,
+                    })
                   }
                   required
                 />
@@ -173,20 +197,28 @@ const Checkout = () => {
                 className="w-full p-2 border rounded"
                 value={shippingAddress.country}
                 onChange={(e) =>
-                  setShippingAddress({ ...shippingAddress, country: e.target.value })
+                  setShippingAddress({
+                    ...shippingAddress,
+                    country: e.target.value,
+                  })
                 }
                 required
               />
             </div>
 
             <div className="mt-4">
-              <label className="block text-sm font-medium mb-1">Phone Number</label>
+              <label className="block text-sm font-medium mb-1">
+                Phone Number
+              </label>
               <input
                 type="text"
                 className="w-full p-2 border rounded"
                 value={shippingAddress.phone}
                 onChange={(e) =>
-                  setShippingAddress({ ...shippingAddress, phone: e.target.value })
+                  setShippingAddress({
+                    ...shippingAddress,
+                    phone: e.target.value,
+                  })
                 }
                 required
               />
@@ -202,12 +234,17 @@ const Checkout = () => {
                 </button>
               ) : (
                 <div className="p-4 border rounded bg-white shadow">
-                  <h3 className="text-lg font-semibold text-green-600 mb-2">Pay with PayPal</h3>
-                  <p className="text-sm mb-6 text-gray-600">Redirecting to PayPal for payment...</p>
-                <PayPalButton amount={cart.totalPrice} 
-                onSuccess={handlePaymentSuccess}
-                onError={handlePaymentError}
-                />
+                  <h3 className="text-lg font-semibold text-green-600 mb-2">
+                    Pay with PayPal
+                  </h3>
+                  <p className="text-sm mb-6 text-gray-600">
+                    Redirecting to PayPal for payment...
+                  </p>
+                  <PayPalButton
+                    amount={cart.totalPrice}
+                    onSuccess={handlePaymentSuccess}
+                    onError={handlePaymentError}
+                  />
                 </div>
               )}
             </div>
@@ -215,49 +252,49 @@ const Checkout = () => {
         </form>
       </div>
 
-        {/* Right Section */}
+      {/* Right Section */}
       <div className="bg-blue-50 p-6 rounded-lg shadow-sm">
         <h3 className="text-xl font-semibold mb-4">Order Summary</h3>
-        {cart.products.map((product,index) => (
-          <div 
-          key={index} 
-          className="flex items-start justify-between py-2 border-t border-blue-300"
+        {cart.products.map((product, index) => (
+          <div
+            key={index}
+            className="flex items-start justify-between py-2 border-t border-blue-300"
           >
             <div className="flex items-start">
-            <img 
-            src={product.images} 
-            alt={product.name} 
-            className="w-20 h-20 rounded object-cover" 
-            />
+              <img
+                src={product.images}
+                alt={product.name}
+                className="w-20 h-20 rounded object-cover"
+              />
             </div>
             <div>
               <h3 className="text-md ">{product.name}</h3>
               <p className=" text-gray-600">Size: {product.size}</p>
               <p className=" text-gray-600">Color: {product.color}</p>
             </div>
-            <div>             
-               <p className="font-bold">${product.price?.toLocaleString()}</p>
-              </div>
+            <div>
+              <p className="font-bold">${product.price?.toLocaleString()}</p>
+            </div>
           </div>
         ))}
-        
+
         <hr className="my-4 border-gray-500" />
         <div className="flex justify-between items-center text-lg mb-4">
           <p>Subtotal:</p>
           <p>${cart.totalPrice?.toLocaleString()}</p>
         </div>
-        
+
         <div className="flex justify-between items-center text-lg mb-4">
           <p>Shipping</p>
           <p>Free</p>
         </div>
-          <div className="flex justify-between items-center text-lg font-bold mb-4">
+        <div className="flex justify-between items-center text-lg font-bold mb-4">
           <p>Total:</p>
-          <p className="font-bold text-xl">${cart.totalPrice?.toLocaleString()}</p>
+          <p className="font-bold text-xl">
+            ${cart.totalPrice?.toLocaleString()}
+          </p>
         </div>
-        
       </div>
-      
     </div>
   );
 };

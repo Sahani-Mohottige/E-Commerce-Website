@@ -1,31 +1,31 @@
-const express = require("express")
-const cors = require("cors")
-const dotenv=require("dotenv")
-const connectDB = require("./Config/db")
-const userRoutes = require("./routes/userRoutes")
+const express = require("express");
+const cors = require("cors");
+const dotenv = require("dotenv");
+const connectDB = require("./Config/db");
+const userRoutes = require("./routes/userRoutes");
 const productRoutes = require("./routes/productRoutes");
 const cartRoutes = require("./routes/cartRoutes");
 
-dotenv.config()
+dotenv.config();
 
-const app = express()
+const app = express();
 
-app.use(express.json())
-app.use(cors())
+app.use(express.json());
+app.use(cors());
 
 const PORT = process.env.PORT || 3000;
 
 connectDB();
 
-app.get("/",(req,res)=>{
-    res.send("Welcome to Pickzy API!")
-})
+app.get("/", (req, res) => {
+  res.send("Welcome to Pickzy API!");
+});
 
 //API Routes
-app.use("/api/users",userRoutes);
-app.use("/api/products",productRoutes);
+app.use("/api/users", userRoutes);
+app.use("/api/products", productRoutes);
 app.use("/api/cart", cartRoutes);
 
-app.listen(PORT,()=>{
-    console.log(`Server is Running on http://localhost:${PORT}`)
-})
+app.listen(PORT, () => {
+  console.log(`Server is Running on http://localhost:${PORT}`);
+});

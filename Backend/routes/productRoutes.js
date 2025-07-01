@@ -105,8 +105,10 @@ router.put("/:id", protect, admin, async (req, res) => {
       product.material = material || product.material;
       product.gender = gender || product.gender;
       product.images = images || product.images;
-      product.isFeatured = isFeatured !== undefined ? isFeatured : product.isFeatured;
-      product.isPublished = isPublished !== undefined ? isPublished : product.isPublished;
+      product.isFeatured =
+        isFeatured !== undefined ? isFeatured : product.isFeatured;
+      product.isPublished =
+        isPublished !== undefined ? isPublished : product.isPublished;
       product.tags = tags || product.tags;
       product.dimensions = dimensions || product.dimensions;
       product.weight = weight || product.weight;
@@ -220,7 +222,9 @@ router.get("/", async (req, res) => {
       }
     }
 
-    let products = await Product.find(query).sort(sort).limit(Number(limit) || 0);
+    let products = await Product.find(query)
+      .sort(sort)
+      .limit(Number(limit) || 0);
     res.json(products);
   } catch (error) {
     console.error(error);

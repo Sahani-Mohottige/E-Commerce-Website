@@ -1,24 +1,24 @@
-import React, { useState } from 'react'
+import React, { useState } from "react";
 
-import {Link} from 'react-router-dom'
-import login from '../assets/login.webp'
+import { Link } from "react-router-dom";
+import login from "../assets/login.webp";
 
 const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   const handleLogin = (e) => {
     e.preventDefault();
 
     if (!email || !password) {
-      alert('Please enter both email and password');
+      alert("Please enter both email and password");
       return;
     }
 
-    if (email === 'test@example.com' && password === 'password123') {
-      alert('Login successful!');
+    if (email === "test@example.com" && password === "password123") {
+      alert("Login successful!");
     } else {
-      alert('Invalid credentials');
+      alert("Invalid credentials");
     }
   };
 
@@ -27,9 +27,17 @@ const Login = () => {
       {/* Left: Login form */}
       <div className="flex-1 flex flex-col justify-center items-center px-8 py-12 bg-white">
         <div className="max-w-md w-full">
-          <form onSubmit={handleLogin} className=" space-y-6 p-8 border shadow-sm">
-            <h2 className="text-xl font-bold text-center text-gray-800 mb-4">Rabbit</h2>
-            <p className="text-2xl text-gray-500 text-center font-bold mb-4"> Hey There!👋</p>
+          <form
+            onSubmit={handleLogin}
+            className=" space-y-6 p-8 border shadow-sm"
+          >
+            <h2 className="text-xl font-bold text-center text-gray-800 mb-4">
+              Rabbit
+            </h2>
+            <p className="text-2xl text-gray-500 text-center font-bold mb-4">
+              {" "}
+              Hey There!👋
+            </p>
             <p className="text-sm text-gray-600  font-semibold mb-6">
               Enter your username and password to login
             </p>
@@ -67,13 +75,13 @@ const Login = () => {
               Sign In
             </button>
 
-          <p className="text-sm text-gray-600 mt-6 text-center">
-            Don’t have an account?{' '}
-           <Link to="/register" className="text-blue-500">
-              Register
-          </Link>
-          </p>
-           </form>
+            <p className="text-sm text-gray-600 mt-6 text-center">
+              Don’t have an account?{" "}
+              <Link to="/register" className="text-blue-500">
+                Register
+              </Link>
+            </p>
+          </form>
         </div>
       </div>
 

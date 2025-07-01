@@ -48,7 +48,7 @@ router.post("/register", async (req, res) => {
           },
           token,
         });
-      }
+      },
     );
   } catch (error) {
     console.error(error.message);
@@ -99,7 +99,7 @@ router.post("/login", async (req, res) => {
           },
           token,
         });
-      }
+      },
     );
   } catch (error) {
     console.error(error);
