@@ -9,7 +9,7 @@ import CartDrawer from "../Layout/CartDrawer";
 import { IoMdClose } from "react-icons/io";
 import { Link } from "react-router-dom";
 import SearchBar from "./SearchBar";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 
 const NavBar = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -69,12 +69,15 @@ const NavBar = () => {
         <div>
           {/*Rright-Icons */}
           <div className="flex items-center space-x-4">
-            {isAuthenticated ? (
-              <Link to="/profile" className="hover:text-black">
-                <HiOutlineUser className="h-6 w-6 text-gray-700" />
+            {!isAuthenticated ? (
+              <Link 
+                to="/login" 
+                className="bg-black text-white px-6 py-2 rounded-md hover:bg-gray-800 transition text-xl font-medium"
+              >
+                Login
               </Link>
             ) : (
-              <Link to="/login" className="hover:text-black">
+              <Link to="/profile" className="hover:text-black">
                 <HiOutlineUser className="h-6 w-6 text-gray-700" />
               </Link>
             )}

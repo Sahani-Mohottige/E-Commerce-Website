@@ -18,22 +18,31 @@ const Login = () => {
       return;
     }
 
-    if (email === "test@example.com" && password === "password123") {
-      // Mock user data - in real app this would come from your API
-      const userData = {
-        _id: "123",
-        name: "John Doe",
-        email: "test@example.com",
-        role: "customer"
-      };
-      const token = "mock-jwt-token";
-      
-      loginUser(userData, token);
-      alert("Login successful!");
-      navigate("/"); // Redirect to home page
-    } else {
-      alert("Invalid credentials");
+    // Simple validation - accept any valid email format and password length >= 6
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+    if (!emailRegex.test(email)) {
+      alert("Please enter a valid email address");
+      return;
     }
+
+    if (password.length < 6) {
+      alert("Password must be at least 6 characters long");
+      return;
+    }
+
+    // For demo purposes, accept any valid credentials
+    const userData = {
+      _id: "123",
+      name: email.split('@')[0], // Use email username as name
+      email: email,
+      role: "customer"
+    };
+    const token = "mock-jwt-token";
+    
+    loginUser(userData, token);
+    alert("Login successful!");
+    navigate("/"); // Redirect to home page
   };
 
   return (
@@ -53,7 +62,7 @@ const Login = () => {
               Hey There!👋
             </p>
             <p className="text-sm text-gray-600  font-semibold mb-6">
-              Enter your username and password to login
+              Enter any valid email and password (min. 6 characters) to login
             </p>
 
             <div>
@@ -78,7 +87,7 @@ const Login = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-black focus:border-black"
-                placeholder="••••••••"
+                placeholder="Password (min. 6 characters)"
               />
             </div>
 
@@ -89,7 +98,7 @@ const Login = () => {
               Sign In
             </button>
 
-            <p className="text-sm text-gray-600 mt-6 text-center">
+            <p className="text-xl text-gray-600 mt-6 text-center">
               Don’t have an account?{" "}
               <Link to="/register" className="text-blue-500">
                 Register

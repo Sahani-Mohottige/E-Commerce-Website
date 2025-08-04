@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import register from "../assets/register.webp";
 
 const Register = () => {
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -18,6 +19,9 @@ const Register = () => {
 
     // Simulate registration logic
     alert(`Welcome, ${name}! You are registered.`);
+    
+    // Redirect to login page after successful registration
+    navigate('/login');
   };
 
   return (
@@ -33,7 +37,7 @@ const Register = () => {
               Rabbit
             </h2>
             <p className="text-2xl text-gray-500 text-center font-bold mb-4">
-              👋 Join Us!
+              👋 Register Now!
             </p>
             <p className="text-sm text-gray-600 font-semibold mb-6">
               Create your account by filling the details below
@@ -85,7 +89,7 @@ const Register = () => {
               Sign Up
             </button>
 
-            <p className="text-sm text-gray-600 mt-6 text-center">
+            <p className="text-xl text-gray-600 mt-6 text-center">
               Already have an account?{" "}
               <Link to="/login" className="text-blue-500">
                 Login
