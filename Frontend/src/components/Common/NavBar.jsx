@@ -9,10 +9,12 @@ import CartDrawer from "../Layout/CartDrawer";
 import { IoMdClose } from "react-icons/io";
 import { Link } from "react-router-dom";
 import SearchBar from "./SearchBar";
+import { useAuth } from "../context/AuthContext";
 
 const NavBar = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [navDrawerOpen, setNavDrawerOpen] = useState(false);
+  const { isAuthenticated } = useAuth();
 
   const toggleNavDrawer = () => {
     setNavDrawerOpen(!navDrawerOpen);
@@ -32,7 +34,7 @@ const NavBar = () => {
         <div>
           <Link
             to="/"
-            className="text-3xl text-green-800 font-semibold font-medium"
+            className="text-3xl text-green-800 font-semibold"
           >
             Pickzy
           </Link>
@@ -67,9 +69,15 @@ const NavBar = () => {
         <div>
           {/*Rright-Icons */}
           <div className="flex items-center space-x-4">
-            <Link to="/profile" className="hover:text-black">
-              <HiOutlineUser className="h-6 w-6 text-gray-700" />
-            </Link>
+            {isAuthenticated ? (
+              <Link to="/profile" className="hover:text-black">
+                <HiOutlineUser className="h-6 w-6 text-gray-700" />
+              </Link>
+            ) : (
+              <Link to="/login" className="hover:text-black">
+                <HiOutlineUser className="h-6 w-6 text-gray-700" />
+              </Link>
+            )}
             <button
               onClick={toggleCartDrawer}
               className="relative hover:text-black"

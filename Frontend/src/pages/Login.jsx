@@ -1,11 +1,14 @@
 import React, { useState } from "react";
 
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import login from "../assets/login.webp";
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const { login: loginUser } = useAuth();
+  const navigate = useNavigate();
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -16,7 +19,18 @@ const Login = () => {
     }
 
     if (email === "test@example.com" && password === "password123") {
+      // Mock user data - in real app this would come from your API
+      const userData = {
+        _id: "123",
+        name: "John Doe",
+        email: "test@example.com",
+        role: "customer"
+      };
+      const token = "mock-jwt-token";
+      
+      loginUser(userData, token);
       alert("Login successful!");
+      navigate("/"); // Redirect to home page
     } else {
       alert("Invalid credentials");
     }
