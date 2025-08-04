@@ -182,4 +182,71 @@ router.get("/", async (req, res) => {
   }
 });
 
+//@route POST/api/cart/merge
+//@desc Merge guest cart into user cart on login
+//@access Private
+router.post("/merge",protect, async (req, res) => {
+  const { guestId } = req.body;
+
+  try{
+//find the user's cart and guest cart
+    const userCart = await Cart.findOne({ user: req.user._id });
+    const guestCart = await Cart.findOne({ guestId });
+    if(guestCart){
+      if(guestCart.products.length === 0){
+        return res.status(404).json({ message: "Guest cart is empty" });
+      }
+      if(userCart){
+        //if user cart exists, merge guest cart into user cart
+        guestCart.products.forEach((guestItem) => {
+          const productIndex = userCart.products.findIndex(
+            (item) =>
+              item.productId.toString() === guestItem.productId.toString() &&
+              item.size === guestItem.size &&
+              item.color === guestItem.color,
+          );
+          if (productIndex > -1) {
+            // If the product already exists, update the quantity
+            userCart.products[productIndex].quantity += guestItem.quantity;
+          } else {
+            // Add new product
+            userCart.products.push(guestItem);
+          }
+        });
+        // Recalculate total price
+        userCart.totalPrice = userCart.products.reduce(
+          (acc, item) => acc + item.price * item.quantity,
+          0,
+        );
+        await userCart.save();
+        // Delete guest cart
+        try{
+          await Cart.deleteOne({ guestId });
+        }
+        catch(error){
+          console.error("Error deleting guest cart:", error);
+        }
+        res.status(200).json(userCart);
+    }
+    else{
+      //if user cart does not exist, create a new cart with guest cart products
+      guestCart.user = req.user._id;
+      guestCart.guestId = undefined; // Remove guestId as it's now a user cart
+      await guestCart.save();
+
+      res.status(200).json(guestCart);
+  }
+}else {
+  if(userCart){
+    //if user cart exists but guest cart does not, return user cart
+    return res.status(200).json(userCart);
+  }
+  res.status(404).json({ message: "No cart found for guest" });
+}
+} catch(error){
+          console.error("Error deleting guest cart:", error);
+          res.status(500).json({ message: "Server Error" });
+        }
+      });
+
 module.exports = router;
