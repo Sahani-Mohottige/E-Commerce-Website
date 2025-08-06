@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const { isValidElement } = require('react');
 
 const orderItemSchema = new mongoose.Schema({
     productId:{
@@ -34,7 +33,7 @@ const orderSchema =new mongoose.Schema({
         ref: 'User',
         required: true
     },
-    orderItems: [orderSchema],
+    orderItems: [orderItemSchema],
     shippingAddress: {
         address: {
             type: String,

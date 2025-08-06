@@ -33,11 +33,11 @@ const checkoutSchema = new mongoose.Schema({
     ref: 'User',
     required: true
   },
-  CheckoutItem :{checkoutItemSchema},
+  CheckoutItems: [checkoutItemSchema],
   shippingAddress: {
-    address:{
-        type: String,
-        required: true
+    address: {
+      type: String,
+      required: true
     },
     city: {
         type: String,
@@ -86,6 +86,5 @@ const checkoutSchema = new mongoose.Schema({
 {timestamps: true}
 );
 
-const CheckoutItem = mongoose.model('CheckoutItem', checkoutItemSchema);
-
-module.exports = CheckoutItem;
+const Checkout = mongoose.model('Checkout', checkoutSchema); 
+module.exports = Checkout;
