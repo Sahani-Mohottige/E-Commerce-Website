@@ -8,6 +8,8 @@ const cartRoutes = require("./routes/cartRoutes");
 const checkoutRoutes = require("./routes/checkoutRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const uploadRoutes = require("./routes/uploadRoutes");
+const subscriberRoutes = require("./routes/subscriberRoutes");
+const adminRoutes = require("./routes/adminRoutes");
 
 dotenv.config();
 
@@ -31,6 +33,11 @@ app.use("/api/cart", cartRoutes);
 app.use("/api/checkout", checkoutRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/upload", uploadRoutes);
+app.use("/api/subscriber", subscriberRoutes);
+
+// Admin Routes
+// Only accessible by admin users
+app.use("/api/admin/users", adminRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is Running on http://localhost:${PORT}`);
