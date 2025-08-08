@@ -1,14 +1,17 @@
+import { useDispatch, useSelector } from "react-redux";
+
 import MyOrdersPage from "./MyOrdersPage";
 import React from "react";
-import { useAuth } from "../context/AuthContext";
+import { logout } from "../redux/slices/authSlice";
 import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
   const navigate = useNavigate();
-  const { logout, user } = useAuth();
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
 
   const handleLogout = () => {
-    logout();
+    dispatch(logout());
     navigate('/');
   };
   return (

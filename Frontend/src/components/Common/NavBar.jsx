@@ -9,12 +9,13 @@ import CartDrawer from "../Layout/CartDrawer";
 import { IoMdClose } from "react-icons/io";
 import { Link } from "react-router-dom";
 import SearchBar from "./SearchBar";
-import { useAuth } from "../../context/AuthContext";
+import { useSelector } from "react-redux";
 
 const NavBar = () => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [navDrawerOpen, setNavDrawerOpen] = useState(false);
-  const { isAuthenticated } = useAuth();
+  const { user } = useSelector((state) => state.auth);
+  const isAuthenticated = !!user;
 
   const toggleNavDrawer = () => {
     setNavDrawerOpen(!navDrawerOpen);

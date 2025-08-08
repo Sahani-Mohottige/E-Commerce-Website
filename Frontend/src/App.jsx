@@ -1,7 +1,6 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import AdminLayout from "./components/Admin/AdminLayout";
-import { AuthProvider } from "./context/AuthContext";
 import Checkout from "./components/Cart/Checkout";
 import CollectionPage from "./pages/CollectionPage";
 import Home from "./pages/Home";

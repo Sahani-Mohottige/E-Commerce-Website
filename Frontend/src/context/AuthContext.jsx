@@ -17,8 +17,8 @@ export const AuthProvider = ({ children }) => {
 
   // Check if user is authenticated on app load
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const userData = localStorage.getItem('user');
+    const token = localStorage.getItem('userToken'); // Changed from 'token' to 'userToken'
+    const userData = localStorage.getItem('userInfo'); // Changed from 'user' to 'userInfo'
     
     if (token && userData) {
       try {
@@ -27,23 +27,23 @@ export const AuthProvider = ({ children }) => {
         setIsAuthenticated(true);
       } catch (error) {
         console.error('Error parsing user data:', error);
-        localStorage.removeItem('token');
-        localStorage.removeItem('user');
+        localStorage.removeItem('userToken'); // Changed from 'token' to 'userToken'
+        localStorage.removeItem('userInfo'); // Changed from 'user' to 'userInfo'
       }
     }
     setLoading(false);
   }, []);
 
   const login = (userData, token) => {
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(userData));
+    localStorage.setItem('userToken', token); // Changed from 'token' to 'userToken'
+    localStorage.setItem('userInfo', JSON.stringify(userData)); // Changed from 'user' to 'userInfo'
     setUser(userData);
     setIsAuthenticated(true);
   };
 
   const logout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    localStorage.removeItem('userToken'); // Changed from 'token' to 'userToken'
+    localStorage.removeItem('userInfo'); // Changed from 'user' to 'userInfo'
     sessionStorage.clear();
     setUser(null);
     setIsAuthenticated(false);
