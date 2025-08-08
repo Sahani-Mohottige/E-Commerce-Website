@@ -1,7 +1,8 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 import axios from "axios";
-import { configureStore } from '@reduxjs/toolkit';
+
+//import { configureStore } from '@reduxjs/toolkit';
 
 //retrieve user info and token from localStorage if available
 
