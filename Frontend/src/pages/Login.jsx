@@ -1,15 +1,25 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+
 import login from "../assets/login.webp";
 import { loginUser } from "../redux/slices/authSlice";
-import { useDispatch } from "react-redux";
-import { useState } from "react";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
- const dispatch = useDispatch();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { loading, error, user } = useSelector((state) => state.auth);
 
-  const handleLogin = (e) => {
+  // Navigate to home after successful login
+  useEffect(() => {
+    if (user) {
+      navigate('/');
+    }
+  }, [user, navigate]);
+
+  const handleLogin = async (e) => {
     e.preventDefault();
     dispatch(loginUser({ email, password }));
   };
@@ -33,6 +43,12 @@ const Login = () => {
             <p className="text-sm text-gray-600  font-semibold mb-6">
               Enter any valid email and password (min. 6 characters) to login
             </p>
+
+            {error && (
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                {error}
+              </div>
+            )}
 
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-1">
@@ -62,9 +78,10 @@ const Login = () => {
 
             <button
               type="submit"
-              className="w-full bg-black text-white py-2 rounded-md hover:bg-gray-800 transition"
+              disabled={loading}
+              className="w-full bg-black text-white py-2 rounded-md hover:bg-gray-800 transition disabled:opacity-50"
             >
-              Sign In
+              {loading ? "Signing In..." : "Sign In"}
             </button>
 
             <p className="text-xl text-gray-600 mt-6 text-center">
