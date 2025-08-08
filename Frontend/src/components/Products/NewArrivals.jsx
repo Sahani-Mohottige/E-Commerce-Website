@@ -2,6 +2,7 @@ import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import React, { useEffect, useRef, useState } from "react";
 
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 const NewArrivals = () => {
   const scrollRef = useRef(null);
@@ -10,97 +11,33 @@ const NewArrivals = () => {
   const [scrollLeft, setScrollLeft] = useState(false);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
+  
+const [newArrivals, setNewArrivals] = useState([]);
+const [loading, setLoading] = useState(true);
+const [error, setError] = useState(null);
 
-  const newArrivals = [
-    {
-      id: "1",
-      name: "stylish Jacket",
-      price: 120,
-      images: [
-        {
-          url: "https://picsum.photos/500/500?random=1",
-          altText: "stylish Jacket",
-        },
-      ],
-    },
-    {
-      id: "2",
-      name: "stylish Jacket",
-      price: 120,
-      images: [
-        {
-          url: "https://picsum.photos/500/500?random=2",
-          altText: "stylish Jacket",
-        },
-      ],
-    },
-    {
-      id: "3",
-      name: "stylish Jacket",
-      price: 120,
-      images: [
-        {
-          url: "https://picsum.photos/500/500?random=3",
-          altText: "stylish Jacket",
-        },
-      ],
-    },
-    {
-      id: "4",
-      name: "stylish Jacket",
-      price: 120,
-      images: [
-        {
-          url: "https://picsum.photos/500/500?random=4",
-          altText: "stylish Jacket",
-        },
-      ],
-    },
-    {
-      id: "5",
-      name: "stylish Jacket",
-      price: 120,
-      images: [
-        {
-          url: "https://picsum.photos/500/500?random=5",
-          altText: "stylish Jacket",
-        },
-      ],
-    },
-    {
-      id: "6",
-      name: "stylish Jacket",
-      price: 120,
-      images: [
-        {
-          url: "https://picsum.photos/500/500?random=6",
-          altText: "stylish Jacket",
-        },
-      ],
-    },
-    {
-      id: "7",
-      name: "stylish Jacket",
-      price: 120,
-      images: [
-        {
-          url: "https://picsum.photos/500/500?random=7",
-          altText: "stylish Jacket",
-        },
-      ],
-    },
-    {
-      id: "8",
-      name: "stylish Jacket",
-      price: 120,
-      images: [
-        {
-          url: "https://picsum.photos/500/500?random=8",
-          altText: "stylish Jacket",
-        },
-      ],
-    },
-  ];
+useEffect(() => {
+  // Fetch new arrivals from API 
+  const fetchNewArrivals = async () => {
+    try {
+      setLoading(true);
+      console.log("Fetching new arrivals from:", `${import.meta.env.VITE_BACKEND_URL}/api/products/new-arrivals`);
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/products/new-arrivals`
+      );
+      console.log("New arrivals response:", response.data);
+      setNewArrivals(response.data);
+      setError(null);
+    } catch (error) {
+      console.error("Error fetching new arrivals:", error);
+      console.error("Error details:", error.response?.data);
+      setError("Failed to load new arrivals");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchNewArrivals();
+}, []);
 
   const handleOnMouseDown = (e) => {
     setIsDragging(true);
@@ -147,7 +84,7 @@ const NewArrivals = () => {
         container.removeEventListener("scroll", updateScrollButtons);
       };
     }
-  }, []);
+  }, [newArrivals]);
 
   return (
     <section className="py-16 px-4 lg:px-0">
@@ -192,7 +129,7 @@ const NewArrivals = () => {
         >
           {newArrivals.map((product) => (
             <div
-              key={product.id}
+              key={product._id}
               className="min-w-[100%] sm:min-w-[50%] lg:min-w-[30%] bg-white rounded-lg relative"
             >
               <img
@@ -203,7 +140,7 @@ const NewArrivals = () => {
               />
               <div className="p-4  absolute bottom-0 left-0 right-0 bg-opacity-50 backdrop-blur-md text-white rounded-b-lg">
                 <Link
-                  to={`/product/${product.id}`}
+                  to={`/product/${product._id}`}
                   className="block text-lg font-semibold hover:underline"
                 >
                   {product.name}
