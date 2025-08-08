@@ -1,48 +1,17 @@
-import React, { useState } from "react";
-
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import login from "../assets/login.webp";
-import { useAuth } from "../context/AuthContext";
+import { loginUser } from "../redux/slices/authSlice";
+import { useDispatch } from "react-redux";
+import { useState } from "react";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { login: loginUser } = useAuth();
-  const navigate = useNavigate();
+ const dispatch = useDispatch();
 
   const handleLogin = (e) => {
     e.preventDefault();
-
-    if (!email || !password) {
-      alert("Please enter both email and password");
-      return;
-    }
-
-    // Simple validation - accept any valid email format and password length >= 6
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    
-    if (!emailRegex.test(email)) {
-      alert("Please enter a valid email address");
-      return;
-    }
-
-    if (password.length < 6) {
-      alert("Password must be at least 6 characters long");
-      return;
-    }
-
-    // For demo purposes, accept any valid credentials
-    const userData = {
-      _id: "123",
-      name: email.split('@')[0], // Use email username as name
-      email: email,
-      role: "customer"
-    };
-    const token = "mock-jwt-token";
-    
-    loginUser(userData, token);
-    alert("Login successful!");
-    navigate("/"); // Redirect to home page
+    dispatch(loginUser({ email, password }));
   };
 
   return (

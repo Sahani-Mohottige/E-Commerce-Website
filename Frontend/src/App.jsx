@@ -14,15 +14,17 @@ import ProductDetails from "./components/Products/ProductDetails";
 import ProductManagement from "./components/Admin/ProductManagement";
 import Profile from "./pages/Profile";
 import ProtectedRoute from "./components/ProtectedRoute";
+import {Provider} from "react-redux";
 import React from "react";
 import Register from "./pages/Register";
 import { Toaster } from "sonner";
 import UserLayout from "./components/Layout/UserLayout";
 import UserManagement from "./components/Admin/UserManagement";
+import store from "./redux/store";
 
 const App = () => {
   return (
-    <AuthProvider>
+    <Provider store={store}>
       <BrowserRouter>
         <Toaster position="top-right" />
         <Routes>
@@ -47,7 +49,7 @@ const App = () => {
           <Route path="orders" element={<OrderManagement />} />
         </Route>        </Routes>
       </BrowserRouter>
-    </AuthProvider>
+    </Provider>
   );
 };
 
