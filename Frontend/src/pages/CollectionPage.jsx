@@ -1,12 +1,18 @@
 import { useEffect, useRef, useState } from "react";
+import { useParams, useSearchParams } from "react-router-dom";
 
 import { FaFilter } from "react-icons/fa";
 import FilterSideBar from "../components/Products/FilterSideBar";
 import ProductGrid from "../components/Products/ProductGrid";
 import React from "react";
+import axios from "axios";
 
 const CollectionPage = () => {
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const { collection } = useParams();
+  const [searchParams] = useSearchParams();
   const sidebarRef = useRef(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -28,60 +34,39 @@ const CollectionPage = () => {
   }, []);
 
   useEffect(() => {
-    setTimeout(() => {
-      const fetchProducts = [
-        {
-          id: 1,
-          name: "Product 1",
-          price: 100,
-          images: [{ url: "https://picsum.photos/500/500?random=1" }],
-        },
-        {
-          id: 2,
-          name: "Product 2",
-          price: 120,
-          images: [{ url: "https://picsum.photos/500/500?random=2" }],
-        },
-        {
-          id: 3,
-          name: "Product 3",
-          price: 130,
-          images: [{ url: "https://picsum.photos/500/500?random=3" }],
-        },
-        {
-          id: 4,
-          name: "Product 4",
-          price: 140,
-          images: [{ url: "https://picsum.photos/500/500?random=4" }],
-        },
-        {
-          id: 5,
-          name: "Product 5",
-          price: 150,
-          images: [{ url: "https://picsum.photos/500/500?random=5" }],
-        },
-        {
-          id: 6,
-          name: "Product 6",
-          price: 160,
-          images: [{ url: "https://picsum.photos/500/500?random=6" }],
-        },
-        {
-          id: 7,
-          name: "Product 7",
-          price: 170,
-          images: [{ url: "https://picsum.photos/500/500?random=7" }],
-        },
-        {
-          id: 8,
-          name: "Product 8",
-          price: 180,
-          images: [{ url: "https://picsum.photos/500/500?random=8" }],
-        },
-      ];
-      setProducts(fetchProducts);
-    }, 1000);
-  }, []);
+    const fetchProducts = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        // Extract gender from URL query parameters
+        const gender = searchParams.get('gender');
+        const category = searchParams.get('category');
+        
+        // Build query parameters for API call
+        const queryParams = new URLSearchParams();
+        if (gender) queryParams.append('gender', gender);
+        if (category) queryParams.append('category', category);
+        if (collection && collection !== 'all') queryParams.append('collection', collection);
+        
+        console.log('Fetching products with params:', queryParams.toString());
+        
+        const response = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/api/products?${queryParams.toString()}`
+        );
+        
+        console.log('Products fetched:', response.data);
+        setProducts(response.data);
+      } catch (err) {
+        console.error('Error fetching products:', err);
+        setError('Failed to load products');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, [collection, searchParams]);
 
   return (
     <div className="flex flex-col lg:flex-row w-full min-h-screen">
@@ -111,7 +96,7 @@ const CollectionPage = () => {
 
       {/* Product Grid */}
       <div className="flex-grow p-4">
-        <ProductGrid products={products} />
+        <ProductGrid products={products} loading={loading} error={error} />
       </div>
     </div>
   );

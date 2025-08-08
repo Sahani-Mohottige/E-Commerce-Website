@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { addToCart, fetchProductDetails, fetchSimilarProducts } from "../../redux/slices/productsSlice";
+import { fetchProductDetails, fetchSimilarProducts } from "../../redux/slices/productsSlice";
 
 import ProductGrid from "./ProductGrid";
+import { addToCart } from "../../redux/slices/cartSlice";
 import { toast } from "sonner";
 import { useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
@@ -25,7 +26,7 @@ const ProductDetails = ({productId}) => {
   useEffect(() => {
     if (productfetchId) {
       dispatch(fetchProductDetails(productfetchId));
-      dispatch(fetchSimilarProducts({id:productfetchId}));
+      dispatch(fetchSimilarProducts(productfetchId));
     }
   }, [ dispatch, productfetchId]);
 
@@ -90,6 +91,9 @@ if(error){
                 onClick={() => setMainImage(image.url)}
                 className={`w-20 h-20 object-cover rounded-lg cursor-pointer border
                  ${mainImage === image.url ? "border-black" : "border-gray-300"}`}
+                onError={(e) => {
+                  e.target.src = 'https://via.placeholder.com/80x80?text=No+Image';
+                }}
               />
             ))}
           </div>
@@ -100,7 +104,10 @@ if(error){
                 <img
                   src={mainImage}
                   alt="Main Product"
-                  className="w-full h-auto md:h- object-cover rounded-lg"
+                  className="w-full h-auto object-cover rounded-lg"
+                  onError={(e) => {
+                    e.target.src = 'https://via.placeholder.com/500x500?text=No+Image';
+                  }}
                 />
               )}
             </div>
@@ -115,6 +122,9 @@ if(error){
                 onClick={() => setMainImage(image.url)}
                 className={`w-20 h-20 object-cover rounded-lg cursor-pointer border
                  ${mainImage === image.url ? "border-black" : "border-gray-300"}`}
+                onError={(e) => {
+                  e.target.src = 'https://via.placeholder.com/80x80?text=No+Image';
+                }}
               />
             ))}
           </div>

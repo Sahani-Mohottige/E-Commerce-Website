@@ -7,6 +7,7 @@ import axios from "axios";
 const NewArrivals = () => {
   const scrollRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
+  const [hasDragged, setHasDragged] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(false);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
@@ -40,13 +41,19 @@ useEffect(() => {
 }, []);
 
   const handleOnMouseDown = (e) => {
+    // Don't start dragging if clicking on a link
+    if (e.target.closest('a')) return;
+    
     setIsDragging(true);
+    setHasDragged(false);
     setStartX(e.pageX - scrollRef.current.offsetLeft);
     setScrollLeft(scrollRef.current.scrollLeft);
   };
 
   const handleOnMouseMove = (e) => {
     if (!isDragging) return;
+    e.preventDefault();
+    setHasDragged(true);
     const x = e.pageX - scrollRef.current.offsetLeft;
     const walk = x - startX;
     scrollRef.current.scrollLeft = scrollLeft - walk;
@@ -54,6 +61,8 @@ useEffect(() => {
 
   const handleOnMouseUpOrLeave = () => {
     setIsDragging(false);
+    // Reset hasDragged after a short delay to allow click events to check it
+    setTimeout(() => setHasDragged(false), 100);
   };
 
   const scroll = (direction) => {
@@ -117,8 +126,22 @@ useEffect(() => {
         </div>
       </div>
 
+      {/* Loading and Error States */}
+      {loading && (
+        <div className="text-center py-8">
+          <p>Loading new arrivals...</p>
+        </div>
+      )}
+
+      {error && (
+        <div className="text-center py-8">
+          <p className="text-red-500">{error}</p>
+        </div>
+      )}
+
       {/* Scrollable Product Cards */}
-      <div className="overflow-x-scroll px-4">
+      {!loading && !error && (
+        <div className="overflow-x-scroll px-4">
         <div
           ref={scrollRef}
           className={`container mx-auto overflow-x-scroll flex space-x-4 relative ${isDragging ? "cursor-grabbing" : "cursor-grab"}`}
@@ -128,15 +151,25 @@ useEffect(() => {
           onMouseUp={handleOnMouseUpOrLeave}
         >
           {newArrivals.map((product) => (
-            <div
+            <Link
               key={product._id}
-              className="min-w-[100%] sm:min-w-[50%] lg:min-w-[30%] bg-white rounded-lg relative"
+              to={`/product/${product._id}`}
+              className="min-w-[100%] sm:min-w-[50%] lg:min-w-[30%] bg-white rounded-lg relative block"
+              onClick={(e) => {
+                // Prevent navigation if we were dragging
+                if (hasDragged) {
+                  e.preventDefault();
+                }
+              }}
             >
               <img
                 src={product.images[0]?.url}
                 alt={product.images[0]?.altText || product.name}
-                className="w-full h-[400px]  object-cover rounded-lg"
+                className="w-full h-[400px] object-cover rounded-lg"
                 draggable="false"
+                onError={(e) => {
+                  e.target.src = 'https://via.placeholder.com/400x400?text=No+Image';
+                }}
               />
               <div className="p-4  absolute bottom-0 left-0 right-0 bg-opacity-50 backdrop-blur-md text-white rounded-b-lg">
                 <Link
@@ -147,10 +180,11 @@ useEffect(() => {
                 </Link>
                 <p className="mt-1">${product.price}</p>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
-      </div>
+        </div>
+      )}
     </section>
   );
 };

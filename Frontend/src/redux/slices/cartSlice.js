@@ -131,7 +131,13 @@ const cartSlice = createSlice({
             })
             .addCase(fetchCart.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.payload.message || "Failed to fetch cart";
+                // If cart not found, treat as empty cart instead of error
+                if (action.payload?.message === "Cart not found") {
+                    state.cart = { products: [], totalPrice: 0, totalItems: 0 };
+                    state.error = null;
+                } else {
+                    state.error = action.payload?.message || "Failed to fetch cart";
+                }
             })
             .addCase(addToCart.pending, (state) => {
                 state.loading = true;
@@ -144,7 +150,7 @@ const cartSlice = createSlice({
             })
             .addCase(addToCart.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.payload.message || "Failed to add item to cart";
+                state.error = action.payload?.message || "Failed to add item to cart";
             })
             .addCase(updateCartItemQuantity.pending, (state) => {
                 state.loading = true;
@@ -157,7 +163,7 @@ const cartSlice = createSlice({
             })
             .addCase(updateCartItemQuantity.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.payload.message || "Failed to update item quantity";
+                state.error = action.payload?.message || "Failed to update item quantity";
             })
             .addCase(removeFromCart.pending, (state) => {
                 state.loading = true;
@@ -170,7 +176,7 @@ const cartSlice = createSlice({
             })
             .addCase(removeFromCart.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.payload.message || "Failed to remove item from cart";
+                state.error = action.payload?.message || "Failed to remove item from cart";
             })
             .addCase(mergeGuestCart.pending, (state) => {
                 state.loading = true;
@@ -183,7 +189,7 @@ const cartSlice = createSlice({
             })
             .addCase(mergeGuestCart.rejected, (state, action) => {
                 state.loading = false;
-                state.error = action.payload.message || "Failed to merge guest cart";
+                state.error = action.payload?.message || "Failed to merge guest cart";
             });
 },
 });

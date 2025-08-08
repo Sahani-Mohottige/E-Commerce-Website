@@ -1,30 +1,100 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { fetchCart, removeFromCart, updateCartItemQuantity } from "../../redux/slices/cartSlice";
+import { useDispatch, useSelector } from "react-redux";
+
 import { RiDeleteBin3Line } from "react-icons/ri";
+import { toast } from "sonner";
 
 const CartContents = () => {
-  const cartProducts = [
-    {
-      productId: 1,
-      name: "T shirt",
-      size: "M",
-      color: "red",
-      quantity: 1,
-      price: 15,
-      image: "https://picsum.photos/200?random=1",
-    },
-    {
-      productId: 2,
-      name: "Jeans",
-      size: "L",
-      color: "blue",
-      quantity: 1,
-      price: 25,
-      image: "https://picsum.photos/200?random=2",
-    },
-  ];
+  const dispatch = useDispatch();
+  const { cart, loading, error } = useSelector((state) => state.cart);
+  const { user, guestId } = useSelector((state) => state.auth);
+
+  // Fetch cart on component mount
+  useEffect(() => {
+    dispatch(fetchCart({ userId: user?._id, guestId }));
+  }, [dispatch, user, guestId]);
+
+  // Handle quantity increase
+  const handleIncreaseQuantity = async (product) => {
+    try {
+      await dispatch(updateCartItemQuantity({
+        productId: product.productId,
+        quantity: product.quantity + 1,
+        userId: user?._id,
+        guestId,
+        size: product.size,
+        color: product.color,
+      })).unwrap();
+    } catch (error) {
+      toast.error("Failed to update quantity");
+    }
+  };
+
+  // Handle quantity decrease
+  const handleDecreaseQuantity = async (product) => {
+    if (product.quantity > 1) {
+      try {
+        await dispatch(updateCartItemQuantity({
+          productId: product.productId,
+          quantity: product.quantity - 1,
+          userId: user?._id,
+          guestId,
+          size: product.size,
+          color: product.color,
+        })).unwrap();
+      } catch (error) {
+        toast.error("Failed to update quantity");
+      }
+    }
+  };
+
+  // Handle remove from cart
+  const handleRemoveFromCart = async (product) => {
+    try {
+      await dispatch(removeFromCart({
+        productId: product.productId,
+        userId: user?._id,
+        guestId,
+        size: product.size,
+        color: product.color,
+      })).unwrap();
+      toast.success("Item removed from cart");
+    } catch (error) {
+      toast.error("Failed to remove item");
+    }
+  };
+
+  // Show loading state
+  if (loading) {
+    return (
+      <div className="space-y-6 px-4">
+        <p className="text-center py-8">Loading cart...</p>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="space-y-6 px-4">
+        <p className="text-center py-8 text-red-500">Error: {error}</p>
+      </div>
+    );
+  }
+
+  // Show empty cart
+  if (!cart?.products || cart.products.length === 0) {
+    return (
+      <div className="space-y-6 px-4">
+        <p className="text-center py-8 text-gray-500">Your cart is empty</p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6 px-4">
-      {cartProducts.map((product, index) => (
+      {cart.products.map((product, index) => (
         <div key={index} className="flex items-start gap-4 border-b pb-6">
           {/* Product image */}
           <div>
@@ -32,6 +102,9 @@ const CartContents = () => {
               src={product.image}
               alt={product.name}
               className="w-20 h-24 object-cover rounded-md"
+              onError={(e) => {
+                e.target.src = 'https://via.placeholder.com/200x240?text=No+Image';
+              }}
             />
           </div>
 
@@ -46,11 +119,19 @@ const CartContents = () => {
 
             {/* Quantity controls */}
             <div className="flex items-center gap-2 mt-3">
-              <button className="border rounded px-2 text-xl font-medium  hover:bg-gray-200">
+              <button 
+                className="border rounded px-2 text-xl font-medium hover:bg-gray-200"
+                onClick={() => handleDecreaseQuantity(product)}
+                disabled={loading}
+              >
                 -
               </button>
               <span className="text-sm font-medium">{product.quantity}</span>
-              <button className="border rounded px-2 text-xl font-medium  hover:bg-gray-200">
+              <button 
+                className="border rounded px-2 text-xl font-medium hover:bg-gray-200"
+                onClick={() => handleIncreaseQuantity(product)}
+                disabled={loading}
+              >
                 +
               </button>
             </div>
@@ -60,6 +141,8 @@ const CartContents = () => {
             <button
               className="mt-4 text-red-500 hover:text-red-700 transition-colors"
               aria-label="Remove item"
+              onClick={() => handleRemoveFromCart(product)}
+              disabled={loading}
             >
               <RiDeleteBin3Line className="h-5 w-5" />
             </button>
