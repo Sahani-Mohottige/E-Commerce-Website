@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 
+import { toast } from "sonner";
+
 const UserManagement = () => {
   // User management state
   const [users, setUsers] = useState([
@@ -42,16 +44,23 @@ const UserManagement = () => {
       };
       setUsers([...users, user]);
       setNewUser({ name: "", email: "", password: "", role: "Customer" });
-      alert("User added successfully!");
+      toast.success("User added successfully!", {
+        description: `${newUser.name} has been added as a ${newUser.role}.`
+      });
     } else {
-      alert("Please fill in all fields");
+      toast.error("Please fill in all fields", {
+        description: "Name, email, and password are required."
+      });
     }
   };
 
   const handleDeleteUser = (userId) => {
+    const userToDelete = users.find(user => user.id === userId);
     if (window.confirm("Are you sure you want to delete this user?")) {
       setUsers(users.filter((user) => user.id !== userId));
-      alert("User deleted successfully!");
+      toast.success("User deleted successfully!", {
+        description: `${userToDelete?.name} has been removed from the system.`
+      });
     }
   };
 

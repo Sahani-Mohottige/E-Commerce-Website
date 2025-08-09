@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import register from "../assets/register.webp";
 import { registerUser } from "../redux/slices/authSlice";
+import { toast } from "sonner";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -38,7 +39,9 @@ const Register = () => {
     e.preventDefault();
     
     if (!name || !email || !password) {
-      alert("Please fill in all fields");
+      toast.error("Please fill in all fields", {
+        description: "Name, email, and password are required to create an account."
+      });
       return;
     }
 

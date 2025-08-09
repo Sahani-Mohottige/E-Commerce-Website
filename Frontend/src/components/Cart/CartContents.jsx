@@ -30,7 +30,9 @@ const CartContents = ({ cart, userId, guestId }) => {
       })).unwrap();
     } catch (err) {
       console.error("Failed to update quantity:", err);
-      toast.error("Failed to update quantity");
+      toast.error("Failed to update quantity", {
+        description: "Please try again or refresh the page."
+      });
     }
   };
 
@@ -48,7 +50,9 @@ const CartContents = ({ cart, userId, guestId }) => {
         })).unwrap();
       } catch (err) {
         console.error("Failed to update quantity:", err);
-        toast.error("Failed to update quantity");
+        toast.error("Failed to update quantity", {
+          description: "Please try again or refresh the page."
+        });
       }
     }
   };
@@ -63,10 +67,14 @@ const CartContents = ({ cart, userId, guestId }) => {
         size: product.size,
         color: product.color,
       })).unwrap();
-      toast.success("Item removed from cart");
+      toast.success("Item removed from cart", {
+        description: `${product.name} has been removed from your cart.`
+      });
     } catch (err) {
       console.error("Failed to remove item:", err);
-      toast.error("Failed to remove item");
+      toast.error("Failed to remove item", {
+        description: "Please try again or refresh the page."
+      });
     }
   };
 

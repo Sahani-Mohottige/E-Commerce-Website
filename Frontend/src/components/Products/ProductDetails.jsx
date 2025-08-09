@@ -44,7 +44,8 @@ const ProductDetails = ({productId}) => {
   const handleAddToCart = () => {
     if (!selectedSize || !selectedColor) {
       toast.error("Please select a size and color before adding to cart.", {
-        duration: 1000,
+        description: "Both size and color must be selected to add the item to your cart.",
+        duration: 3000,
       });
       return;
     }
@@ -62,7 +63,8 @@ const ProductDetails = ({productId}) => {
     })
   ).then(()=>{
     toast.success("Product added to cart successfully!", {
-      duration: 1000,
+      description: `${quantity} ${quantity === 1 ? 'item' : 'items'} added in ${selectedSize} size and ${selectedColor} color.`,
+      duration: 3000,
     });
   }).finally(() => {
     setIsButtonDisabled(false);

@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 
+import { toast } from "sonner";
+
 const ProductManagement = () => {
   // Product management state
   const [products, setProducts] = useState([
@@ -99,16 +101,23 @@ const ProductManagement = () => {
       setProducts([...products, product]);
       setNewProduct({ name: "", price: "", sku: "" });
       setIsAddFormVisible(false);
-      alert("Product added successfully!");
+      toast.success("Product added successfully!", {
+        description: `${newProduct.name} has been added to the inventory.`
+      });
     } else {
-      alert("Please fill in all fields");
+      toast.error("Please fill in all fields", {
+        description: "Product name, price, and SKU are required."
+      });
     }
   };
 
   const handleDeleteProduct = (productId) => {
+    const productToDelete = products.find(product => product.id === productId);
     if (window.confirm("Are you sure you want to delete this product?")) {
       setProducts(products.filter((product) => product.id !== productId));
-      alert("Product deleted successfully!");
+      toast.success("Product deleted successfully!", {
+        description: `${productToDelete?.name} has been removed from inventory.`
+      });
     }
   };
 
@@ -125,9 +134,13 @@ const ProductManagement = () => {
         ),
       );
       setEditingProduct(null);
-      alert("Product updated successfully!");
+      toast.success("Product updated successfully!", {
+        description: `${editingProduct.name} has been updated.`
+      });
     } else {
-      alert("Please fill in all fields");
+      toast.error("Please fill in all fields", {
+        description: "Product name, price, and SKU are required."
+      });
     }
   };
 

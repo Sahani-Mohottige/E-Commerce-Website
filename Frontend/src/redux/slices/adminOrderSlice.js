@@ -87,7 +87,7 @@ const adminOrderSlice = createSlice({
     })
         .addCase(fetchAllOrders.rejected, (state, action) => {
             state.loading = false;
-            state.error = action.payload.message || 'Failed to fetch admin orders';
+            state.error = action.payload?.message || action.payload || 'Failed to fetch admin orders';
         })
         
         //update order status
