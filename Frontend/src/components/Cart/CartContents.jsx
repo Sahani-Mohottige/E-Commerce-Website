@@ -5,15 +5,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { RiDeleteBin3Line } from "react-icons/ri";
 import { toast } from "sonner";
 
-const CartContents = () => {
+const CartContents = ({ cart, userId, guestId }) => {
   const dispatch = useDispatch();
-  const { cart, loading, error } = useSelector((state) => state.cart);
-  const { user, guestId } = useSelector((state) => state.auth);
+  const { loading, error } = useSelector((state) => state.cart);
+  const { user } = useSelector((state) => state.auth);
 
-  // Fetch cart on component mount
+  // Fetch cart on component mount if not provided as prop
   useEffect(() => {
-    dispatch(fetchCart({ userId: user?._id, guestId }));
-  }, [dispatch, user, guestId]);
+    if (!cart) {
+      dispatch(fetchCart({ userId: user?._id, guestId }));
+    }
+  }, [dispatch, user, guestId, cart]);
 
   // Handle quantity increase
   const handleIncreaseQuantity = async (product) => {
@@ -21,12 +23,13 @@ const CartContents = () => {
       await dispatch(updateCartItemQuantity({
         productId: product.productId,
         quantity: product.quantity + 1,
-        userId: user?._id,
+        userId: userId || user?._id,
         guestId,
         size: product.size,
         color: product.color,
       })).unwrap();
-    } catch (error) {
+    } catch (err) {
+      console.error("Failed to update quantity:", err);
       toast.error("Failed to update quantity");
     }
   };
@@ -38,12 +41,13 @@ const CartContents = () => {
         await dispatch(updateCartItemQuantity({
           productId: product.productId,
           quantity: product.quantity - 1,
-          userId: user?._id,
+          userId: userId || user?._id,
           guestId,
           size: product.size,
           color: product.color,
         })).unwrap();
-      } catch (error) {
+      } catch (err) {
+        console.error("Failed to update quantity:", err);
         toast.error("Failed to update quantity");
       }
     }
@@ -54,13 +58,14 @@ const CartContents = () => {
     try {
       await dispatch(removeFromCart({
         productId: product.productId,
-        userId: user?._id,
+        userId: userId || user?._id,
         guestId,
         size: product.size,
         color: product.color,
       })).unwrap();
       toast.success("Item removed from cart");
-    } catch (error) {
+    } catch (err) {
+      console.error("Failed to remove item:", err);
       toast.error("Failed to remove item");
     }
   };
