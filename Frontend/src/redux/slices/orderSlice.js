@@ -2,12 +2,11 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
 import axios from "axios";
 
-//async thunk to user orders
 export const fetchUserOrders = createAsyncThunk(
   "orders/fetchUserOrders",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/orders/my-orders`, 
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/orders/my-orders`, 
         {
             headers:{
                 Authorization: `Bearer ${localStorage.getItem('userToken')}`,
@@ -16,7 +15,7 @@ export const fetchUserOrders = createAsyncThunk(
       );
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(error.response?.data?.message || error.message);
     }
   }
 );
@@ -24,9 +23,9 @@ export const fetchUserOrders = createAsyncThunk(
 //async thunk to fetch order details by Id
 export const fetchOrderDetails = createAsyncThunk(
   "orders/fetchOrderDetails",
-  async (fetchOrderDetails, { rejectWithValue }) => {
+  async (orderId, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/orders/${fetchOrderDetails}`, 
+      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/orders/${orderId}`, 
         {
             headers:{
                 Authorization: `Bearer ${localStorage.getItem('userToken')}`,
@@ -35,7 +34,7 @@ export const fetchOrderDetails = createAsyncThunk(
       );
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(error.response?.data?.message || error.message);
     }
   }
 );
@@ -59,8 +58,8 @@ const orderSlice = createSlice({
             })
             .addCase(fetchUserOrders.fulfilled, (state, action) => {
                 state.loading = false;
-                state.orders = action.payload.orders;
-                state.totalOrders = action.payload.totalOrders;
+                state.orders = action.payload?.orders || action.payload || [];
+                state.totalOrders = action.payload?.totalOrders || action.payload?.length || 0;
             })
             .addCase(fetchUserOrders.rejected, (state, action) => {
                 state.loading = false;
