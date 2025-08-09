@@ -33,6 +33,10 @@ const cartSchema = new mongoose.Schema(
       required: true,
       default: 0,
     },
+    totalItems: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true }, // add createdAt and updatedAt
 );

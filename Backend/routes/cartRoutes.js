@@ -63,6 +63,10 @@ router.post("/", async (req, res) => {
         (acc, item) => acc + item.price * item.quantity,
         0,
       );
+      cart.totalItems = cart.products.reduce(
+        (acc, item) => acc + item.quantity,
+        0,
+      );
       await cart.save();
       return res.status(200).json(cart);
     } else {
@@ -82,6 +86,7 @@ router.post("/", async (req, res) => {
           },
         ],
         totalPrice: Number(product.price) * quantity,
+        totalItems: quantity,
       });
       return res.status(201).json(newCart);
     }
@@ -115,6 +120,10 @@ router.put("/", async (req, res) => {
     // Recalculate total price
     cart.totalPrice = cart.products.reduce(
       (acc, item) => acc + item.price * item.quantity,
+      0,
+    );
+    cart.totalItems = cart.products.reduce(
+      (acc, item) => acc + item.quantity,
       0,
     );
 
@@ -152,6 +161,10 @@ router.delete("/", async (req, res) => {
     // Recalculate total price
     cart.totalPrice = cart.products.reduce(
       (acc, item) => acc + item.price * item.quantity,
+      0,
+    );
+    cart.totalItems = cart.products.reduce(
+      (acc, item) => acc + item.quantity,
       0,
     );
 
@@ -216,6 +229,10 @@ router.post("/merge",protect, async (req, res) => {
         // Recalculate total price
         userCart.totalPrice = userCart.products.reduce(
           (acc, item) => acc + item.price * item.quantity,
+          0,
+        );
+        userCart.totalItems = userCart.products.reduce(
+          (acc, item) => acc + item.quantity,
           0,
         );
         await userCart.save();

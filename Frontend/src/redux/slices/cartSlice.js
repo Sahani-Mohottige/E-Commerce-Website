@@ -13,6 +13,11 @@ const saveCartToStorage = (cart) => {
   localStorage.setItem("cart", JSON.stringify(cart));
 };
 
+// Helper function to calculate total items
+const calculateTotalItems = (products) => {
+  return products.reduce((total, product) => total + product.quantity, 0);
+};
+
 //fetch cart for a user or guest
 export const fetchCart = createAsyncThunk(
   "cart/fetchCart",
@@ -125,7 +130,10 @@ const cartSlice = createSlice({
                 state.error = null;
             })
             .addCase(fetchCart.fulfilled, (state, action) => {
-                state.cart = action.payload;
+                const cart = action.payload;
+                // Ensure totalItems is calculated
+                cart.totalItems = calculateTotalItems(cart.products || []);
+                state.cart = cart;
                 state.loading = false;
                 saveCartToStorage(state.cart);
             })
@@ -144,7 +152,10 @@ const cartSlice = createSlice({
                 state.error = null;
             })
             .addCase(addToCart.fulfilled, (state, action) => {
-                state.cart = action.payload;
+                const cart = action.payload;
+                // Ensure totalItems is calculated
+                cart.totalItems = calculateTotalItems(cart.products || []);
+                state.cart = cart;
                 state.loading = false;
                 saveCartToStorage(state.cart);
             })
@@ -157,7 +168,10 @@ const cartSlice = createSlice({
                 state.error = null;
             })
             .addCase(updateCartItemQuantity.fulfilled, (state, action) => {
-                state.cart = action.payload;
+                const cart = action.payload;
+                // Ensure totalItems is calculated
+                cart.totalItems = calculateTotalItems(cart.products || []);
+                state.cart = cart;
                 state.loading = false;
                 saveCartToStorage(state.cart);
             })
@@ -170,7 +184,10 @@ const cartSlice = createSlice({
                 state.error = null;
             })
             .addCase(removeFromCart.fulfilled, (state, action) => {
-                state.cart = action.payload;
+                const cart = action.payload;
+                // Ensure totalItems is calculated
+                cart.totalItems = calculateTotalItems(cart.products || []);
+                state.cart = cart;
                 state.loading = false;
                 saveCartToStorage(state.cart);
             })
@@ -183,7 +200,10 @@ const cartSlice = createSlice({
                 state.error = null;
             })
             .addCase(mergeGuestCart.fulfilled, (state, action) => {
-                state.cart = action.payload;
+                const cart = action.payload;
+                // Ensure totalItems is calculated
+                cart.totalItems = calculateTotalItems(cart.products || []);
+                state.cart = cart;
                 state.loading = false;
                 saveCartToStorage(state.cart);
             })
