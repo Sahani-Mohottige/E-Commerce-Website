@@ -10,7 +10,7 @@ const ProductGrid = ({ products,loading,error}) => {
       return <p className="text-red-500">Error: {error}</p>
     }
   return (
-    <div className="grid grid-col-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
       {products.map((product, index) => (
         <Link key={index} to={`/product/${product._id}`}>
           <div className="bg-white p-4 rounded-lg">
@@ -24,9 +24,9 @@ const ProductGrid = ({ products,loading,error}) => {
                 }}
               />
             </div>
-            <h3 className="mb-2">{product.name}</h3>
-            <p className="text-gray-500 font-medium text-sm tracking-tighter">
-              ${product.price}
+            <h3 className="mb-2 text-xl">{product.name}</h3>
+            <p className="text-gray-700 font-medium text-xl tracking-tighter">
+              {`$ ${product.price}`}
             </p>
           </div>
         </Link>

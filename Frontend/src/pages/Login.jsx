@@ -1,4 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
+import { fetchCart, mergeGuestCart } from "../redux/slices/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 
@@ -11,13 +12,25 @@ const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { loading, error, user } = useSelector((state) => state.auth);
+  const { guestId } = useSelector((state) => state.auth);
 
-  // Navigate to home after successful login
+  // Navigate to home after successful login and merge guest cart
   useEffect(() => {
     if (user) {
+      // Merge guest cart with user cart after login, then fetch updated cart
+      if (guestId) {
+        dispatch(mergeGuestCart({ userId: user._id, guestId }))
+          .then(() => {
+            // Fetch the updated cart after merging
+            dispatch(fetchCart({ userId: user._id, guestId }));
+          });
+      } else {
+        // If no guest cart, just fetch user cart
+        dispatch(fetchCart({ userId: user._id, guestId }));
+      }
       navigate('/');
     }
-  }, [user, navigate]);
+  }, [user, navigate, dispatch, guestId]);
 
   const handleLogin = async (e) => {
     e.preventDefault();

@@ -1,14 +1,25 @@
 import React, { useEffect, useState } from "react";
 
-import { Link } from "react-router-dom";
 import heroImg from "../../assets/fam.jpg";
-import heroImg2 from "../../assets/rabbit-hero.webp";
+import heroImg2 from "../../assets/fashion2.jpeg";
 import heroImg3 from "../../assets/beachParty.jpg";
+import heroImg4 from "../../assets/girls.jpg";
 
 const Hero = () => {
-  const images = [heroImg, heroImg2, heroImg3];
+  const images = [heroImg, heroImg2, heroImg3, heroImg4];
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  const handleShopNowClick = (e) => {
+    e.preventDefault();
+    const newArrivalsSection = document.getElementById('new-arrivals');
+    if (newArrivalsSection) {
+      newArrivalsSection.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  };
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -24,16 +35,26 @@ const Hero = () => {
     <section className="relative overflow-hidden">
       {/* Background images for smooth crossfade */}
       <div className="relative w-full h-[400px] md:h-[600px] lg:h-[750px]">
-        {images.map((image, index) => (
-          <img
-            key={index}
-            src={image}
-            alt="Hero"
-            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
-              index === currentImageIndex ? "opacity-100" : "opacity-0"
-            }`}
-          />
-        ))}
+        {images.map((image, index) => {
+          // Different object positioning for each image
+          let objectPosition = "object-center"; // Default middle position
+          if (index === 1 || index === 3) { // heroImg2 - top part
+            objectPosition = "object-top";
+          } else if (index === 0 || index === 2) { // heroImg and heroImg3 - middle part
+            objectPosition = "object-center";
+          }
+          
+          return (
+            <img
+              key={index}
+              src={image}
+              alt="Hero"
+              className={`absolute inset-0 w-full h-full object-cover ${objectPosition} transition-opacity duration-1000 ease-in-out ${
+                index === currentImageIndex ? "opacity-100" : "opacity-0"
+              }`}
+            />
+          );
+        })}
       </div>
 
       <div className="absolute inset-0 flex items-center justify-center bg-opacity-5 text-white px-4">
@@ -46,12 +67,12 @@ const Hero = () => {
           <p className="md:text-lg text-lg font-semibold mb-8">
             Explore our vacation-ready outfits with fast worldwide shipping.
           </p>
-          <Link
-            to="#"
+          <button
+            onClick={handleShopNowClick}
             className="inline-block bg-white text-black font-semibold py-2 px-6 rounded-full shadow-lg hover:bg-gray-100 transition duration-300"
           >
             Shop Now
-          </Link>
+          </button>
         </div>
       </div>
 

@@ -1,31 +1,48 @@
 import { Link, useNavigate } from "react-router-dom";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { fetchCart, mergeGuestCart } from "../redux/slices/cartSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 import register from "../assets/register.webp";
 import { registerUser } from "../redux/slices/authSlice";
-import { useDispatch } from "react-redux";
 
 const Register = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const dispatch = useDispatch();
+  
+  const { loading, error, user } = useSelector((state) => state.auth);
+  const { guestId } = useSelector((state) => state.auth);
+
+  // Handle navigation and cart merging after successful registration
+  useEffect(() => {
+    if (user) {
+      // Merge guest cart with user cart after registration, then fetch updated cart
+      if (guestId) {
+        dispatch(mergeGuestCart({ userId: user._id, guestId }))
+          .then(() => {
+            // Fetch the updated cart after merging
+            dispatch(fetchCart({ userId: user._id, guestId }));
+          });
+      } else {
+        // If no guest cart, just fetch user cart
+        dispatch(fetchCart({ userId: user._id, guestId }));
+      }
+      navigate('/');
+    }
+  }, [user, navigate, dispatch, guestId]);
 
   const handleRegister = (e) => {
     e.preventDefault();
-    dispatch(registerUser({ name, email, password }));
-
+    
     if (!name || !email || !password) {
       alert("Please fill in all fields");
       return;
     }
 
-    // Simulate registration logic
-    alert(`Welcome, ${name}! You are registered.`);
-    
-    // Redirect to login page after successful registration
-    navigate('/login');
+    dispatch(registerUser({ name, email, password }));
   };
 
   return (
@@ -46,6 +63,12 @@ const Register = () => {
             <p className="text-sm text-gray-600 font-semibold mb-6">
               Create your account by filling the details below
             </p>
+
+            {error && (
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                {error}
+              </div>
+            )}
 
             <div>
               <label className="block text-sm font-bold text-gray-700 mb-1">
@@ -88,9 +111,10 @@ const Register = () => {
 
             <button
               type="submit"
-              className="w-full bg-black text-white py-2 rounded-md hover:bg-gray-800 transition"
+              disabled={loading}
+              className="w-full bg-black text-white py-2 rounded-md hover:bg-gray-800 transition disabled:opacity-50"
             >
-              Sign Up
+              {loading ? "Creating Account..." : "Sign Up"}
             </button>
 
             <p className="text-xl text-gray-600 mt-6 text-center">

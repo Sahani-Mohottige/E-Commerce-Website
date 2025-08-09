@@ -1,3 +1,4 @@
+import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useRef, useState } from "react";
 import { useParams, useSearchParams } from "react-router-dom";
 
@@ -5,16 +6,23 @@ import { FaFilter } from "react-icons/fa";
 import FilterSideBar from "../components/Products/FilterSideBar";
 import ProductGrid from "../components/Products/ProductGrid";
 import React from "react";
-import axios from "axios";
+import { fetchProductsByFilters } from "../redux/slices/productsSlice";
 
 const CollectionPage = () => {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+
   const { collection } = useParams();
   const [searchParams] = useSearchParams();
   const sidebarRef = useRef(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+const dispatch = useDispatch();
+const {products,loading,error} = useSelector((state) => state.products);
+
+useEffect(()=>{
+  const queryParams = Object.fromEntries([...searchParams]);
+  dispatch(fetchProductsByFilters({
+    collection,
+    ...queryParams
+  }));}, [collection, searchParams, dispatch]);
 
   const toggleSideBar = () => {
     setIsSidebarOpen(!isSidebarOpen);
@@ -32,41 +40,6 @@ const CollectionPage = () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-        
-        // Extract gender from URL query parameters
-        const gender = searchParams.get('gender');
-        const category = searchParams.get('category');
-        
-        // Build query parameters for API call
-        const queryParams = new URLSearchParams();
-        if (gender) queryParams.append('gender', gender);
-        if (category) queryParams.append('category', category);
-        if (collection && collection !== 'all') queryParams.append('collection', collection);
-        
-        console.log('Fetching products with params:', queryParams.toString());
-        
-        const response = await axios.get(
-          `${import.meta.env.VITE_BACKEND_URL}/api/products?${queryParams.toString()}`
-        );
-        
-        console.log('Products fetched:', response.data);
-        setProducts(response.data);
-      } catch (err) {
-        console.error('Error fetching products:', err);
-        setError('Failed to load products');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, [collection, searchParams]);
 
   return (
     <div className="flex flex-col lg:flex-row w-full min-h-screen">
