@@ -122,6 +122,47 @@ const cartSlice = createSlice({
             state.cart = { products: [], totalPrice: 0, totalItems: 0 };
             localStorage.removeItem("cart");
         },
+        refreshCart: (state, action) => {
+            // Action to manually refresh cart state
+            const cart = action.payload;
+            if (cart) {
+                cart.totalItems = calculateTotalItems(cart.products || []);
+                state.cart = cart;
+                saveCartToStorage(state.cart);
+            }
+        },
+        addToCartLocal: (state, action) => {
+            // Local cart management when backend is not available
+            const { productId, quantity, size, color, name, image, price } = action.payload;
+            
+            const productIndex = state.cart.products.findIndex(
+                (p) => p.productId === productId && p.size === size && p.color === color
+            );
+            
+            if (productIndex > -1) {
+                // Update existing product quantity
+                state.cart.products[productIndex].quantity += quantity;
+            } else {
+                // Add new product
+                state.cart.products.push({
+                    productId,
+                    name,
+                    image,
+                    price,
+                    size,
+                    color,
+                    quantity,
+                });
+            }
+            
+            // Recalculate totals
+            state.cart.totalPrice = state.cart.products.reduce(
+                (acc, item) => acc + item.price * item.quantity,
+                0
+            );
+            state.cart.totalItems = calculateTotalItems(state.cart.products);
+            saveCartToStorage(state.cart);
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -144,7 +185,10 @@ const cartSlice = createSlice({
                     state.cart = { products: [], totalPrice: 0, totalItems: 0 };
                     state.error = null;
                 } else {
+                    // On network error, keep the current cart state from localStorage
+                    // Don't reset to empty cart on network/server errors
                     state.error = action.payload?.message || "Failed to fetch cart";
+                    console.log("Cart fetch failed, keeping current cart state:", state.cart);
                 }
             })
             .addCase(addToCart.pending, (state) => {
@@ -214,6 +258,6 @@ const cartSlice = createSlice({
 },
 });
 
-export const { clearCart } = cartSlice.actions;
+export const { clearCart, refreshCart, addToCartLocal } = cartSlice.actions;
 
 export default cartSlice.reducer;

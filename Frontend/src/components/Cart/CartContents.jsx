@@ -9,7 +9,7 @@ const CartContents = ({ cart, userId, guestId }) => {
   const dispatch = useDispatch();
   const { loading, error } = useSelector((state) => state.cart);
   const { user } = useSelector((state) => state.auth);
-
+  
   // Fetch cart on component mount if not provided as prop
   useEffect(() => {
     if (!cart) {

@@ -10,6 +10,11 @@ const CartDrawer = ({ drawerOpen, toggleCartDrawer }) => {
   const { cart } = useSelector((state) => state.cart);
   const userId = user ? user._id : null;
   
+  // Debug logging
+  console.log("CartDrawer - cart:", cart);
+  console.log("CartDrawer - cart products:", cart?.products);
+  console.log("CartDrawer - cart products length:", cart?.products?.length);
+  
   const handleCheckout = () => {
     toggleCartDrawer();
     if(!user){
@@ -38,27 +43,38 @@ const CartDrawer = ({ drawerOpen, toggleCartDrawer }) => {
       {/* Scrollable cart content */}
       <div className="flex-grow overflow-y-auto p-4 space-y-4">
         <h2 className="text-lg font-semibold mb-4">Your Cart</h2>
-        {cart && cart?.products?.length>0 ? (
+        {cart && cart?.products?.length > 0 ? (
           <CartContents cart={cart} userId={userId} guestId={guestId} />
         ) : (
-          <p>Your cart is empty.</p>
+          <div className="text-center py-8">
+            <p className="text-gray-500 mb-2">Your cart is empty.</p>
+            <p className="text-sm text-gray-400">Add some items to get started!</p>
+          </div>
         )}
-        {/* Example cart content */}
-       
       </div>
 
       {/* Checkout button fixed at the bottom */}
       <div className="p-4 bg-white sticky bottom-0">
-         {cart && cart?.products?.length>0 && (
-         <><button
-          onClick={handleCheckout}
-          className="w-full bg-black text-white py-3 rounded hover:bg-gray-700 transition-colors"
-        >
-          Checkout
-        </button>
+         {cart && cart?.products?.length > 0 && (
+         <>
+           <div className="mb-2 border-t pt-2">
+             <p className="text-sm font-medium">
+               Total Items: {cart.totalItems || 0}
+             </p>
+             <p className="text-lg font-bold">
+               Total: ${cart.totalPrice?.toFixed(2) || '0.00'}
+             </p>
+           </div>
+           <button
+             onClick={handleCheckout}
+             className="w-full bg-black text-white py-3 rounded hover:bg-gray-700 transition-colors"
+           >
+             Checkout
+           </button>
            <p className="text-xs text-gray-500 mt-2 tracking-tighter">
-          Shipping, taxes, and discount codes calculated at checkout.
-        </p></>
+             Shipping, taxes, and discount codes calculated at checkout.
+           </p>
+         </>
       )}
       </div>
     </div>

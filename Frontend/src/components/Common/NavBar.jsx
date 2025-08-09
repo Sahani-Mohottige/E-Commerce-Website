@@ -20,6 +20,11 @@ const {cart} = useSelector((state) => state.cart);
 const cartItemCount = cart?.products?.reduce(
   (total, product) => total + product.quantity, 0) || 0;
 
+// Debug logging
+console.log("NavBar - cart state:", cart);
+console.log("NavBar - cartItemCount:", cartItemCount);
+console.log("NavBar - cart products:", cart?.products);
+
   const toggleNavDrawer = () => {
     setNavDrawerOpen(!navDrawerOpen);
   };
