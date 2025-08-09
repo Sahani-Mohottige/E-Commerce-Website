@@ -88,9 +88,49 @@ const FilterSideBar = () => {
     updateURLParams(newFilters);
   };
 
+  const clearAllFilters = () => {
+    const initialFilters = {
+      category: "",
+      gender: "",
+      color: "",
+      size: [],
+      material: [],
+      brand: [],
+      minPrice: 0,
+      maxPrice: 100,
+    };
+    
+    setFilters(initialFilters);
+    setPriceRange([0, 100]);
+    
+    // Clear URL parameters
+    setSearchParams(new URLSearchParams());
+    navigate('', { replace: true });
+  };
+
+  // Check if any filters are active
+  const hasActiveFilters = 
+    filters.category !== "" ||
+    filters.gender !== "" ||
+    filters.color !== "" ||
+    filters.size.length > 0 ||
+    filters.material.length > 0 ||
+    filters.brand.length > 0 ||
+    filters.maxPrice !== 100;
+
   return (
     <div className="p-4">
-      <h3 className="text-lg font-semibold text-gray-800 mb-4">Filter</h3>
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-lg font-semibold text-gray-800">Filter</h3>
+        {hasActiveFilters && (
+          <button
+            onClick={clearAllFilters}
+            className="px-3 py-1 text-sm text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-md transition-colors duration-200 border border-blue-200 hover:border-blue-300"
+          >
+            Clear All
+          </button>
+        )}
+      </div>
 
       {/* Category Filter */}
       <div className="mb-6">
