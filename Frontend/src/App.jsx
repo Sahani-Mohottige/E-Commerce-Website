@@ -25,7 +25,24 @@ const App = () => {
   return (
     <Provider store={store}>
       <BrowserRouter>
-        <Toaster position="top-right" />
+        <Toaster 
+          position="top-right" 
+          richColors
+          expand={true}
+          duration={4000}
+          toastOptions={{
+            style: {
+              background: 'white',
+              border: '1px solid #e5e7eb',
+              borderRadius: '0.5rem',
+              fontSize: '14px',
+              boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+              padding: '16px',
+              minHeight: '60px',
+            },
+            className: 'toast-custom',
+          }}
+        />
         <Routes>
         {/*User Layout*/}
         <Route path="/" element={<UserLayout />}>

@@ -2,6 +2,8 @@ import { LogOut, Package, ShoppingCart, Store, Users } from "lucide-react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 
+import { toast } from "sonner";
+
 const AdminLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -89,13 +91,17 @@ const AdminLayout = () => {
 
   const handleLogout = () => {
     if (window.confirm("Are you sure you want to logout?")) {
-      alert("Logged out successfully!");
+      toast.success("Logged out successfully!", {
+        description: "You have been safely logged out of the admin panel."
+      });
       navigate("/login");
     }
   };
 
   const handleOrderClick = (orderId) => {
-    alert(`View details for order: ${orderId}`);
+    toast.info(`Order Details`, {
+      description: `Viewing details for order #${orderId}`
+    });
   };
 
   const handleStatCardClick = (link) => {
