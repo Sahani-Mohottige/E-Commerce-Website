@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const dotenv = require("dotenv");
+//const dotenv = require("dotenv");
 const connectDB = require("./Config/db");
 const userRoutes = require("./routes/userRoutes");
 const productRoutes = require("./routes/productRoutes");
@@ -13,12 +13,16 @@ const adminRoutes = require("./routes/adminRoutes");
 const adminProductRoutes = require("./routes/adminProductRoutes");
 const adminOrderRoutes = require("./routes/adminOrderRoutes");  
 
-dotenv.config();
+require('dotenv').config();
 
 const app = express();
 
 app.use(express.json());
 app.use(cors());
+
+//console.log("Mongo_URL: " + process.env.MONGO_URL);
+//console.log("Port: " + process.env.PORT);
+//console.log("JWT_SECRET: " + process.env.JWT_SECRET); 
 
 const PORT = process.env.PORT || 3000;
 
