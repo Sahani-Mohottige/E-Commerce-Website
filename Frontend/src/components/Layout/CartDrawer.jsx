@@ -1,19 +1,44 @@
+import React, { useEffect, useRef } from "react";
+
 import CartContents from "../Cart/CartContents";
 import { IoMdClose } from "react-icons/io";
-import React from "react";
+import { fetchCart } from "../../redux/slices/cartSlice";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 const CartDrawer = ({ drawerOpen, toggleCartDrawer }) => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user, guestId } = useSelector((state) => state.auth);
-  const { cart } = useSelector((state) => state.cart);
+  const { cart, loading, error } = useSelector((state) => state.cart);
   const userId = user ? user._id : null;
+  const scrollRef = useRef(null);
   
   // Debug logging
   console.log("CartDrawer - cart:", cart);
   console.log("CartDrawer - cart products:", cart?.products);
   console.log("CartDrawer - cart products length:", cart?.products?.length);
+  console.log("CartDrawer - loading:", loading);
+  console.log("CartDrawer - error:", error);
+  console.log("CartDrawer - userId:", userId);
+  console.log("CartDrawer - guestId:", guestId);
+
+  // Fetch cart when component mounts or user/guest changes
+  useEffect(() => {
+    if (userId || guestId) {
+      console.log("Fetching cart for:", { userId, guestId });
+      dispatch(fetchCart({ userId, guestId }));
+    }
+  }, [dispatch, userId, guestId]);
+
+  // Refetch cart when drawer opens
+  useEffect(() => {
+    if (drawerOpen && (userId || guestId)) {
+      console.log("Cart drawer opened - refreshing cart");
+      dispatch(fetchCart({ userId, guestId }));
+    }
+  }, [drawerOpen, dispatch, userId, guestId]);
   
   const handleCheckout = () => {
     toggleCartDrawer();
@@ -25,13 +50,32 @@ const CartDrawer = ({ drawerOpen, toggleCartDrawer }) => {
     }
   };
 
+  // Preserve scroll position when cart updates
+  useEffect(() => {
+    if (scrollRef.current && cart?.products?.length > 0) {
+      // Maintain scroll position after item deletion
+      const currentScrollTop = scrollRef.current.scrollTop;
+      requestAnimationFrame(() => {
+        if (scrollRef.current) {
+          scrollRef.current.scrollTop = Math.min(
+            currentScrollTop,
+            scrollRef.current.scrollHeight - scrollRef.current.clientHeight
+          );
+        }
+      });
+    }
+  }, [cart?.products?.length]);
+
+  const hasItems = cart && cart?.products && Array.isArray(cart.products) && cart.products.length > 0;
+
   return (
     <div
-      className={`fixed top-0 right-0 h-full w-3/4 sm:w-1/2 md:w-[30rem] bg-white shadow-lg transform transition-transform duration-300 ease-in-out z-40
+      className={`fixed top-0 right-0 h-full w-3/4 sm:w-1/2 md:w-[30rem] bg-white shadow-lg transform transition-transform duration-300 ease-in-out z-40 flex flex-col
         ${drawerOpen ? "translate-x-0" : "translate-x-full"}`}
     >
       {/* Header with close button */}
-      <div className="flex items-center justify-between p-4 border-b">
+      <div className="flex items-center justify-between p-4 border-b flex-shrink-0">
+        <h2 className="text-lg font-semibold">Your Cart</h2>
         <button
           onClick={toggleCartDrawer}
           className="text-gray-500 hover:text-black"
@@ -41,9 +85,27 @@ const CartDrawer = ({ drawerOpen, toggleCartDrawer }) => {
       </div>
 
       {/* Scrollable cart content */}
-      <div className="flex-grow overflow-y-auto p-4 space-y-4">
-        <h2 className="text-lg font-semibold mb-4">Your Cart</h2>
-        {cart && cart?.products?.length > 0 ? (
+      <div 
+        ref={scrollRef}
+        className="flex-grow overflow-y-auto p-4 space-y-4"
+      >
+        {loading ? (
+          <div className="text-center py-8">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto mb-2"></div>
+            <p className="text-gray-500">Loading cart...</p>
+          </div>
+        ) : error ? (
+          <div className="text-center py-8">
+            <p className="text-red-500 mb-2">Error loading cart</p>
+            <p className="text-sm text-gray-400">{error}</p>
+            <button 
+              onClick={() => dispatch(fetchCart({ userId, guestId }))}
+              className="mt-2 text-blue-500 hover:text-blue-700 text-sm"
+            >
+              Try again
+            </button>
+          </div>
+        ) : hasItems ? (
           <CartContents cart={cart} userId={userId} guestId={guestId} />
         ) : (
           <div className="text-center py-8">
@@ -53,29 +115,26 @@ const CartDrawer = ({ drawerOpen, toggleCartDrawer }) => {
         )}
       </div>
 
-      {/* Checkout button fixed at the bottom */}
-      <div className="p-4 bg-white sticky bottom-0">
-         {cart && cart?.products?.length > 0 && (
-         <>
-           <div className="mb-2 border-t pt-2">
-             <p className="text-sm font-medium">
-               Total Items: {cart.totalItems || 0}
-             </p>
-             <p className="text-lg font-bold">
-               Total: ${cart.totalPrice?.toFixed(2) || '0.00'}
-             </p>
-           </div>
-           <button
-             onClick={handleCheckout}
-             className="w-full bg-black text-white py-3 rounded hover:bg-gray-700 transition-colors"
-           >
-             Checkout
-           </button>
-           <p className="text-xs text-gray-500 mt-2 tracking-tighter">
-             Shipping, taxes, and discount codes calculated at checkout.
-           </p>
-         </>
-      )}
+      {/* Checkout button fixed at the bottom - always rendered to prevent layout shift */}
+      <div className={`p-4 bg-white flex-shrink-0 border-t transition-opacity duration-200 ${hasItems ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+        <div className="mb-2">
+          <p className="text-sm font-medium">
+            Total Items: {cart?.totalItems || 0}
+          </p>
+          <p className="text-lg font-bold">
+            Total: ${cart?.totalPrice?.toFixed(2) || '0.00'}
+          </p>
+        </div>
+        <button
+          onClick={handleCheckout}
+          disabled={!hasItems || loading}
+          className="w-full bg-black text-white py-3 rounded hover:bg-gray-700 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
+        >
+          {loading ? "Loading..." : "Checkout"}
+        </button>
+        <p className="text-xs text-gray-500 mt-2 tracking-tighter">
+          Shipping, taxes, and discount codes calculated at checkout.
+        </p>
       </div>
     </div>
   );

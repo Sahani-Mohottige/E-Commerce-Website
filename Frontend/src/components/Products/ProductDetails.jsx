@@ -14,7 +14,7 @@ const ProductDetails = ({productId}) => {
   const {selectedProduct, similarProducts, loading, error} = useSelector(
     (state) => state.products
   );
-  const {userId , guestId} = useSelector((state) => state.auth);
+  const { user, guestId } = useSelector((state) => state.auth);
   const [mainImage, setMainImage] = useState("");
   const [selectedSize, setSelectedSize] = useState("");
   const [selectedColor, setSelectedColor] = useState("");
@@ -22,6 +22,12 @@ const ProductDetails = ({productId}) => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   const productfetchId = productId || id;
+  const userId = user ? user._id : null;
+
+  // Debug logging
+  console.log("ProductDetails - user:", user);
+  console.log("ProductDetails - userId:", userId);
+  console.log("ProductDetails - guestId:", guestId);
 
   useEffect(() => {
     if (productfetchId) {
@@ -36,12 +42,21 @@ const ProductDetails = ({productId}) => {
     }
   }, [selectedProduct]);
 
+  // Add this new function to handle image changes and reset filters
+  const handleImageChange = (imageUrl) => {
+    setMainImage(imageUrl);
+    // Reset filters when image changes
+    setSelectedSize("");
+    setSelectedColor("");
+    setQuantity(1);
+  };
+
   const handleQuantityChange = (action) => {
     if (action === "plus") setQuantity((prev) => prev + 1);
     if (action === "minus" && quantity > 1) setQuantity((prev) => prev - 1);
   };
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async () => {
     if (!selectedSize || !selectedColor) {
       toast.error("Please select a size and color before adding to cart.", {
         description: "Both size and color must be selected to add the item to your cart.",
@@ -52,31 +67,65 @@ const ProductDetails = ({productId}) => {
 
     setIsButtonDisabled(true);
 
-    dispatch(
-      addToCart({
+    console.log("Adding to cart with data:", {
       productId: productfetchId,
       quantity,
       size: selectedSize,
       color: selectedColor,
+      userId,
       guestId,
-      userId: userId?._id,
-    })
-  ).then(()=>{
-    toast.success("Product added to cart successfully!", {
-      description: `${quantity} ${quantity === 1 ? 'item' : 'items'} added in ${selectedSize} size and ${selectedColor} color.`,
-      duration: 3000,
     });
-  }).finally(() => {
-    setIsButtonDisabled(false);
-  });
-}
-if(loading){
-  return <p>Loading...</p>
-}
 
-if(error){
-  return <p>Error :{error}</p>
-}
+    try {
+      const result = await dispatch(
+        addToCart({
+          productId: productfetchId,
+          quantity,
+          size: selectedSize,
+          color: selectedColor,
+          userId,
+          guestId,
+        })
+      );
+
+      console.log("Add to cart result:", result);
+
+      if (addToCart.fulfilled.match(result)) {
+        toast.success("Product added to cart successfully!", {
+          description: `${quantity} ${quantity === 1 ? 'item' : 'items'} added in ${selectedSize} size and ${selectedColor} color.`,
+          duration: 3000,
+        });
+        
+        // Reset filters after successful add to cart
+        setSelectedSize("");
+        setSelectedColor("");
+        setQuantity(1);
+      } else {
+        // Handle rejected case
+        console.error("Add to cart failed:", result.payload);
+        toast.error("Failed to add product to cart", {
+          description: result.payload?.message || "Something went wrong",
+          duration: 3000,
+        });
+      }
+    } catch (error) {
+      console.error("Add to cart error:", error);
+      toast.error("Failed to add product to cart", {
+        description: "Something went wrong",
+        duration: 3000,
+      });
+    } finally {
+      setIsButtonDisabled(false);
+    }
+  };
+
+  if(loading){
+    return <p>Loading...</p>
+  }
+
+  if(error){
+    return <p>Error :{error}</p>
+  }
 
   return (
     <div className="p-6">
@@ -90,7 +139,7 @@ if(error){
                 key={index}
                 src={image.url}
                 alt={image.altText || `Thumbnail ${index}`}
-                onClick={() => setMainImage(image.url)}
+                onClick={() => handleImageChange(image.url)} // Changed this line
                 className={`w-20 h-20 object-cover rounded-lg cursor-pointer border
                  ${mainImage === image.url ? "border-black" : "border-gray-300"}`}
                 onError={(e) => {
@@ -121,7 +170,7 @@ if(error){
                 key={index}
                 src={image.url}
                 alt={image.altText || `Thumbnail ${index}`}
-                onClick={() => setMainImage(image.url)}
+                onClick={() => handleImageChange(image.url)} // Changed this line
                 className={`w-20 h-20 object-cover rounded-lg cursor-pointer border
                  ${mainImage === image.url ? "border-black" : "border-gray-300"}`}
                 onError={(e) => {
@@ -162,6 +211,9 @@ if(error){
                   ></button>
                 ))}
               </div>
+              {selectedColor && (
+                <p className="text-sm text-gray-600 mt-1">Selected: {selectedColor}</p>
+              )}
             </div>
 
             <div className="mb-4">
@@ -178,8 +230,10 @@ if(error){
                   </button>
                 ))}
               </div>
+              {selectedSize && (
+                <p className="text-sm text-gray-600 mt-1">Selected: {selectedSize}</p>
+              )}
             </div>
-
             <div className="mb-6">
               <p className="text-gray-700">Quantity:</p>
               <div className="flex items-center space-x-4 mt-2">
@@ -202,11 +256,11 @@ if(error){
             {/* Add to Cart Button */}
             <button
               onClick={handleAddToCart}
-              className={`bg-black text-white py-2 px-6 rounded w-full mb-4 ${isButtonDisabled ? "cursor-not-allowed" : "hover:bg-gray-900"}`}
+              disabled={isButtonDisabled}
+              className={`bg-black text-white py-2 px-6 rounded w-full mb-4 ${isButtonDisabled ? "cursor-not-allowed opacity-50" : "hover:bg-gray-900"}`}
             >
               {isButtonDisabled ? "Adding..." : "Add to Cart"}
             </button>
-
             <div className="mt-6">
               <h3 className="text-xl font-semibold mb-4">Characteristics:</h3>
               <table className="w-full text-left border border-gray-200 rounded-lg overflow-hidden">
@@ -234,7 +288,7 @@ if(error){
           <h2 className="text-2xl text-center font-medium mb-4">
             You May Also Like
           </h2>
-          <div className="[&_.w-full]:w-60 [&>div]:gap-10 [&_img]:rounded-md">
+           <div className="[&_.w-full]:w-60 [&>div]:gap-10 [&_img]:rounded-md">
             <ProductGrid products={similarProducts} loading={loading} error={error} />
           </div>
         </div>
@@ -245,3 +299,5 @@ if(error){
 };
 
 export default ProductDetails;
+
+
