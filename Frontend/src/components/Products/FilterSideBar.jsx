@@ -18,14 +18,42 @@ const FilterSideBar = () => {
 
   const [priceRange, setPriceRange] = useState([0, 100]);
 
-  const categories = ["Top Wear", "Bottom Wear", "Shoes", "Jackets"];
+  const categories = ["Top Wear", "Bottom Wear"];
   const genders = ["Men", "Women"];
   const colors = ["Red", "Blue", "Black", "White", "Gray"];
   const sizes = ["XS", "S", "M", "L", "XL", "XXL"];
-  const materials = ["Cotton", "Denim", "Leather"];
-  const brands = ["Nike", "Adidas", "Zara", "H&M"];
+const materials = [
+  "Cotton",
+  "Cotton Blend",
+  "Denim",
+  "Viscose",
+  "Fleece",
+  "Polyester",
+];
+const brands = [
+  "Urban Threads",
+  "Modern Fit",
+  "Street Style",
+  "Beach Breeze",
+  "Urban Chic",
+  "Polo Classics",
+  "Street Vibes",
+  "Heritage Wear",
+  "Winter Basics",
+  "Everyday Comfort",
+  "ActiveWear",
+  "UrbanStyle",
+  "ChillZone",
+  "DenimCo",
+  "CasualLook",
+  "SportX",
+  "ExecutiveStyle",
+  "StreetWear",
+  "LoungeWear",
+  "ElegantStyle",
+  "DenimStyle"
+];
 
-  // Sync filters from URL params on mount and when URL changes
   useEffect(() => {
     const params = Object.fromEntries([...searchParams.entries()]);
 

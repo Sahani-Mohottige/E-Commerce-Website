@@ -20,6 +20,9 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+
+//console.log("Cloudinary: " + process.env.CLOUDINARY_API_SECRET);
+
 //console.log("Mongo_URL: " + process.env.MONGO_URL);
 //console.log("Port: " + process.env.PORT);
 //console.log("JWT_SECRET: " + process.env.JWT_SECRET); 

@@ -135,7 +135,7 @@ const Register = () => {
         <img
           src={register}
           alt="Register illustration"
-          className="w-full object-cover h-[750px]"
+          className="w-full object-cover h-[850px]"
         />
       </div>
     </div>
