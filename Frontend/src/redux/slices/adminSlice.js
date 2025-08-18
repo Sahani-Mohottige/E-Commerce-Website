@@ -1,114 +1,116 @@
-import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
+// redux/slices/adminSlice.js
 
-import axios from 'axios';
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-//fetch all users (admin only)
-export const fetchUsers = createAsyncThunk(
-  'admin/fetchUsers',
-  async () => {
-      const response = await axios.get('/api/users', {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('userToken')}`,
-        },
-      });
-     response.data;
-  }
-);
+import axios from "axios";
 
-//add the create user action
-export const createUser = createAsyncThunk(
-  'admin/createUser',
-  async (userData, { rejectWithValue }) => {
+//admin login
+export const adminLogin = createAsyncThunk(
+  "admin/login",
+  async ({ email, password }, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/users`, userData, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('userToken')}`,
-        },
+      const res = await axios.post("http://localhost:9000/api/admin/login", {
+        email,
+        password,
       });
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response.data);
+      // Save token in localStorage
+      localStorage.setItem("adminToken", res.data.token);
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || "Login failed");
+    }
+  }
+);
+// inside fetchUsers thunk
+export const fetchUsers = createAsyncThunk(
+  "admin/fetchUsers",
+  async (_, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem("adminToken");
+      const res = await axios.get("http://localhost:9000/api/admin/users", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return res.data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.message || "Failed to fetch users");
     }
   }
 );
 
-//update user info
-export const updateUser = createAsyncThunk(
-  'admin/updateUser',
-  async ({ id, name ,email, role }) => {
-      const response = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/users/${id}`,
-         { name, email, role }, 
-         {
+
+// Create, delete, update user thunks (example)
+export const createUser = createAsyncThunk(
+  "admin/createUser",
+  async (user, thunkAPI) => {
+    try {
+      const token = localStorage.getItem("adminToken");
+      const response = await fetch("http://localhost:9000/api/admin/users", {
+        method: "POST",
         headers: {
-          Authorization: `Bearer ${localStorage.getItem('userToken')}`,
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
+        body: JSON.stringify(user),
       });
-       response.data;
+      if (!response.ok) throw new Error("Failed to create user");
+      const data = await response.json();
+      return data;
+    } catch (err) {
+      return thunkAPI.rejectWithValue(err.message);
     }
+  }
 );
 
-//delete a user (admin only)
-export const deleteUser = createAsyncThunk(
-  'admin/deleteUser',
-  async (id) => {
-      await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/users/${id}`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('userToken')}`,
-        },
-      });
-      return id; // return the user ID for deletion
-    }
-);
 
-const adminSlice = createSlice ({
-    name: "admin",
-    initialState :{
-        users :[],
-        loading :false,
-        error : null,
-    },
-    reducers:{},
-    extraReducers:(builder) =>{
-        builder 
-        //fetch all users
-        .addCase(fetchUsers.pending, (state) =>{
-            state.loading = true;
-        })
-        .addCase(fetchUsers.fulfilled,(state,action)=>{
-            state.loading = false;
-            state.users = action.payload;
-        })
-        .addCase(fetchUsers.rejected,(state,action)=>{
-            state.loading =false;
-            state.error = action.error.message || 'Failed to fetch users';
-        })
-    //update user    
-        .addCase(updateUser.pending,(state)=>{
-            state.loading =true;
-        })
-        .addCase(updateUser.fulfilled,(state,action)=>{
-            const updateUser = action.payload;
-            const userIndex = state.users.findIndex(user => user._id === updateUser._id);
-            if (userIndex !== -1) {
-                state.users[userIndex] = updateUser;
-            }
-        })
-        .addCase(deleteUser.fulfilled,(state,action)=>{
-            state.users = state.users.filter((user)=>user._id !== action.payload);
-        })
-        .addCase(createUser.pending,(state)=>{
-            state.loading = true;
-            state.error = null;
-        })
-        .addCase(createUser.fulfilled,(state,action)=>{
-            state.loading = false;
-            state.users.push(action.payload.user); //add a new user to the state
-        })
-        .addCase(createUser.rejected,(state,action)=>{
-            state.loading = false;
-            state.error = action.payload.message || 'Failed to create user';
-        });
-    }
+export const deleteUser = createAsyncThunk("admin/deleteUser", async (id, thunkAPI) => {
+  try {
+    const token = localStorage.getItem("adminToken");
+    const response = await fetch(`http://localhost:9000/api/admin/users/${id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${token}` },
     });
+    if (!response.ok) throw new Error("Failed to delete user");
+    return id;
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err.message);
+  }
+});
+
+export const updateUser = createAsyncThunk("admin/updateUser", async ({ id, role }, thunkAPI) => {
+  try {
+    const token = localStorage.getItem("adminToken");
+    const response = await fetch(`http://localhost:9000/api/admin/users/${id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ role }),
+    });
+    if (!response.ok) throw new Error("Failed to update user");
+    const data = await response.json();
+    return data;
+  } catch (err) {
+    return thunkAPI.rejectWithValue(err.message);
+  }
+});
+
+const adminSlice = createSlice({
+  name: "admin",
+  initialState: { users: [], loading: false, error: null },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchUsers.pending, (state) => { state.loading = true; state.error = null; })
+      .addCase(fetchUsers.fulfilled, (state, action) => { state.loading = false; state.users = action.payload; })
+      .addCase(fetchUsers.rejected, (state, action) => { state.loading = false; state.error = action.payload; })
+
+      .addCase(createUser.fulfilled, (state, action) => { state.users.push(action.payload); })
+      .addCase(deleteUser.fulfilled, (state, action) => { state.users = state.users.filter(u => u._id !== action.payload); })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        const idx = state.users.findIndex(u => u._id === action.payload._id);
+        if (idx !== -1) state.users[idx] = action.payload;
+      });
+  },
+});
 
 export default adminSlice.reducer;
