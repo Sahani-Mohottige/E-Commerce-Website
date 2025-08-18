@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import AdminLayout from "./components/Admin/AdminLayout";
+import AdminLogin from "./components/Admin/AdminLogin";
 import Checkout from "./components/Cart/Checkout";
 import CollectionPage from "./pages/CollectionPage";
 import Home from "./pages/Home";
@@ -58,15 +59,16 @@ const App = () => {
           <Route path="my-orders" element={<ProtectedRoute><MyOrdersPage /></ProtectedRoute>} />
         </Route>
         {/* Admin Layout Routes */}
-        <Route path="/admin" element={<AdminLayout />}>
-          {/* Dashboard is handled internally by AdminLayout */}
-          <Route path="users" element={<UserManagement />} />
-          <Route path="products" element={<ProductManagement />} />
-          <Route path="orders" element={<OrderManagement />} />
-        </Route>        </Routes>
-      </BrowserRouter>
-    </Provider>
-  );
+       <Route path="/admin/login" element={<AdminLogin />} />
+       <Route path="/admin" element={<AdminLayout />}>
+       <Route path="users" element={<UserManagement />} />
+       <Route path="products" element={<ProductManagement />} />
+       <Route path="orders" element={<OrderManagement />} />
+       </Route>
+      </Routes>
+    </BrowserRouter>
+  </Provider>
+);
 };
 
 export default App;
