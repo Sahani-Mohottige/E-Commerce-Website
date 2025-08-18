@@ -6,9 +6,17 @@ const { protect } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
+// Helper: generate JWT token
+const generateToken = (user) => {
+  return jwt.sign(
+    { id: user._id, role: user.role },
+    process.env.JWT_SECRET,
+    { expiresIn: "40h" }
+  );
+};
+
 // @route   POST /api/users/register
-// @desc    Register a new user
-// @access  Public
+// @desc    Register a new user (Public)
 router.post("/register", async (req, res) => {
   const { name, email, password } = req.body;
 
@@ -16,102 +24,87 @@ router.post("/register", async (req, res) => {
     console.log("Database connection state:", mongoose.connection.readyState);
 
     // Check if user already exists
-    let user = await User.findOne({ email });
-    if (user) return res.status(400).json({ message: "User already exists" });
+    const existingUser = await User.findOne({ email });
+    if (existingUser) return res.status(400).json({ message: "User already exists" });
 
     // Create new user
-    user = new User({ name, email, password });
+    const user = new User({ name, email, password });
     await user.save();
 
-    // Create JWT payload
-    const payload = {
+    // Respond with token
+    res.status(201).json({
       user: {
-        id: user._id,
+        _id: user._id,
+        name: user.name,
+        email: user.email,
         role: user.role,
       },
-    };
-
-    // Sign JWT and return token with user info
-    jwt.sign(
-      payload,
-      process.env.JWT_SECRET,
-      { expiresIn: "40h" },
-      (err, token) => {
-        if (err) throw err;
-
-        res.status(201).json({
-          user: {
-            _id: user._id,
-            name: user.name,
-            email: user.email,
-            role: user.role,
-          },
-          token,
-        });
-      },
-    );
+      token: generateToken(user),
+    });
   } catch (error) {
     console.error(error.message);
-    res.status(500).send("Server Error");
+    res.status(500).json({ message: "Server error" });
   }
 });
 
 // @route   POST /api/users/login
-// @desc    Authenticate user
-// @access  Public
+// @desc    Login user (Public)
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
-  console.log("REQ BODY:", req.body);
 
   try {
-    // Find the user by email
-    let user = await User.findOne({ email });
-
-    if (!user) return res.status(400).json({ message: "Invalid Credentials" });
+    const user = await User.findOne({ email });
+    if (!user) return res.status(400).json({ message: "Invalid credentials" });
 
     const isMatch = await user.matchPassword(password);
+    if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
 
-    if (!isMatch)
-      return res.status(400).json({ message: "Invalid Credentials" });
-
-    // Create JWT payload
-    const payload = {
+    res.json({
       user: {
-        id: user._id,
+        _id: user._id,
+        name: user.name,
+        email: user.email,
         role: user.role,
       },
-    };
-
-    // Sign JWT and return token with user info
-    jwt.sign(
-      payload,
-      process.env.JWT_SECRET,
-      { expiresIn: "40h" },
-      (err, token) => {
-        if (err) throw err;
-
-        res.json({
-          user: {
-            _id: user._id,
-            name: user.name,
-            email: user.email,
-            role: user.role,
-          },
-          token,
-        });
-      },
-    );
+      token: generateToken(user),
+    });
   } catch (error) {
-    console.error(error);
-    res.status(500).send("Server Error");
+    console.error(error.message);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
 // @route   GET /api/users/profile
-// @desc    Get logged-in user's profile (Protected Route)
-// @access  Private
+// @desc    Get logged-in user's profile (Protected)
 router.get("/profile", protect, async (req, res) => {
   res.json(req.user);
+});
+
+// @route   PUT /api/users/profile
+// @desc    Update logged-in user's profile (Protected)
+router.put("/profile", protect, async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    user.name = req.body.name || user.name;
+    user.email = req.body.email || user.email;
+    if (req.body.password) {
+      user.password = req.body.password;
+    }
+    await user.save();
+
+    res.json({
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
 });
 
 module.exports = router;

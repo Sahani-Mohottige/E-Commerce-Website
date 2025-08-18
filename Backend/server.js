@@ -46,7 +46,7 @@ app.use("/api/subscriber", subscriberRoutes);
 
 // Admin Routes
 // Only accessible by admin users
-app.use("/api/admin/users", adminRoutes);
+app.use("/api/admin", adminRoutes);
 app.use("/api/admin/products", adminProductRoutes);
 app.use("/api/admin/orders", adminOrderRoutes);
 
