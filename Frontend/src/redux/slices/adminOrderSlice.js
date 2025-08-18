@@ -1,110 +1,95 @@
-import {createAsyncThunk, createSlice} from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-import axios from 'axios';
+import axios from "axios";
 
-//fetch all orders (admin only)
+const API_URL = import.meta.env.VITE_BACKEND_URL;
+
+// Fetch all orders (admin only)
 export const fetchAllOrders = createAsyncThunk(
-  'adminOrders/fetchAllOrders',async (_, {rejectWithValue}) => {
+  "adminOrders/fetchAllOrders",
+  async (_, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/admin/orders`,
-        {
-            headers: {
-                Authorization: `Bearer ${localStorage.getItem('userToken')}`
-            }
-        }
-      );
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response.data);
+      const token = localStorage.getItem("adminToken") || localStorage.getItem("userToken");
+      if (!token) throw new Error("Not authorized");
+
+      const { data } = await axios.get(`${API_URL}/api/admin/orders`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return data;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || { message: err.message });
     }
   }
 );
 
-//update orders (admin only)
+// Update order status (admin only)
 export const updateOrderStatus = createAsyncThunk(
-  'adminOrders/updateOrderStatus',
-  async ({ id, status }, { rejectWithValue }) => {
+  "adminOrders/updateOrderStatus",
+  async ({ id, status, token }, { rejectWithValue }) => {
     try {
-      const response = await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/admin/orders/${id}`, 
+      const { data } = await axios.put(
+        `${API_URL}/api/admin/orders/${id}`,
         { status },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem('userToken')}`,
-          },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response.data);
+      return data; // must return updated order object
+    } catch (err) {
+      return rejectWithValue(err.response?.data || { message: err.message });
     }
   }
 );
 
-//delete orders (admin only)
+// Delete order (admin only)
 export const deleteAdminOrder = createAsyncThunk(
-    'adminOrders/deleteAdminOrder',
-    async (id, { rejectWithValue }) => {
-        try {
-           await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/admin/orders/${id}`, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('userToken')}`,
-                },
-            });
-            return id;
-        } catch (error) {
-            return rejectWithValue(error.response.data);
-        }
+  "adminOrders/deleteAdminOrder",
+  async ({ id, token }, { rejectWithValue }) => {
+    try {
+      await axios.delete(`${API_URL}/api/admin/orders/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return id;
+    } catch (err) {
+      return rejectWithValue(err.response?.data || { message: err.message });
     }
+  }
 );
 
 const adminOrderSlice = createSlice({
-    name: 'adminOrders',
-    initialState: {
-        orders: [],
-        totalOrders: 0,
-        totalSales: 0,
-        loading: false,
-        error: null,
-    },
-    reducers: {},
-    extraReducers: (builder) => {
-        builder
-        //fetch admin orders
-        .addCase(fetchAllOrders.pending, (state) => {
-            state.loading = true;
-            state.error = null;
-        })
-        .addCase(fetchAllOrders.fulfilled, (state, action) => {
-            state.loading = false;
-            state.orders = action.payload;
-            state.totalOrders = action.payload.length;
-
-        //calculate total sales
-        const totalSales = action.payload.reduce((acc, order) =>{
-            return acc + order.totalPrice;
-        }, 0);
-        state.totalSales = totalSales;
-    })
-        .addCase(fetchAllOrders.rejected, (state, action) => {
-            state.loading = false;
-            state.error = action.payload?.message || action.payload || 'Failed to fetch admin orders';
-        })
-        
-        //update order status
-        .addCase(updateOrderStatus.fulfilled, (state, action) => {
-            const updateOrder = action.payload;
-            const orderIndex = state.orders.findIndex(
-                order => order._id === updateOrder._id
-            );
-            if (orderIndex !== -1) {
-                state.orders[orderIndex] = updateOrder;
-              }
-        })
-        //delete admin order
-        .addCase(deleteAdminOrder.fulfilled, (state, action) => {
-            state.orders = state.orders.filter(order => order._id !== action.payload);
-        });
-    },
-})
+  name: "adminOrders",
+  initialState: {
+    orders: [],
+    totalOrders: 0,
+    totalSales: 0,
+    loading: false,
+    error: null,
+  },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchAllOrders.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchAllOrders.fulfilled, (state, action) => {
+        state.loading = false;
+        state.orders = action.payload;
+        state.totalOrders = action.payload.length;
+        state.totalSales = action.payload.reduce((acc, o) => acc + (o.totalPrice || 0), 0);
+      })
+      .addCase(fetchAllOrders.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message || "Failed to fetch orders";
+      })
+      .addCase(updateOrderStatus.fulfilled, (state, action) => {
+          const idx = state.orders.findIndex((o) => o._id === action.payload._id);
+          if (idx !== -1) {
+            state.orders[idx] = action.payload; // replace the whole order object
+            }
+          })
+      .addCase(deleteAdminOrder.fulfilled, (state, action) => {
+        state.orders = state.orders.filter((o) => o._id !== action.payload);
+      });
+  },
+});
 
 export default adminOrderSlice.reducer;

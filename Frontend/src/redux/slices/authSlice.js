@@ -60,6 +60,29 @@ export const registerUser = createAsyncThunk(
   }
 );
 
+// async thunk for updating user profile
+export const updateProfile = createAsyncThunk(
+  "auth/updateProfile",
+  async (profileData, { rejectWithValue }) => {
+    try {
+      const token = localStorage.getItem("userToken");
+      const response = await axios.put(
+        `${import.meta.env.VITE_BACKEND_URL}/api/users/profile`,
+        profileData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      localStorage.setItem("userInfo", JSON.stringify(response.data.user));
+      return response.data.user;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Failed to update profile");
+    }
+  }
+);
+
 //slice
 const authSlice = createSlice({
   name: "auth",
@@ -104,6 +127,19 @@ const authSlice = createSlice({
     .addCase(registerUser.rejected, (state, action) => {
       state.loading = false;
       state.error = action.payload.message;
+    })
+    .addCase(updateProfile.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+    })
+    .addCase(updateProfile.fulfilled, (state, action) => {
+      state.loading = false;
+      state.error = null;
+      state.user = action.payload;
+    })
+    .addCase(updateProfile.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.payload;
     });
   }
 });

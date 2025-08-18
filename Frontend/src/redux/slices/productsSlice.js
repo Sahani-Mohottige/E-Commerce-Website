@@ -47,6 +47,32 @@ export const fetchProductDetails = createAsyncThunk(
     }
 );
 
+//async thunk to create products
+export const createProduct = createAsyncThunk(
+    'products/createProduct',
+    async (productData) => {
+        const response = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/products`, productData, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('userToken')}`,
+            },
+        });
+        return response.data;
+    }
+);
+
+//async thunk to delete products
+export const deleteProducts = createAsyncThunk(
+    'products/deleteProducts',
+    async (productId) => {
+        const response = await axios.delete(`${import.meta.env.VITE_BACKEND_URL}/api/products/${productId}`, {
+            headers: {
+                Authorization: `Bearer ${localStorage.getItem('userToken')}`,
+            },
+        });
+        return response.data;
+    }
+);
+
 //async thunk to update products
 export const updateProducts = createAsyncThunk(
     'products/updateProducts',
