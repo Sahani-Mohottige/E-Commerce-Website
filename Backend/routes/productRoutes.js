@@ -163,4 +163,22 @@ router.get("/:id", async (req, res) => {
   }
 });
 
+// @route GET /api/products/search
+// @desc Search for products by query
+// @access Public
+router.get("/search", async (req, res) => {
+  const query = req.query.query || "";
+  try {
+    const products = await Product.find({
+      $or: [
+        { name: { $regex: query, $options: "i" } },
+        { description: { $regex: query, $options: "i" } },
+      ],
+    });
+    res.json(products);
+  } catch (err) {
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
 module.exports = router;

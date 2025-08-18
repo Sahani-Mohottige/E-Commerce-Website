@@ -9,6 +9,7 @@ import CartDrawer from "../Layout/CartDrawer";
 import { IoMdClose } from "react-icons/io";
 import { Link } from "react-router-dom";
 import SearchBar from "./SearchBar";
+import { useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 const NavBar = () => {
@@ -16,14 +17,15 @@ const NavBar = () => {
   const [navDrawerOpen, setNavDrawerOpen] = useState(false);
   const { user } = useSelector((state) => state.auth);
   const isAuthenticated = !!user;
-const {cart} = useSelector((state) => state.cart);
-const cartItemCount = cart?.products?.reduce(
-  (total, product) => total + product.quantity, 0) || 0;
+  const { cart } = useSelector((state) => state.cart);
+  const cartItemCount =
+    cart?.products?.reduce((total, product) => total + product.quantity, 0) || 0;
 
-// Debug logging
-console.log("NavBar - cart state:", cart);
-console.log("NavBar - cartItemCount:", cartItemCount);
-console.log("NavBar - cart products:", cart?.products);
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+
+  const isActiveGender = (gender) => searchParams.get("gender") === gender;
+  const isActiveCategory = (category) => searchParams.get("category") === category;
 
   const toggleNavDrawer = () => {
     setNavDrawerOpen(!navDrawerOpen);
@@ -35,10 +37,8 @@ console.log("NavBar - cart products:", cart?.products);
 
   return (
     <>
-      <nav
-        className="containter mx-auto border-b border-gray-200 flex items-center 
-  justify-between py-4 px-6"
-      >
+      <nav className="containter mx-auto border-b border-gray-200 flex items-center 
+  justify-between py-4 px-6">
         {/*Left - Logo */}
         <div>
           <Link
@@ -52,25 +52,25 @@ console.log("NavBar - cart products:", cart?.products);
         <div className="hidden md:flex space-x-6">
           <Link
             to="/collections/all?gender=Men"
-            className="text-gray-700 hover:text-black text-sm font-medium uppercase"
+            className={`text-gray-700 hover:text-black text-sm font-medium uppercase ${isActiveGender("Men") ? "font-bold bg-green-200 py-2 px-4 rounded-lg" : "py-2 px-4"}`}
           >
             Men
           </Link>
           <Link
             to="/collections/all?gender=Women"
-            className="text-gray-700 hover:text-black text-sm font-medium uppercase"
+            className={`text-gray-700 hover:text-black text-sm font-medium uppercase ${isActiveGender("Women") ? "font-bold bg-green-200 py-2 px-4 rounded-lg" : "py-2 px-4"}`}
           >
             Women
           </Link>
           <Link
             to="/collections/all?category=Top Wear"
-            className="text-gray-700 hover:text-black text-sm font-medium uppercase"
+            className={`text-gray-700 hover:text-black text-sm font-medium uppercase ${isActiveCategory("Top Wear") ? "font-bold bg-green-200 py-2 px-4 rounded-lg" : "py-2 px-4"}`}
           >
             Top Wear
-          </Link>{" "}
+          </Link>
           <Link
             to="/collections/all?category=Bottom Wear"
-            className="text-gray-700 hover:text-black text-sm font-medium uppercase"
+            className={`text-gray-700 hover:text-black text-sm font-medium uppercase ${isActiveCategory("Bottom Wear") ? "font-bold bg-green-200 py-2 px-4 rounded-lg" : "py-2 px-4"}`}
           >
             Bottom Wear
           </Link>
@@ -127,32 +127,32 @@ console.log("NavBar - cart products:", cart?.products);
         <div className="p-4">
           <h2 className="text-2xl font-semibold mb-4">Menu</h2>
           <nav className="space-y-4">
-            <br></br>
+            <br />
             <Link
               to="/collections/all?gender=Men"
               onClick={toggleNavDrawer}
-              className="block text-gray-600 hover:text-black"
+              className={`block text-gray-600 hover:text-black ${isActiveGender("Men") ? "font-bold bg-green-200 py-2 px-4 rounded-lg" : "py-2 px-4"}`}
             >
               Men
             </Link>
             <Link
               to="/collections/all?gender=Women"
               onClick={toggleNavDrawer}
-              className="block text-gray-600 hover:text-black"
+              className={`block text-gray-600 hover:text-black ${isActiveGender("Women") ? "font-bold bg-green-200 py-2 px-4 rounded-lg" : "py-2 px-4"}`}
             >
               Women
             </Link>
             <Link
               to="/collections/all?category=Top Wear"
               onClick={toggleNavDrawer}
-              className="block text-gray-600 hover:text-black"
+              className={`block text-gray-600 hover:text-black ${isActiveCategory("Top Wear") ? "font-bold bg-green-200 py-2 px-4 rounded-lg" : "py-2 px-4"}`}
             >
               Top Wear
             </Link>
             <Link
               to="/collections/all?category=Bottom Wear"
               onClick={toggleNavDrawer}
-              className="block text-gray-600 hover:text-black"
+              className={`block text-gray-600 hover:text-black ${isActiveCategory("Bottom Wear") ? "font-bold bg-green-200 py-2 px-4 rounded-lg" : "py-2 px-4"}`}
             >
               Bottom Wear
             </Link>

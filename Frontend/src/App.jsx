@@ -17,6 +17,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import {Provider} from "react-redux";
 import React from "react";
 import Register from "./pages/Register";
+import SearchResults from "./components/Common/SearchResults";
 import { Toaster } from "sonner";
 import UserLayout from "./components/Layout/UserLayout";
 import UserManagement from "./components/Admin/UserManagement";
@@ -57,6 +58,7 @@ const App = () => {
           <Route path="order-confirmation" element={<ProtectedRoute><OderConfirmationPage /></ProtectedRoute>} />
           <Route path="order/:id" element={<ProtectedRoute><OrderDetailsPage /></ProtectedRoute>} />
           <Route path="my-orders" element={<ProtectedRoute><MyOrdersPage /></ProtectedRoute>} />
+          <Route path="search" element={<SearchResults />} />
         </Route>
         {/* Admin Layout Routes */}
        <Route path="/admin/login" element={<AdminLogin />} />

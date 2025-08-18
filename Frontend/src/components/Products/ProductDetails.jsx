@@ -139,7 +139,7 @@ const ProductDetails = ({productId}) => {
                 key={index}
                 src={image.url}
                 alt={image.altText || `Thumbnail ${index}`}
-                onClick={() => handleImageChange(image.url)} // Changed this line
+                onClick={() => handleImageChange(image.url)} 
                 className={`w-20 h-20 object-cover rounded-lg cursor-pointer border
                  ${mainImage === image.url ? "border-black" : "border-gray-300"}`}
                 onError={(e) => {
@@ -170,7 +170,7 @@ const ProductDetails = ({productId}) => {
                 key={index}
                 src={image.url}
                 alt={image.altText || `Thumbnail ${index}`}
-                onClick={() => handleImageChange(image.url)} // Changed this line
+                onClick={() => handleImageChange(image.url)} 
                 className={`w-20 h-20 object-cover rounded-lg cursor-pointer border
                  ${mainImage === image.url ? "border-black" : "border-gray-300"}`}
                 onError={(e) => {
