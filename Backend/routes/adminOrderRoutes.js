@@ -1,6 +1,7 @@
 const express = require("express");
 const { protect, admin } = require("../middleware/authMiddleware");
 const Order = require("../models/Order");
+const User = require("../models/User");
 
 const router = express.Router();
 
@@ -9,7 +10,7 @@ const router = express.Router();
 //@access Private/Admin
 router.get("/", protect, admin, async (req, res) => {
     try {
-        const orders = await Order.find({}).populate("user", "name email");
+        const orders = await Order.find({ user: { $ne: null } }).populate("user", "name email");
         res.json(orders);
     } catch (error) {
         console.error(error);
@@ -20,24 +21,22 @@ router.get("/", protect, admin, async (req, res) => {
 //@route PUT /api/admin/orders/:id
 //@desc update order status(Admin only)
 //@access Private/Admin
-router.get("/:id", protect, admin, async (req, res) => {
+router.put("/:id", protect, admin, async (req, res) => {
     try {       
-const order = await Order.findById(req.params.id);
-        if (order) {
-            // Update order status
-            order.status = req.body.status || order.status;
-            order.isDelivered = 
-                req.body.status === "Delivered" ? true : order.isDelivered;
-            order.deliveredAt =
-                req.body.status === "Delivered" ? Date.now() : order.deliveredAt;
-            
-            // Save updated order
+        const order = await Order.findById(req.params.id);
+        if (!order) return res.status(404).json({ message: "Order not found" });
+
+        const newStatus = req.body.status;
+
+        if (newStatus && newStatus !== order.orderStatus) {
+            order.orderStatus = newStatus;
+            order.isDelivered = newStatus === "Delivered";
+            order.deliveredAt = newStatus === "Delivered" ? Date.now() : order.deliveredAt;
+
             const updatedOrder = await order.save();
-        res.json({ message: "Order updated successfully", order: updatedOrder });
-   
-        }
-        else {
-            res.status(404).json({ message: "Order not found" });
+            return res.json(updatedOrder);
+        } else {
+            return res.status(400).json({ message: "Status is the same as current" });
         }
     } catch (error) {
         console.error(error);
