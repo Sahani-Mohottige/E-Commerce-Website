@@ -6,7 +6,7 @@ const API_URL = `${import.meta.env.VITE_BACKEND_URL}`;
 const USER_TOKEN =`Bearer ${localStorage.getItem('userToken')}`;
 
 //async thunk to fetch admin products
-export const fetchAdminProducts = createAsyncThunk(
+export const fetchProducts = createAsyncThunk(
   'adminProducts/fetchProducts',
   async () => {
     const response = await axios.get(`${API_URL}/api/products`, {
@@ -67,14 +67,14 @@ const adminProductSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
-        .addCase(fetchAdminProducts.pending, (state) => {
+        .addCase(fetchProducts.pending, (state) => {
             state.loading = true;
         })
-        .addCase(fetchAdminProducts.fulfilled, (state, action) => {
+        .addCase(fetchProducts.fulfilled, (state, action) => {
             state.loading = false;
             state.products = action.payload;
         })
-        .addCase(fetchAdminProducts.rejected, (state, action) => {
+        .addCase(fetchProducts.rejected, (state, action) => {
             state.loading = false;
             state.error = action.error.message || 'Failed to fetch products';
         })
