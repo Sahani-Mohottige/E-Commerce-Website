@@ -92,7 +92,7 @@ const ProductManagement = () => {
         </div>
         <button
           onClick={() => setIsAddFormVisible(!isAddFormVisible)}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
+          className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"
         >
           {isAddFormVisible ? "Cancel" : "Add New Product"}
         </button>
@@ -196,7 +196,7 @@ const ProductManagement = () => {
                 />
               </div>
               <div className="flex space-x-4 pt-4">
-                <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-lg">Update Product</button>
+                <button type="submit" className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg">Update Product</button>
                 <button type="button" onClick={handleCancelEdit} className="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg">Cancel</button>
               </div>
             </form>
@@ -260,13 +260,15 @@ const ProductManagement = () => {
       </div>
 
       {/* CSS for animations */}
-      <style jsx>{`
-        @keyframes fadeInUp {
-          from { opacity: 0; transform: translateY(30px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-fade-in-up { animation: fadeInUp 0.6s ease forwards; }
-      `}</style>
+      <style>
+        {`
+          @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+          .animate-fade-in-up { animation: fadeInUp 0.6s ease forwards; }
+        `}
+      </style>
     </div>
   );
 };
