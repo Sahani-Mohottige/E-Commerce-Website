@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useLayoutEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import FeaturedCollection from "../components/Products/FeaturedCollection";
@@ -15,27 +15,35 @@ const Home = () => {
   const dispatch = useDispatch();
   const { products, loading, error } = useSelector((state) => state.products);
   const [bestSellerProduct, setBestSellerProduct] = useState(null);
-  useEffect(() =>{
+  useLayoutEffect(() => {
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 0);
+  }, []);
+  useEffect(() => {
     //fetch products for a specific collection
-    dispatch(fetchProductsByFilters({
-      gender: "Women",
-      category: "Bottom Wear",
-      limit: 8
-    }));
+    dispatch(
+      fetchProductsByFilters({
+        gender: "Women",
+        category: "Bottom Wear",
+        limit: 8,
+      })
+    );
 
-//fetch best seller product
-const fetchBestSeller = async () => {
-  try {
-    const response = await axios.get(
-      `${import.meta.env.VITE_BACKEND_URL}/api/products/best-seller`);
-    setBestSellerProduct(response.data);
-  } catch (error) {
-    console.error("Error fetching best seller product:", error);
-  }
-};
-fetchBestSeller();
+    //fetch best seller product
+    const fetchBestSeller = async () => {
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_BACKEND_URL}/api/products/best-seller`
+        );
+        setBestSellerProduct(response.data);
+      } catch (error) {
+        console.error("Error fetching best seller product:", error);
+      }
+    };
+    fetchBestSeller();
   }, [dispatch]);
-  
+
   return (
     <div>
       <Hero />
@@ -44,8 +52,8 @@ fetchBestSeller();
 
       {/*Best seller */}
       <h2 className="text-3xl text-center font-bold mb-4">Best Seller</h2>
-      {bestSellerProduct ? ( 
-        <ProductDetails productId={bestSellerProduct._id}/> 
+      {bestSellerProduct ? (
+        <ProductDetails productId={bestSellerProduct._id} />
       ) : (
         <p className="text-center">Loading best seller product...</p>
       )}
@@ -53,7 +61,7 @@ fetchBestSeller();
         <h2 className="text-3xl text-center font-bold mb-4">
           Top Wears for Women
         </h2>
-        <ProductGrid products={products} loading={loading} error={error}/>
+        <ProductGrid products={products} loading={loading} error={error} />
       </div>
       <FeaturedCollection />
       <FeaturesSection />

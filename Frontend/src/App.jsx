@@ -17,6 +17,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import {Provider} from "react-redux";
 import React from "react";
 import Register from "./pages/Register";
+import ScrollToTop from "./components/ScrollToTop";
 import SearchResults from "./components/Common/SearchResults";
 import { Toaster } from "sonner";
 import UserLayout from "./components/Layout/UserLayout";
@@ -45,6 +46,7 @@ const App = () => {
             className: 'toast-custom',
           }}
         />
+        <ScrollToTop />
         <Routes>
         {/*User Layout*/}
         <Route path="/" element={<UserLayout />}>
