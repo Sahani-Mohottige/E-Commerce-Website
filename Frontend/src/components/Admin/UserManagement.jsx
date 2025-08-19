@@ -11,19 +11,18 @@ const UserManagement = () => {
   const [newUser, setNewUser] = useState({
     name: "", email: "", password: "", role: "customer"
   });
-
-  const adminToken = localStorage.getItem("adminToken");
+  const [deleteUserId, setDeleteUserId] = useState(null); // Track user to delete
 
   useEffect(() => { 
-    dispatch(fetchUsers({ token: adminToken })); 
-  }, [dispatch, adminToken]);
+    dispatch(fetchUsers()); 
+  }, [dispatch]);
 
   const handleAddUser = e => {
     e.preventDefault();
     if (!newUser.name || !newUser.email || !newUser.password) {
       toast.error("Please fill all fields"); return;
     }
-    dispatch(createUser({ ...newUser, token: adminToken }))
+    dispatch(createUser(newUser))
       .unwrap()
       .then(() => {
         toast.success("User added!", { description: `${newUser.name} is now a ${newUser.role}` });
@@ -33,18 +32,28 @@ const UserManagement = () => {
   };
 
   const handleDeleteUser = id => {
-    if (window.confirm("Delete this user?")) {
-      dispatch(deleteUser({ id, token: adminToken }))
-        .unwrap()
-        .then(() => toast.success("User deleted"))
-        .catch(() => toast.error("Failed to delete"));
-    }
+    setDeleteUserId(id); // Show modal
+  };
+
+  const confirmDeleteUser = () => {
+    dispatch(deleteUser(deleteUserId))
+      .unwrap()
+      .then(() => toast.success("User deleted"))
+      .catch(() => toast.error("Failed to delete"));
+    setDeleteUserId(null);
+  };
+
+  const cancelDeleteUser = () => {
+    setDeleteUserId(null);
   };
 
   const handleRoleChange = (id, role) => {
-    dispatch(updateUser({ id, role, token: adminToken }))
+    dispatch(updateUser({ id, role }))
       .unwrap()
-      .then(() => toast.success("Role updated"))
+      .then(() => {
+        toast.success("Role updated");
+        dispatch(fetchUsers()); // Refresh users after update
+      })
       .catch(() => toast.error("Failed to update role"));
   };
 
@@ -71,8 +80,8 @@ const UserManagement = () => {
             className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-400"/>
           <select value={newUser.role} onChange={e => setNewUser({ ...newUser, role: e.target.value })}
             className="px-4 py-2 border rounded-lg focus:ring-2 focus:ring-green-400">
-            <option value="customer">Customer</option>
-            <option value="admin">Admin</option>
+            <option key="customer" value="customer">Customer</option>
+            <option key="admin" value="admin">Admin</option>
           </select>
           <button type="submit" className="md:col-span-4 bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg">
             Add User
@@ -100,8 +109,8 @@ const UserManagement = () => {
                    <td className="py-4 px-4">
                      <select value={user.role} onChange={e => handleRoleChange(user._id, e.target.value)}
                        className="px-2 py-1 border rounded text-sm">
-                       <option value="customer">Customer</option>
-                       <option value="admin">Admin</option>
+                       <option key="customer" value="customer">Customer</option>
+                       <option key="admin" value="admin">Admin</option>
                      </select>
                    </td>
                    <td className="py-4 px-4">
@@ -116,6 +125,30 @@ const UserManagement = () => {
            </table>
           }
         </div>
+
+        {/* Delete Confirmation Modal */}
+        {deleteUserId && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black/60 z-50">
+            <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-sm">
+              <h2 className="text-lg font-semibold mb-2">Confirm Delete</h2>
+              <p className="mb-4">Are you sure you want to delete this user?</p>
+              <div className="flex justify-end gap-2">
+                <button
+                  onClick={cancelDeleteUser}
+                  className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={confirmDeleteUser}
+                  className="px-4 py-2 rounded bg-red-600 text-white hover:bg-red-700"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

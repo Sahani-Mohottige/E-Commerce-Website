@@ -106,7 +106,7 @@ router.post('/users', protect, admin, async (req, res) => {
 //@route PUT /api/admin/users/:id
 //@desc Update user details (Admin only)    
 //@access Private/Admin
-router.put('users/:id', protect, admin, async (req, res) => {
+router.put('/users/:id', protect, admin, async (req, res) => {
     try {
         const user = await User.findById(req.params.id);
 
@@ -129,7 +129,7 @@ router.put('users/:id', protect, admin, async (req, res) => {
 //@route DELETE /api/admin/users/:id
 //@desc Delete a user
 //@access Private/Admin
-router.delete("users/:id", protect, admin, async (req, res) => {
+router.delete('/users/:id', protect, admin, async (req, res) => {
     try {
         const user = await User.findById(req.params.id);
         if (user) {
