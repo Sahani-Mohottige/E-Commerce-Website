@@ -13,6 +13,7 @@ const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   
   const { loading, error, user } = useSelector((state) => state.auth);
   const { guestId } = useSelector((state) => state.auth);
@@ -38,9 +39,16 @@ const Register = () => {
   const handleRegister = (e) => {
     e.preventDefault();
     
-    if (!name || !email || !password) {
+    if (!name || !email || !password || !confirmPassword) {
       toast.error("Please fill in all fields", {
-        description: "Name, email, and password are required to create an account."
+        description: "Name, email, password, and confirm password are required to create an account."
+      });
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      toast.error("Passwords do not match", {
+        description: "Please make sure your password and confirm password are the same."
       });
       return;
     }
@@ -109,6 +117,20 @@ const Register = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-black focus:border-black"
                 placeholder="••••••••"
+              />
+              <p className="text-sm text-gray-500">(Password should be min 6 characters)</p>
+            </div>
+
+            <div>
+              <label className="block text-sm font-bold text-gray-700 mb-1">
+                Confirm Password
+              </label>
+              <input
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-black focus:border-black"
+                placeholder="Enter your password again"
               />
             </div>
 

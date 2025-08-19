@@ -9,6 +9,7 @@ import { loginUser } from "../redux/slices/authSlice";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [formError, setFormError] = useState(""); // Add local error state
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { loading, error, user } = useSelector((state) => state.auth);
@@ -34,6 +35,16 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setFormError(""); // Reset error
+    // Basic client-side validation
+    if (!email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+      setFormError("Please enter a valid email address.");
+      return;
+    }
+    if (password.length < 6) {
+      setFormError("Password must be at least 6 characters.");
+      return;
+    }
     dispatch(loginUser({ email, password }));
   };
 
@@ -46,8 +57,8 @@ const Login = () => {
             onSubmit={handleLogin}
             className=" space-y-6 p-8 border shadow-sm"
           >
-            <h2 className="text-xl font-bold text-center text-gray-800 mb-4">
-              Rabbit
+            <h2 className="text-3xl font-bold text-center text-gray-800 mb-4">
+             Pickzy
             </h2>
             <p className="text-2xl text-gray-500 text-center font-bold mb-4">
               {" "}
@@ -60,6 +71,12 @@ const Login = () => {
             {error && (
               <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
                 {error}
+              </div>
+            )}
+
+            {formError && (
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                {formError}
               </div>
             )}
 
