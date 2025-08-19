@@ -1,6 +1,42 @@
 # 🛒 E-Commerce-Website
 
-A full-stack e-commerce application built with **React, Node.js, Express, and MongoDB**.  
+---
+
+## High-Level Architecture Overview
+
+**Frontend**
+- React (Vite), Redux Toolkit, TailwindCSS
+- State managed via Redux slices (cart, orders, products, users, admin, auth)
+- Routing: React Router
+- UI: Lucide-react, react-icons, Sonner (toasts)
+- Data flow: Components dispatch Redux actions → API calls to backend → Redux state updates → UI re-renders
+
+**Backend**
+- Node.js + Express
+- MongoDB (via mongoose)
+- Authentication: JWT
+- API Endpoints: `/api/users`, `/api/products`, `/api/cart`, `/api/orders`, `/api/checkout`, `/api/upload`, `/api/subscriber`, `/api/admin/*`
+- Middleware: JWT protect
+- External integrations: Cloudinary (image upload), PayPal (payments)
+
+**Database**
+- MongoDB Atlas (cloud)
+- Collections: Users, Products, Orders, Cart
+
+**External Tools**
+- Cloudinary (images)
+- PayPal (payments)
+- Sonner (frontend notifications)
+- JWT (auth)
+- TailwindCSS (styling)
+
+**Data Flow**
+- Frontend ⇄ Backend API ⇄ MongoDB
+- Frontend → Cloudinary (image upload)
+- Frontend → PayPal (payments)
+- Backend → Cloudinary (image management)
+- Redux (state management) inside Frontend
+- JWT (auth) between Frontend and Backend
 
 ---
 
@@ -128,5 +164,3 @@ ecommerce-app/
 ## 👩‍💻 Author
 
 Developed by [Sahani Mohottige](https://github.com/Sahani-Mohottige).
-
-```
