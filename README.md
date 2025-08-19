@@ -91,30 +91,6 @@ cd ../frontend
 npm install
 ```
 
-### 3. Configure environment variables
-
-Create a `.env` file in the **frontend** folder:
-
-```env
-VITE_BACKEND_URL=http://localhost:9000
-```
-
-Create another `.env` file in the **backend** folder:
-
-```env
-PORT=9000
-
-MONGO_URL=mongodb+srv://sahanimohottige25:7l4HCQ0hLeIqOABE@cluster0.b92b1mc.mongodb.net/pickzy?retryWrites=true&w=majority&appName=Cluster0
-
-JWT_SECRET=9f0e3a63fcf242c28e4301c90ae3e41d447b88d84c70d591d6d00fd38dce7c95
-
-NODE_ENV=development
-CLOUDINARY_CLOUD_NAME=dgjz4ktw4
-CLOUDINARY_API_KEY=313974332296694
-CLOUDINARY_API_SECRET=kzcwqW3WEGB0HRgp43nNukjI_l0
-
-```
-
 ---
 
 ## ▶️ Running the App
