@@ -150,7 +150,7 @@ const CartContents = ({ cart, userId, guestId }) => {
             </div>
           </div>
           <div>
-            <p>$ {product.price.toLocaleString()}</p>
+            <p>${(product.price * product.quantity)?.toLocaleString()}</p> 
             <button
               className="mt-4 text-red-500 hover:text-red-700 transition-colors"
               aria-label="Remove item"
