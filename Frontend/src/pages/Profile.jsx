@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { logout, updateProfile } from "../redux/slices/authSlice"; // <-- import your real thunk here
+import { logout, updateProfile } from "../redux/slices/authSlice"; // <-- your real thunk
 import { useDispatch, useSelector } from "react-redux";
 
 import MyOrdersPage from "./MyOrdersPage";
@@ -15,13 +15,14 @@ const Profile = () => {
     name: user?.name || "",
     email: user?.email || "",
     password: "",
+    confirmPassword: "",
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const handleLogout = () => {
     dispatch(logout());
-    navigate('/');
+    navigate("/");
   };
 
   const handleEditOpen = () => {
@@ -29,6 +30,7 @@ const Profile = () => {
       name: user?.name || "",
       email: user?.email || "",
       password: "",
+      confirmPassword: "",
     });
     setError("");
     setEditOpen(true);
@@ -44,25 +46,39 @@ const Profile = () => {
   };
 
   const handleEditSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-    try {
-      await dispatch(updateProfile(form)).unwrap();
-      setEditOpen(false);
-      // Reset form state with updated user info from Redux
-      setForm({
-        name: user?.name || "",
-        email: user?.email || "",
-        password: "",
-      });
-      // Optionally: toast or alert for success
-      // toast.success("Profile updated!");
-    } catch (err) {
-      setError(err.message || "Failed to update profile");
+  e.preventDefault();
+  setError("");
+
+  // Password validation
+  if (form.password) {
+    if (form.password.length < 6) {
+      setError("Password must be at least 6 characters");
+      return;
     }
-    setLoading(false);
-  };
+    if (form.password !== form.confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+  }
+
+  setLoading(true);
+  try {
+    await dispatch(updateProfile(form)).unwrap();
+    setEditOpen(false);
+
+    // Reset form with updated user info
+    setForm({
+      name: user?.name || "",
+      email: user?.email || "",
+      password: "",
+      confirmPassword: "",
+    });
+  } catch (err) {
+    setError(err.message || "Failed to update profile");
+  }
+  setLoading(false);
+};
+
 
   return (
     <div className="min-h-screen bg-gray-50 py-10">
@@ -138,10 +154,14 @@ const Profile = () => {
             >
               &times;
             </button>
-            <h2 className="text-2xl font-bold text-green-600 mb-6 text-center">Edit Profile</h2>
+            <h2 className="text-2xl font-bold text-green-600 mb-6 text-center">
+              Edit Profile
+            </h2>
             <form onSubmit={handleEditSubmit} className="space-y-5">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Full Name
+                </label>
                 <input
                   type="text"
                   name="name"
@@ -152,7 +172,9 @@ const Profile = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Email Address
+                </label>
                 <input
                   type="email"
                   name="email"
@@ -163,7 +185,9 @@ const Profile = () => {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  New Password
+                </label>
                 <input
                   type="password"
                   name="password"
@@ -171,6 +195,19 @@ const Profile = () => {
                   onChange={handleChange}
                   className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
                   placeholder="Leave blank to keep current password"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Confirm Password
+                </label>
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  value={form.confirmPassword}
+                  onChange={handleChange}
+                  className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-500"
+                  placeholder="Repeat new password"
                 />
               </div>
               {error && <div className="text-red-500 text-sm">{error}</div>}
@@ -190,4 +227,3 @@ const Profile = () => {
 };
 
 export default Profile;
-

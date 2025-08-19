@@ -14,6 +14,7 @@ const AdminLayout = () => {
   const location = useLocation();
   const [activeNav, setActiveNav] = useState("Dashboard");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false); // Modal state
 
   const { orders } = useSelector((state) => state.adminOrders);
   const { products } = useSelector((state) => state.adminProducts);
@@ -38,7 +39,6 @@ const AdminLayout = () => {
     { name: "Users", icon: Users, path: "/admin/users" },
     { name: "Products", icon: Package, path: "/admin/products" },
     { name: "Orders", icon: ShoppingCart, path: "/admin/orders" },
-    { name: "Shop", icon: Store, path: "/", external: true },
   ];
 
   const statsData = [
@@ -92,20 +92,17 @@ const AdminLayout = () => {
   };
 
   const handleLogout = () => {
-    if (window.confirm("Are you sure you want to logout?")) {
-      // Clear all possible admin tokens/sessions
-      localStorage.removeItem("token");
-      sessionStorage.removeItem("token");
-      localStorage.removeItem("adminToken");
-      sessionStorage.removeItem("adminToken");
-      localStorage.removeItem("adminSession");
-      sessionStorage.removeItem("adminSession");
-      // Optionally: dispatch(logout()); // <-- Uncomment if you have a logout action
-      toast.success("Logged out successfully!", {
-        description: "You have been safely logged out of the admin panel.",
-      });
-      navigate("/admin/login");
-    }
+    // Clear all possible admin tokens/sessions
+    localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
+    localStorage.removeItem("adminToken");
+    sessionStorage.removeItem("adminToken");
+    localStorage.removeItem("adminSession");
+    sessionStorage.removeItem("adminSession");
+    toast.success("Logged out successfully!", {
+      description: "You have been safely logged out of the admin panel.",
+    });
+    navigate("/admin/login");
   };
 
   const handleOrderClick = (orderId) => {
@@ -233,13 +230,12 @@ const AdminLayout = () => {
               </button>
             );
           })}
-          {/* Divider above logout */}
           <div className="my-4 border-t border-green-300"></div>
-          {/* Improved Logout button */}
+          {/* Logout button opens modal */}
           <button
-            onClick={handleLogout}
+            onClick={() => setShowLogoutModal(true)}
             className="flex items-center justify-center w-full px-6 py-3 font-bold text-base bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors shadow"
-            style={{ letterSpacing: '0.5px' }}
+            style={{ letterSpacing: "0.5px" }}
           >
             <LogOut className="w-5 h-5 mr-3" />
             Logout
@@ -249,6 +245,34 @@ const AdminLayout = () => {
 
       {/* Main Content */}
       <main className="flex-1 lg:ml-64 p-4 lg:p-8">{isDashboard ? <DashboardContent /> : <Outlet />}</main>
+
+      {/* Logout Modal */}
+{showLogoutModal && (
+  <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
+    <div className="bg-white rounded-2xl p-8 w-96 text-center shadow-xl animate-fade-in-up">
+      <h3 className="text-2xl font-bold mb-4">Confirm Logout</h3>
+      <p className="text-gray-700 mb-6 text-lg">Are you sure you want to logout?</p>
+      <div className="flex justify-center gap-4">
+        <button
+          onClick={() => setShowLogoutModal(false)}
+          className="px-6 py-3 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors font-medium"
+        >
+          Cancel
+        </button>
+        <button
+          onClick={() => {
+            setShowLogoutModal(false);
+            handleLogout();
+          }}
+          className="px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-medium"
+        >
+          Logout
+        </button>
+      </div>
+    </div>
+  </div>
+)}
+
 
       {/* Animations */}
       <style>
