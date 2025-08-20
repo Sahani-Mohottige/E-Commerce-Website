@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import PayPalButton from "./PayPalButton";
-import { fetchCart } from "../../redux/slices/cartSlice";
+import { fetchCart, clearCart, clearCartServer } from "../../redux/slices/cartSlice";
 import { useNavigate } from "react-router-dom";
 
 const Checkout = () => {
@@ -168,6 +168,10 @@ const Checkout = () => {
 
   const handlePaymentSuccess = (details) => {
     console.log("Payment Successful.", details);
+    // Clear the cart on server for logged-in users and locally
+    const userId = user ? user._id : null;
+    dispatch(clearCartServer({ userId, guestId }));
+    dispatch(clearCart());
     navigate("/order-confirmation");
   };
 

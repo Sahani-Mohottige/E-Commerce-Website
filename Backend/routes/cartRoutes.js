@@ -265,5 +265,25 @@ router.post("/merge",protect, async (req, res) => {
           res.status(500).json({ message: "Server Error" });
         }
       });
+// @route POST /api/cart/clear
+// @desc Clear all products from the cart for a guest or logged in user
+// @access Public
+router.post("/clear", async (req, res) => {
+  const { userId, guestId } = req.body;
+  try {
+    let cart = await getCart(userId, guestId);
+    if (!cart) return res.status(404).json({ message: "Cart not found" });
+
+    cart.products = [];
+    cart.totalPrice = 0;
+    cart.totalItems = 0;
+    await cart.save();
+
+    return res.status(200).json(cart);
+  } catch (error) {
+    console.error("Error clearing cart:", error);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
 
 module.exports = router;

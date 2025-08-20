@@ -125,6 +125,21 @@ export const mergeGuestCart = createAsyncThunk(
   }
 );
 
+// Clear cart on server (for logged-in users)
+export const clearCartServer = createAsyncThunk(
+  "cart/clearCartServer",
+  async ({ userId, guestId }, { rejectWithValue }) => {
+    const url = `${import.meta.env.VITE_BACKEND_URL}/api/cart/clear`;
+    try {
+      const response = await axios.post(url, { userId, guestId });
+      return response.data;
+    } catch (error) {
+      console.error("clearCartServer error:", error?.message || error);
+      return rejectWithValue(error.response?.data || { message: "Network error" });
+    }
+  }
+);
+
 // ========================== Slice ==========================
 
 const cartSlice = createSlice({
@@ -216,7 +231,19 @@ const cartSlice = createSlice({
 
       .addCase(mergeGuestCart.pending, (state) => { state.loading = true; state.error = null; })
       .addCase(mergeGuestCart.fulfilled, handleFulfilled)
-      .addCase(mergeGuestCart.rejected, (state, action) => handleRejected(state, action, "Failed to merge guest cart"));
+      .addCase(mergeGuestCart.rejected, (state, action) => handleRejected(state, action, "Failed to merge guest cart"))
+
+      .addCase(clearCartServer.pending, (state) => { state.loading = true; state.error = null; })
+      .addCase(clearCartServer.fulfilled, (state) => {
+        state.cart = { products: [], totalPrice: 0, totalItems: 0 };
+        localStorage.removeItem("cart");
+        state.loading = false;
+        state.error = null;
+      })
+      .addCase(clearCartServer.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload?.message || "Failed to clear cart on server";
+      });
   },
 });
 
