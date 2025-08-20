@@ -156,7 +156,7 @@ const Footer = () => {
                 href="https://www.facebook.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-600 hover:text-blue-600 transition-colors"
+                className="text-blue-500  hover:text-blue-700 transition-colors"
               >
                 <TbBrandMeta className="h-6 w-6" />
               </a>
@@ -164,7 +164,7 @@ const Footer = () => {
                 href="https://www.instagram.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-600 hover:text-pink-500 transition-colors"
+                className="text-pink-500 hover:text-pink-700 transition-colors"
               >
                 <IoLogoInstagram className="h-6 w-6" />
               </a>
@@ -172,7 +172,7 @@ const Footer = () => {
                 href="https://www.twitter.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-gray-600 hover:text-blue-400 transition-colors"
+                className="text-blue-500 hover:text-blue-600 transition-colors"
               >
                 <IoLogoTwitter className="h-6 w-6" />
               </a>
