@@ -24,15 +24,14 @@
 - Collections: Users, Products, Orders, Cart
 
 **External Tools**
+- JWT (auth)
+- TailwindCSS (styling)
 - Cloudinary (images)
 - PayPal (payments)
 - Sonner (frontend notifications)
-- JWT (auth)
-- TailwindCSS (styling)
 
 **Data Flow**
 - Frontend ⇄ Backend API ⇄ MongoDB
-- Frontend → Cloudinary (image upload)
 - Frontend → PayPal (payments)
 - Backend → Cloudinary (image management)
 - Redux (state management) inside Frontend
@@ -62,7 +61,7 @@
 ## ⚙️ Prerequisites
 Make sure you have installed:
 - [Node.js](https://nodejs.org/) (>=16)
-- [npm](https://www.npmjs.com/) or [yarn](https://yarnpkg.com/)
+- [npm](https://www.npmjs.com/)
 - [MongoDB](https://www.mongodb.com/) (local or MongoDB Atlas)
 
 ---
@@ -71,8 +70,8 @@ Make sure you have installed:
 
 ### 1. Clone the repo
 ```bash
-git clone https://github.com/your-username/ecommerce-app.git
-cd ecommerce-app
+git clone https://github.com/Sahani-Mohottige/E-Commerce-Website.git
+cd E-Commerce-Website
 ````
 
 ### 2. Install dependencies
@@ -91,7 +90,26 @@ cd ../frontend
 npm install
 ```
 
----
+## 🔑 Environment Variables
+
+Create a .env file in both backend and frontend folders.
+Use .env.example as a template.
+
+**Backend (/backend/.env)**
+```
+MONGO_URL=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret
+PAYPAL_CLIENT_ID=your_paypal_client_id
+CLOUDINARY_CLOUD_NAME=your_cloudinary_name
+CLOUDINARY_API_KEY=your_cloudinary_api_key
+CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+PORT=9000
+```
+
+**Frontend (/frontend/.env)**
+```
+VITE_BACKEND_URL=http://localhost:9000
+```
 
 ## ▶️ Running the App
 
