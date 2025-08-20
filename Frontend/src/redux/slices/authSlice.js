@@ -144,5 +144,10 @@ const authSlice = createSlice({
   }
 });
 
+// Action creator for logout (for use with dispatch)
+export const logoutUser = () => (dispatch) => {
+  dispatch(logout());
+};
+
 export const { logout, generateNewGuestId } = authSlice.actions;
 export default authSlice.reducer;

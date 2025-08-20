@@ -1,10 +1,10 @@
 import { Link, useNavigate } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { fetchCart, mergeGuestCart } from "../redux/slices/cartSlice";
+import { logoutUser, registerUser } from "../redux/slices/authSlice"; // add logoutUser import
 import { useDispatch, useSelector } from "react-redux";
 
 import register from "../assets/register.webp";
-import { registerUser } from "../redux/slices/authSlice";
 import { toast } from "sonner";
 
 const Register = () => {
@@ -25,14 +25,13 @@ const Register = () => {
       if (guestId) {
         dispatch(mergeGuestCart({ userId: user._id, guestId }))
           .then(() => {
-            // Fetch the updated cart after merging
             dispatch(fetchCart({ userId: user._id, guestId }));
           });
       } else {
-        // If no guest cart, just fetch user cart
         dispatch(fetchCart({ userId: user._id, guestId }));
       }
-      navigate('/');
+      dispatch(logoutUser()); // clear user from Redux state
+      navigate('/login');
     }
   }, [user, navigate, dispatch, guestId]);
 
@@ -65,8 +64,8 @@ const Register = () => {
             onSubmit={handleRegister}
             className="space-y-6 p-8 border shadow-sm"
           >
-            <h2 className="text-xl font-bold text-center text-gray-800 mb-4">
-              Rabbit
+            <h2 className="text-3xl font-bold text-center text-gray-800 mb-4">
+              Pickzy
             </h2>
             <p className="text-2xl text-gray-500 text-center font-bold mb-4">
               👋 Register Now!
