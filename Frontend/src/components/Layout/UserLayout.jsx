@@ -17,11 +17,11 @@ const UserLayout = () => {
     dispatch(fetchCart({ userId, guestId }));
   }, [dispatch, user, guestId]);
 
-  // Debug logging
-  useEffect(() => {
-    console.log("UserLayout - Current cart:", cart);
-    console.log("UserLayout - Cart products count:", cart?.products?.length);
-  }, [cart]);
+  // // Debug logging
+   useEffect(() => {
+  //   console.log("UserLayout - Current cart:", cart);
+  //   console.log("UserLayout - Cart products count:", cart?.products?.length);
+   }, [cart]);
 
   return (
     <>

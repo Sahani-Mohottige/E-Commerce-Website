@@ -66,14 +66,14 @@ const ProductDetails = ({ productId }) => {
 
     setIsButtonDisabled(true);
 
-    console.log("Adding to cart with data:", {
-      productId: productfetchId,
-      quantity,
-      size: selectedSize,
-      color: selectedColor,
-      userId,
-      guestId,
-    });
+    // console.log("Adding to cart with data:", {
+    //   productId: productfetchId,
+    //   quantity,
+    //   size: selectedSize,
+    //   color: selectedColor,
+    //   userId,
+    //   guestId,
+    // });
 
     try {
       const result = await dispatch(
@@ -87,7 +87,7 @@ const ProductDetails = ({ productId }) => {
         })
       );
 
-      console.log("Add to cart result:", result);
+    //  console.log("Add to cart result:", result);
 
       if (addToCart.fulfilled.match(result)) {
         toast.success("Product added to cart successfully!", {
@@ -99,7 +99,7 @@ const ProductDetails = ({ productId }) => {
         setSelectedColor("");
         setQuantity(1);
       } else {
-        console.error("Add to cart failed:", result.payload);
+       // console.error("Add to cart failed:", result.payload);
         toast.error("Failed to add product to cart", {
           description: result.payload?.message || "Something went wrong",
           duration: 2000,

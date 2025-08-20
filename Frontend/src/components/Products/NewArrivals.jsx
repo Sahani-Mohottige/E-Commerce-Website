@@ -22,10 +22,10 @@ useEffect(() => {
   const fetchNewArrivals = async () => {
     try {
       setLoading(true);
-      console.log("Fetching new arrivals from:", `${import.meta.env.VITE_BACKEND_URL}/api/products/new-arrivals`);
+     // console.log("Fetching new arrivals from:", `${import.meta.env.VITE_BACKEND_URL}/api/products/new-arrivals`);
       const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/api/products/new-arrivals`
       );
-      console.log("New arrivals response:", response.data);
+     // console.log("New arrivals response:", response.data);
       setNewArrivals(response.data);
       setError(null);
     } catch (error) {
@@ -172,12 +172,10 @@ useEffect(() => {
                 }}
               />
               <div className="p-4  absolute bottom-0 left-0 right-0 bg-opacity-50 backdrop-blur-md text-white rounded-b-lg">
-                <Link
-                  to={`/product/${product._id}`}
-                  className="block text-lg font-semibold hover:underline"
-                >
+                {/* Replace inner Link with span to avoid <a> inside <a> */}
+                <span className="block text-lg font-semibold hover:underline">
                   {product.name}
-                </Link>
+                </span>
                 <p className="mt-1">${product.price}</p>
               </div>
             </Link>

@@ -27,13 +27,13 @@ export const fetchCart = createAsyncThunk(
   "cart/fetchCart",
   async ({ userId, guestId }, { rejectWithValue }) => {
     const url = `${import.meta.env.VITE_BACKEND_URL}/api/cart`;
-    console.log("Calling fetchCart API:", url, { userId, guestId });
+    // console.log("Calling fetchCart API:", url, { userId, guestId });
 
     try {
       const response = await axios.get(url, { params: { userId, guestId } });
       return response.data;
     } catch (error) {
-      console.error("fetchCart error:", error?.response || error);
+      console.error("fetchCart error:", error?.message || error);
       return rejectWithValue(error.response?.data || { message: "Network error" });
     }
   }
@@ -44,7 +44,7 @@ export const addToCart = createAsyncThunk(
   "cart/addToCart",
   async ({ productId, quantity, size, color, userId, guestId }, { rejectWithValue }) => {
     const url = `${import.meta.env.VITE_BACKEND_URL}/api/cart`;
-    console.log("Calling addToCart API:", url);
+    // console.log("Calling addToCart API:", url);
 
     try {
       const response = await axios.post(url, {
@@ -57,7 +57,7 @@ export const addToCart = createAsyncThunk(
       });
       return response.data;
     } catch (error) {
-      console.error("addToCart error:", error?.response || error);
+      console.error("addToCart error:", error?.message || error);
       return rejectWithValue(error.response?.data || { message: "Network error" });
     }
   }
@@ -68,7 +68,7 @@ export const updateCartItemQuantity = createAsyncThunk(
   "cart/updateCartItemQuantity",
   async ({ productId, quantity, userId, guestId, size, color }, { rejectWithValue }) => {
     const url = `${import.meta.env.VITE_BACKEND_URL}/api/cart`;
-    console.log("Calling updateCartItemQuantity API:", url);
+    // console.log("Calling updateCartItemQuantity API:", url);
 
     try {
       const response = await axios.put(url, {
@@ -81,7 +81,7 @@ export const updateCartItemQuantity = createAsyncThunk(
       });
       return response.data;
     } catch (error) {
-      console.error("updateCartItemQuantity error:", error?.response || error);
+      console.error("updateCartItemQuantity error:", error?.message || error);
       return rejectWithValue(error.response?.data || { message: "Network error" });
     }
   }
@@ -92,7 +92,7 @@ export const removeFromCart = createAsyncThunk(
   "cart/removeFromCart",
   async ({ productId, userId, guestId, size, color }, { rejectWithValue }) => {
     const url = `${import.meta.env.VITE_BACKEND_URL}/api/cart`;
-    console.log("Calling removeFromCart API:", url);
+    // console.log("Calling removeFromCart API:", url);
 
     try {
       const response = await axios.delete(url, {
@@ -100,7 +100,7 @@ export const removeFromCart = createAsyncThunk(
       });
       return response.data;
     } catch (error) {
-      console.error("removeFromCart error:", error?.response || error);
+      console.error("removeFromCart error:", error?.message || error);
       return rejectWithValue(error.response?.data || { message: "Network error" });
     }
   }
@@ -111,7 +111,7 @@ export const mergeGuestCart = createAsyncThunk(
   "cart/mergeGuestCart",
   async ({ userId, guestId }, { rejectWithValue }) => {
     const url = `${import.meta.env.VITE_BACKEND_URL}/api/cart/merge`;
-    console.log("Calling mergeGuestCart API:", url);
+    // console.log("Calling mergeGuestCart API:", url);
 
     try {
       const response = await axios.post(url, { userId, guestId }, {
@@ -119,7 +119,7 @@ export const mergeGuestCart = createAsyncThunk(
       });
       return response.data;
     } catch (error) {
-      console.error("mergeGuestCart error:", error?.response || error);
+      console.error("mergeGuestCart error:", error?.message || error);
       return rejectWithValue(error.response?.data || { message: "Network error" });
     }
   }
@@ -146,7 +146,8 @@ const cartSlice = createSlice({
         state.cart = cart;
         saveCartToStorage(state.cart);
       } else {
-        console.error("Invalid cart passed to refreshCart:", cart);
+        // For debugging: log only the type of error, not the full cart object
+        console.error("Invalid cart passed to refreshCart");
       }
     },
     addToCartLocal: (state, action) => {
@@ -171,7 +172,8 @@ const cartSlice = createSlice({
   extraReducers: (builder) => {
     const handleFulfilled = (state, action) => {
       if (!action.payload || typeof action.payload !== "object" || !Array.isArray(action.payload.products)) {
-        console.error("Invalid cart payload from API:", action.payload);
+        // For debugging: log only the type of error, not the full payload
+        console.error("Invalid cart payload from API");
         state.error = "Invalid cart data";
         state.loading = false;
         return;

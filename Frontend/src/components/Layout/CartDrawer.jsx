@@ -28,7 +28,7 @@ const CartDrawer = ({ drawerOpen, toggleCartDrawer }) => {
   // Fetch cart when component mounts or user/guest changes
   useEffect(() => {
     if (userId || guestId) {
-      console.log("Fetching cart for:", { userId, guestId });
+     // console.log("Fetching cart for:", { userId, guestId });
       dispatch(fetchCart({ userId, guestId }));
     }
   }, [dispatch, userId, guestId]);
@@ -36,7 +36,7 @@ const CartDrawer = ({ drawerOpen, toggleCartDrawer }) => {
   // Refetch cart when drawer opens
   useEffect(() => {
     if (drawerOpen && (userId || guestId)) {
-      console.log("Cart drawer opened - refreshing cart");
+    //  console.log("Cart drawer opened - refreshing cart");
       dispatch(fetchCart({ userId, guestId }));
     }
   }, [drawerOpen, dispatch, userId, guestId]);

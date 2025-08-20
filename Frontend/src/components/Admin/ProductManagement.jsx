@@ -160,7 +160,7 @@ const ProductManagement = () => {
 
       {/* Edit Product Modal */}
       {editingProduct && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-xl shadow-lg p-6 w-full max-w-md">
             <h2 className="text-xl font-semibold text-slate-800 mb-6">Edit Product</h2>
             <form onSubmit={handleUpdateProduct} className="space-y-4">
