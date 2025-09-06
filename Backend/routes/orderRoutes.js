@@ -24,7 +24,7 @@ router.get('/my-orders', protect, async (req, res) => {
 //@desc Get order by ID for the logged-in user
 //@access Private
 router.get("/:id", protect, async (req, res) => {
-    console.log("Order ID requested:", req.params.id);
+    // console.log("Order ID requested:", req.params.id);
     try{
         const order =await Order.findById(req.params.id).populate(
         'user',

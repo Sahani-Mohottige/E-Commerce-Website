@@ -157,17 +157,17 @@ router.get(
   ],
   async (req, res) => {
     // Add a log to confirm the route is being hit at all
-    console.log("[SEARCH] /api/products/search route HIT");
+   // console.log("[SEARCH] /api/products/search route HIT");
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      console.log("[SEARCH] Validation errors:", errors.array());
+     // console.log("[SEARCH] Validation errors:", errors.array());
       return res.status(400).json({ errors: errors.array() });
     }
     const searchQuery = req.query.query || "";
     console.log(`[SEARCH] Incoming query param: "${searchQuery}"`);
     try {
       if (!searchQuery.trim()) {
-        console.log("[SEARCH] Empty search query, returning []");
+   //     console.log("[SEARCH] Empty search query, returning []");
         return res.json([]);
       }
       const products = await Product.find({
@@ -178,7 +178,7 @@ router.get(
       });
       console.log(`[SEARCH] Query: "${searchQuery}" | Results: ${products.length}`);
       if (products.length > 0) {
-        console.log("[SEARCH] First product:", products[0]);
+   //     console.log("[SEARCH] First product:", products[0]);
       }
       res.json(products);
     } catch (err) {
