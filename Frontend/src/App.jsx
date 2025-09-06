@@ -8,7 +8,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import MyOrdersPage from "./pages/MyOrdersPage";
 import OderConfirmationPage from "./pages/OrderConfirmationPage";
-import OrderDetailsPage from "./pages/OrderDetailspage";
+import OrderDetailsPage from "./pages/OrderDetailsPage";
 import OrderManagement from "./components/Admin/OrderMangement";
 import ProductDetails from "./components/Products/ProductDetails";
 import ProductManagement from "./components/Admin/ProductManagement";

@@ -51,57 +51,57 @@ const Login = () => {
   return (
     <div className="min-h-screen flex">
       {/* Left: Login form */}
-      <div className="flex-1 flex flex-col justify-center items-center px-8 py-12 bg-white">
-        <div className="max-w-md w-full">
+      <div className="flex-1 flex flex-col justify-start items-center px-8 py-4 bg-white">
+        <div className="max-w-md w-full mt-10">
           <form
             onSubmit={handleLogin}
-            className=" space-y-6 p-8 border shadow-sm"
+            className="space-y-6 p-8 border shadow-sm"
           >
-            <h2 className="text-3xl font-bold text-center text-gray-800 mb-4">
+            <h2 className="text-2xl font-bold text-center text-gray-800 mb-4">
              Pickzy
             </h2>
-            <p className="text-2xl text-gray-500 text-center font-bold mb-4">
+            <p className="text-lg text-gray-500 text-center font-bold mb-4">
               {" "}
               Hey There!👋
             </p>
-            <p className="text-sm text-gray-600  font-semibold mb-6">
+            <p className="text-xs text-gray-600 font-semibold mb-6">
               Enter any valid email and password (min. 6 characters) to login
             </p>
 
             {error && (
-              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 text-sm">
                 {error}
               </div>
             )}
 
             {formError && (
-              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 text-sm">
                 {formError}
               </div>
             )}
 
             <div>
-              <label className="block text-sm font-bold text-gray-700 mb-1">
+              <label className="block text-xs font-bold text-gray-700 mb-1">
                 Email
               </label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-black focus:border-black"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-black focus:border-black text-sm"
                 placeholder="you@example.com"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-bold text-gray-700 mb-1">
+              <label className="block text-xs font-bold text-gray-700 mb-1">
                 Password
               </label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-black focus:border-black"
+                className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-black focus:border-black text-sm"
                 placeholder="Password (min. 6 characters)"
               />
             </div>
@@ -109,12 +109,12 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-black text-white py-2 rounded-md hover:bg-gray-800 transition disabled:opacity-50"
+              className="w-full bg-black text-white py-2 rounded-md hover:bg-gray-800 transition disabled:opacity-50 text-sm"
             >
               {loading ? "Signing In..." : "Sign In"}
             </button>
 
-            <p className="text-xl text-gray-600 mt-6 text-center">
+            <p className="text-base text-gray-600 mt-6 text-center">
               Don’t have an account?{" "}
               <Link to="/register" className="text-blue-500">
                 Register
@@ -129,7 +129,7 @@ const Login = () => {
         <img
           src={login}
           alt="Login to account"
-          className="w-full object-cover h-[900px]"
+          className="w-full object-cover h-[600px]"
         />
       </div>
     </div>
