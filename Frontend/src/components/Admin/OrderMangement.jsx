@@ -23,24 +23,35 @@ const OrderManagement = () => {
   }, [dispatch, adminToken]);
 
   const handleUpdateStatus = async (orderId, newStatus) => {
-  try {
-    await dispatch(
-      updateOrderStatus({ id: orderId, status: newStatus, token: adminToken })
-    ).unwrap();
+    try {
+      await dispatch(
+        updateOrderStatus({ id: orderId, status: newStatus, token: adminToken })
+      ).unwrap();
 
-    toast.success("Order status updated", {
-      description: `Order ${orderId} status changed to ${newStatus}`,
-    });
+      toast.success("Order status updated", {
+        description: `Order ${orderId} status changed to ${newStatus}`,
+      });
 
-    setDropdownOpen((prev) => ({ ...prev, [orderId]: false }));
+      setDropdownOpen((prev) => ({ ...prev, [orderId]: false }));
 
-    // Remove this line: dispatch(fetchAllOrders({ token: adminToken }));
-  } catch (err) {
-    toast.error("Failed to update order status", {
-      description: err.message || "Please try again",
-    });
-  }
-};
+      // Update the order in the local state so UI reflects the change
+      // If you use Redux Toolkit and the slice updates state, this may not be needed,
+      // but if not, update the order manually:
+      // (Uncomment and adjust if needed, otherwise rely on Redux state update)
+      // setOrders((prevOrders) =>
+      //   prevOrders.map((order) =>
+      //     order._id === orderId ? { ...order, status: newStatus } : order
+      //   )
+      // );
+
+      // If your redux slice does not update state, you can dispatch fetchAllOrders here:
+      dispatch(fetchAllOrders({ token: adminToken }));
+    } catch (err) {
+      toast.error("Failed to update order status", {
+        description: err.message || "Please try again",
+      });
+    }
+  };
 
   const handleDeleteOrder = async (orderId) => {
     if (!window.confirm("Are you sure you want to delete this order?")) return;

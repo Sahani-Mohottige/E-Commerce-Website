@@ -1,77 +1,72 @@
-import React from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-const checkout = {
-  _id: "1234",
-  createdAt: new Date(),
-  checkoutItems: [
-    {
-      productId: "1",
-      size: "M",
-      color: "Black",
-      name: "Stylish Jacket",
-      price: 100,
-      quantity: 1,
-      images: "https://picsum.photos/500/500?random=1",
-    },
-    {
-      productId: "2",
-      size: "L",
-      color: "Red",
-      name: "Casual Jacket",
-      price: 100,
-      quantity: 1,
-      images: "https://picsum.photos/500/500?random=2",
-    },
-  ],
-  shippingAddress: {
-    address: "123 Fashion street",
-    city: "New York",
-    country: "USA",
-  },
-};
+import { useParams } from "react-router-dom";
+
+// import your getOrderDetails action
+// import { getOrderDetails } from "../redux/actions/orderActions"; // adjust path as needed
 
 const OrderConfirmationPage = () => {
+  const { orderId } = useParams();
+  const dispatch = useDispatch();
+
+  // Use fallback object to avoid crash if state.order is undefined
+  const orderState = useSelector((state) => state.order || {});
+  const orderDetails = orderState.order;
+  const loading = orderState.loading;
+  const error = orderState.error;
+
+  useEffect(() => {
+    if (orderId) {
+      // dispatch(getOrderDetails(orderId)); // uncomment and adjust as needed
+    }
+  }, [dispatch, orderId]);
+
   const calculateEstimateDelivery = (createdAt) => {
+    if (!createdAt) return "N/A";
     const orderDate = new Date(createdAt);
-    orderDate.setDate(orderDate.getDate() + 10); //add 10 days to order date
+    orderDate.setDate(orderDate.getDate() + 10);
     return orderDate.toLocaleDateString();
   };
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div className="text-red-500">{error}</div>;
+
   return (
     <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg">
       <h1 className="text-4xl font-bold text-center text-emerald-700 mb-8">
         Thank You for Your Order!
       </h1>
-
-      {checkout && (
+      {orderDetails ? (
         <div className="space-y-6">
           <div className="border-b pb-4 grid grid-cols-2">
-            {/*Order Id and Date */}
             <div className="mb-2 text-gray-700 ">
               <h2 className="text-lg font-semibold">
-                Order ID: {checkout._id}
+                Order ID: {orderDetails._id || "N/A"}
               </h2>
               <p className="text-lg">
-                Order Date: {new Date(checkout.createdAt).toLocaleDateString()}
+                Order Date:{" "}
+                {orderDetails.createdAt
+                  ? new Date(orderDetails.createdAt).toLocaleDateString()
+                  : "N/A"}
               </p>
             </div>
             <div className="text-sm text-gray-600">
-              {/*Estimated Delivery */}
               <p className="text-emerald-700">
-                Estimated Delivery: {""}
-                {calculateEstimateDelivery(checkout.createdAt)}
+                Estimated Delivery:{" "}
+                {calculateEstimateDelivery(orderDetails.createdAt)}
               </p>
             </div>
           </div>
-          {/*Ordered Item */}
           <div className="space-y-4">
-            {checkout.checkoutItems.map((item) => {
-              return (
+            {orderDetails.orderItems && orderDetails.orderItems.length > 0 ? (
+              orderDetails.orderItems.map((item) => (
                 <div
-                  key={item.productId}
+                  key={item.productId || item._id}
                   className="flex items-center mb-4 p-4 rounded-md shadow-sm"
                 >
                   <img
-                    src={item.images}
+                    src={item.images || item.image}
                     alt={item.name}
                     className="w-16 h-16 object-cover rounded-md mr-4"
                   />
@@ -88,28 +83,30 @@ const OrderConfirmationPage = () => {
                     </p>
                   </div>
                 </div>
-              );
-            })}
+              ))
+            ) : (
+              <div className="text-gray-500">No items found in this order.</div>
+            )}
           </div>
-          {/*Payment and Delivery Info*/}
           <div className="mt-6 grid grid-cols-2 md:grid-cols-2 gap-8 pt-4">
             <div>
               <h4 className="font-semibold text-lg mb-2">Payment</h4>
-              <p className="text-gray-700">PayPal</p>
+              <p className="text-gray-700">{orderDetails.paymentMethod || "N/A"}</p>
             </div>
-            {/*Delivery Info*/}
             <div>
               <h4 className="font-semibold text-lg mb-1">Delivery</h4>
               <p className="text-gray-700">
-                {checkout.shippingAddress.address}
+                {orderDetails.shippingAddress?.address || "N/A"}
               </p>
               <p className="text-gray-700">
-                {checkout.shippingAddress.city},{" "}
-                {checkout.shippingAddress.country}
+                {orderDetails.shippingAddress?.city || "N/A"},{" "}
+                {orderDetails.shippingAddress?.country || "N/A"}
               </p>
             </div>
           </div>
         </div>
+      ) : (
+        <div className="text-gray-500">No order details found.</div>
       )}
     </div>
   );

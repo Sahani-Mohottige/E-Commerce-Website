@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
+import { clearCart, clearCartServer, fetchCart } from "../../redux/slices/cartSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 import PayPalButton from "./PayPalButton";
-import { fetchCart, clearCart, clearCartServer } from "../../redux/slices/cartSlice";
 import { useNavigate } from "react-router-dom";
 
 const Checkout = () => {
@@ -132,7 +132,7 @@ const Checkout = () => {
 
   const handleCreateCheckout = async (e) => {
     e.preventDefault();
-    
+
     // Security checks
     if (isSubmitting) return;
     if (isRateLimited()) {
@@ -154,10 +154,27 @@ const Checkout = () => {
 
     // Security: Log submission attempt (for monitoring)
     console.log('Secure checkout submission at:', new Date().toISOString());
-    
+
     try {
       setLastSubmissionTime(Date.now());
-      setCheckoutId("123");
+
+      // 1. Create checkout session in backend
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/checkout`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        },
+        body: JSON.stringify({
+          CheckoutItems: actualCartItems,
+          shippingAddress,
+          paymentMethod: "PayPal",
+          totalPrice: actualTotalAmount,
+        }),
+      });
+      if (!response.ok) throw new Error("Failed to create checkout session");
+      const data = await response.json();
+      setCheckoutId(data._id); // Use the real checkout session ID
     } catch (error) {
       console.error('Checkout creation error:', error);
       setPaymentError('An error occurred. Please try again.');
@@ -166,13 +183,39 @@ const Checkout = () => {
     }
   };
 
-  const handlePaymentSuccess = (details) => {
+  const handlePaymentSuccess = async (details) => {
     console.log("Payment Successful.", details);
-    // Clear the cart on server for logged-in users and locally
-    const userId = user ? user._id : null;
-    dispatch(clearCartServer({ userId, guestId }));
-    dispatch(clearCart());
-    navigate("/order-confirmation");
+    try {
+      // 2. Mark checkout as paid
+      await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/checkout/${checkoutId}/pay`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        },
+        body: JSON.stringify({
+          paymentStatus: "Paid",
+          paymentDetails: details,
+        }),
+      });
+
+      // 3. Finalize checkout and create order
+      await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/checkout/${checkoutId}/finalize`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        },
+      });
+
+      // Clear the cart on server for logged-in users and locally
+      const userId = user ? user._id : null;
+      dispatch(clearCartServer({ userId, guestId }));
+      dispatch(clearCart());
+      navigate("/order-confirmation");
+    } catch (err) {
+      console.error("Order finalization error:", err);
+      setPaymentError("Order finalization failed. Please contact support.");
+    }
   };
 
   const handlePaymentError = (err) => {

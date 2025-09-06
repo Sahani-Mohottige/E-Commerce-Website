@@ -9,7 +9,7 @@ const router = express.Router();
 
 //@route POST /api/checkout
 //@desc Create a checkout session
-//access Private
+//@access Private
 router.post("/", protect, async (req, res) => {
     const { CheckoutItems, shippingAddress, paymentMethod ,totalPrice} = req.body;
 
@@ -39,7 +39,7 @@ router.post("/", protect, async (req, res) => {
 
 //@route PUT /api/checkout/:id/pay
 //@desc Update checkout session to mark as paid after successful payment
-//access Private
+//@access Private
 router.put("/:id/pay", protect, async (req, res) => {
     const { paymentStatus,paymentDetails } = req.body;
 
@@ -67,9 +67,9 @@ router.put("/:id/pay", protect, async (req, res) => {
     }
 });
       
-//@router PoST /api/checkout/:id/finalize
-//desc Finalize the checkout session and create an order after payment confirmation
-//access Private
+//@router POST /api/checkout/:id/finalize
+//@desc Finalize the checkout session and create an order after payment confirmation
+//@access Private
 router.post("/:id/finalize", protect, async (req, res) => {
     try {
         const checkout = await Checkout.findById(req.params.id);
@@ -78,20 +78,23 @@ router.post("/:id/finalize", protect, async (req, res) => {
         }
 
         if (checkout.isPaid && !checkout.isFinalized) {
-            //create final order based on the checkout details
+            // --- FIX: Always use req.user._id for user field and clone items array ---
             const finalOrder = await Order.create({
-            user: checkout.user,
-            orderItems: checkout.CheckoutItems,
-            shippingAddress: checkout.shippingAddress,
-            paymentMethod: checkout.paymentMethod,
-            totalPrice: checkout.totalPrice,
-            paymentStatus: checkout.paymentStatus,
-            isPaid: checkout.isPaid,
-            paidAt: checkout.paidAt,
-            isDelivered:false,
-            paymentStatus:"paid",
-            paymentDetails: checkout.paymentDetails,
-            })
+                user: req.user._id, // always use the current logged-in user
+                orderItems: checkout.CheckoutItems.map(item => ({
+                    ...item,
+                    _id: undefined // remove _id if present to avoid duplicate key error
+                })),
+                shippingAddress: checkout.shippingAddress,
+                paymentMethod: checkout.paymentMethod,
+                totalPrice: checkout.totalPrice,
+                paymentStatus: checkout.paymentStatus,
+                isPaid: checkout.isPaid,
+                paidAt: checkout.paidAt,
+                isDelivered: false,
+                status: "Processing",
+                paymentDetails: checkout.paymentDetails,
+            });
 
             //Mark the checkout session as finalized
             checkout.isFinalized = true;
@@ -99,18 +102,27 @@ router.post("/:id/finalize", protect, async (req, res) => {
             await checkout.save();
 
             //Delete the cart associated with the user
-            await Cart.findOneAndDelete({ user: checkout.user });
+            await Cart.findOneAndDelete({ user: req.user._id });
             res.status(201).json(finalOrder);
-        } else if( checkout.isFinalized) {
+        } else if (checkout.isFinalized) {
             return res.status(400).json({ message: "Checkout session already finalized" });
         } else {
             res.status(400).json({ message: "Checkout session is not paid yet" });
-                }
-            
-            } catch (error) {
+        }
+    } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Server error" });
-    };
+    }
 });
 
 module.exports = router;
+
+// --- TROUBLESHOOTING TOKEN ISSUES ---
+// 1. Your backend expects the JWT in the Authorization header as: Bearer <token>
+// 2. If you get "jwt must be provided", your frontend is NOT sending the token or it's empty.
+// 3. In your frontend, after login, ensure you do:
+//      localStorage.setItem("token", <jwt_token_from_backend>);
+// 4. In your frontend fetch/axios, always send:
+//      headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
+// 5. Use browser DevTools > Network tab to confirm the Authorization header is present and not empty.
+// 6. If you use cookies for auth, you must set withCredentials: true and configure CORS for credentials (not recommended for JWT).

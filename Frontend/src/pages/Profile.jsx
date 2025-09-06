@@ -85,7 +85,7 @@ const Profile = () => {
       <div className="container mx-auto px-4 md:px-8">
         <div className="flex flex-col md:flex-row md:space-x-6 space-y-6 md:space-y-0">
           {/* Left section - Profile Info */}
-          <div className="w-full md:w-1/3 lg:w-1/4 bg-white border-2 border-gray-100 shadow-lg rounded-xl p-8">
+          <div className="w-full md:w-1/3 lg:w-1/4 bg-white border-2 border-green-200 shadow-lg rounded-xl p-6 pt-10">
             <div className="space-y-6">
               {/* Welcome Header */}
               <div className="text-center">
@@ -119,16 +119,16 @@ const Profile = () => {
               {/* Edit Profile Button */}
               <div className="pt-2">
                 <button
-                  className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 mb-2"
+                  className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
                   onClick={handleEditOpen}
                 >
                   Edit Profile
                 </button>
               </div>
               {/* Logout Button */}
-              <div className="pt-4 border-t border-gray-200">
+              <div className="border-t border-gray-200">
                 <button 
-                  className="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                  className="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-200 transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
                   onClick={handleLogout}
                 >
                   Log Out
