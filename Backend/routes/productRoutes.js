@@ -1,6 +1,7 @@
 const express = require("express");
 const Product = require("../models/Product");
 const { protect, admin } = require("../middleware/authMiddleware");
+const { query, validationResult } = require("express-validator");
 
 const router = express.Router();
 
@@ -146,6 +147,47 @@ router.get("/similar/:id", async (req, res) => {
   }
 });
 
+// @route GET /api/products/search
+// @desc Search for products by query
+// @access Public
+router.get(
+  "/search",
+  [
+    query('query').optional().trim().escape(),
+  ],
+  async (req, res) => {
+    // Add a log to confirm the route is being hit at all
+    console.log("[SEARCH] /api/products/search route HIT");
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      console.log("[SEARCH] Validation errors:", errors.array());
+      return res.status(400).json({ errors: errors.array() });
+    }
+    const searchQuery = req.query.query || "";
+    console.log(`[SEARCH] Incoming query param: "${searchQuery}"`);
+    try {
+      if (!searchQuery.trim()) {
+        console.log("[SEARCH] Empty search query, returning []");
+        return res.json([]);
+      }
+      const products = await Product.find({
+        $or: [
+          { name: { $regex: searchQuery, $options: "i" } },
+          { description: { $regex: searchQuery, $options: "i" } },
+        ],
+      });
+      console.log(`[SEARCH] Query: "${searchQuery}" | Results: ${products.length}`);
+      if (products.length > 0) {
+        console.log("[SEARCH] First product:", products[0]);
+      }
+      res.json(products);
+    } catch (err) {
+      console.error('Search error:', err);
+      res.status(500).json({ error: "Server error", details: err.message, stack: err.stack });
+    }
+  }
+);
+
 // @route GET /api/products/:id
 // @desc Get a single product by ID
 // @access Public
@@ -160,24 +202,6 @@ router.get("/:id", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).send("Server Error");
-  }
-});
-
-// @route GET /api/products/search
-// @desc Search for products by query
-// @access Public
-router.get("/search", async (req, res) => {
-  const query = req.query.query || "";
-  try {
-    const products = await Product.find({
-      $or: [
-        { name: { $regex: query, $options: "i" } },
-        { description: { $regex: query, $options: "i" } },
-      ],
-    });
-    res.json(products);
-  } catch (err) {
-    res.status(500).json({ error: "Server error" });
   }
 });
 
