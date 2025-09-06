@@ -6,7 +6,7 @@ import Checkout from "./components/Cart/Checkout";
 import CollectionPage from "./pages/CollectionPage";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import MyOrdersPage from "./pages/MyOrdersPage";
+import MyOrdersPage from "./pages/MyOrderspage";
 import OderConfirmationPage from "./pages/OrderConfirmationPage";
 import OrderDetailsPage from "./pages/OrderDetailsPage";
 import OrderManagement from "./components/Admin/OrderMangement";

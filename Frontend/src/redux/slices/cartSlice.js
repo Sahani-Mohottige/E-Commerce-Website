@@ -119,6 +119,13 @@ export const mergeGuestCart = createAsyncThunk(
       });
       return response.data;
     } catch (error) {
+        // If backend returns 404 with "No cart found for guest", treat as success (no merge needed)
+      if (
+        error.response?.status === 404 &&
+        error.response?.data?.message === "No cart found for guest"
+      ) {
+        return {}; // or return a default cart object if needed
+      }
       console.error("mergeGuestCart error:", error?.message || error);
       return rejectWithValue(error.response?.data || { message: "Network error" });
     }
