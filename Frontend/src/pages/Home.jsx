@@ -38,7 +38,7 @@ const Home = () => {
         );
         setBestSellerProduct(response.data);
       } catch (error) {
-        console.error("Error fetching best seller product:", error);
+        // console.error("Error fetching best seller product:", error);
       }
     };
     fetchBestSeller();

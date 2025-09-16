@@ -36,7 +36,7 @@ const Checkout = () => {
 
   useEffect(() => {
     const userId = user ? user._id : null;
-    console.log("Fetching cart with:", { userId, guestId });
+    // console.log("Fetching cart with:", { userId, guestId });
     if (userId || guestId) {
       dispatch(fetchCart({ userId, guestId }));
     }
@@ -153,7 +153,7 @@ const Checkout = () => {
     }
 
     // Security: Log submission attempt (for monitoring)
-    console.log('Secure checkout submission at:', new Date().toISOString());
+    // console.log('Secure checkout submission at:', new Date().toISOString());
 
     try {
       setLastSubmissionTime(Date.now());
@@ -176,7 +176,7 @@ const Checkout = () => {
       const data = await response.json();
       setCheckoutId(data._id); // Use the real checkout session ID
     } catch (error) {
-      console.error('Checkout creation error:', error);
+      // console.error('Checkout creation error:', error);
       setPaymentError('An error occurred. Please try again.');
     } finally {
       setIsSubmitting(false);
@@ -184,7 +184,7 @@ const Checkout = () => {
   };
 
   const handlePaymentSuccess = async (details) => {
-    console.log("Payment Successful.", details);
+    // console.log("Payment Successful.", details);
     try {
       // 2. Mark checkout as paid
       await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/checkout/${checkoutId}/pay`, {
@@ -213,14 +213,14 @@ const Checkout = () => {
       dispatch(clearCart());
       navigate("/order-confirmation");
     } catch (err) {
-      console.error("Order finalization error:", err);
+      // console.error("Order finalization error:", err);
       setPaymentError("Order finalization failed. Please contact support.");
     }
   };
 
   const handlePaymentError = (err) => {
     // ✅ Better error handling
-    console.error("Payment error:", err);
+    // console.error("Payment error:", err);
     setPaymentError(
       "Payment failed. Please try again or use a different payment method.",
     );

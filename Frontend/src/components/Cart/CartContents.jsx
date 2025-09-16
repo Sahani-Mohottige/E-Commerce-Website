@@ -29,7 +29,7 @@ const CartContents = ({ cart, userId, guestId }) => {
         color: product.color,
       })).unwrap();
     } catch (err) {
-      console.error("Failed to update quantity:", err);
+      // console.error("Failed to update quantity:", err);
       toast.error("Failed to update quantity", {
         description: "Please try again or refresh the page."
       });
@@ -49,7 +49,7 @@ const CartContents = ({ cart, userId, guestId }) => {
           color: product.color,
         })).unwrap();
       } catch (err) {
-        console.error("Failed to update quantity:", err);
+        // console.error("Failed to update quantity:", err);
         toast.error("Failed to update quantity", {
           description: "Please try again or refresh the page."
         });
@@ -71,7 +71,7 @@ const CartContents = ({ cart, userId, guestId }) => {
         description: `${product.name} has been removed from your cart.`
       });
     } catch (err) {
-      console.error("Failed to remove item:", err);
+      // console.error("Failed to remove item:", err);
       toast.error("Failed to remove item", {
         description: "Please try again or refresh the page."
       });

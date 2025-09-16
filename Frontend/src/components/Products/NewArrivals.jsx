@@ -29,8 +29,8 @@ useEffect(() => {
       setNewArrivals(response.data);
       setError(null);
     } catch (error) {
-      console.error("Error fetching new arrivals:", error);
-      console.error("Error details:", error.response?.data);
+      // console.error("Error fetching new arrivals:", error);
+      // console.error("Error details:", error.response?.data);
       setError("Failed to load new arrivals");
     } finally {
       setLoading(false);

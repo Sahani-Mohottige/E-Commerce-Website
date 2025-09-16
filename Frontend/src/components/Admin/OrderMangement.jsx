@@ -15,12 +15,18 @@ const OrderManagement = () => {
 
   const [selectedOrder, setSelectedOrder] = useState(null);
   const [dropdownOpen, setDropdownOpen] = useState({});
+  const [localOrders, setLocalOrders] = useState([]);
 
   const adminToken = localStorage.getItem("adminToken");
 
   useEffect(() => {
     dispatch(fetchAllOrders({ token: adminToken }));
   }, [dispatch, adminToken]);
+
+  // Sync localOrders with Redux orders
+  useEffect(() => {
+    setLocalOrders(orders);
+  }, [orders]);
 
   const handleUpdateStatus = async (orderId, newStatus) => {
     try {
@@ -34,18 +40,12 @@ const OrderManagement = () => {
 
       setDropdownOpen((prev) => ({ ...prev, [orderId]: false }));
 
-      // Update the order in the local state so UI reflects the change
-      // If you use Redux Toolkit and the slice updates state, this may not be needed,
-      // but if not, update the order manually:
-      // (Uncomment and adjust if needed, otherwise rely on Redux state update)
-      // setOrders((prevOrders) =>
-      //   prevOrders.map((order) =>
-      //     order._id === orderId ? { ...order, status: newStatus } : order
-      //   )
-      // );
-
-      // If your redux slice does not update state, you can dispatch fetchAllOrders here:
-      dispatch(fetchAllOrders({ token: adminToken }));
+      // Optimistically update localOrders so UI reflects the change immediately
+      setLocalOrders((prevOrders) =>
+        prevOrders.map((order) =>
+          order._id === orderId ? { ...order, status: newStatus } : order
+        )
+      );
     } catch (err) {
       toast.error("Failed to update order status", {
         description: err.message || "Please try again",
@@ -166,8 +166,8 @@ const OrderManagement = () => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {orders.length > 0 ? (
-                orders.map((order) => (
+              {localOrders.length > 0 ? (
+                localOrders.map((order) => (
                   <tr key={order._id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-900">#{order._id?.slice(-6)}</td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -330,3 +330,4 @@ const OrderManagement = () => {
 };
 
 export default OrderManagement;
+
