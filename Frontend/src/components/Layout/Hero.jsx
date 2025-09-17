@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import heroImg from "../../assets/beachParty.jpg";
+import heroImg from "../../assets/beachparty.jpg";
 import heroImg2 from "../../assets/girls.jpg";
 import heroImg3 from "../../assets/fam.jpg";
 import heroImg4 from "../../assets/fashion2.jpeg";
