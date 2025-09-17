@@ -28,8 +28,9 @@ router.put("/:id", protect, admin, async (req, res) => {
 
         const newStatus = req.body.status;
 
-        if (newStatus && newStatus !== order.orderStatus) {
-            order.orderStatus = newStatus;
+        // FIX: Use 'order.status' instead of 'order.orderStatus'
+        if (newStatus && newStatus !== order.status) {
+            order.status = newStatus;
             order.isDelivered = newStatus === "Delivered";
             order.deliveredAt = newStatus === "Delivered" ? Date.now() : order.deliveredAt;
 
