@@ -3,6 +3,9 @@ import { PayPalButtons, PayPalScriptProvider } from "@paypal/react-paypal-js";
 import React from "react";
 
 const PayPalButton = ({ amount, onSuccess, onError }) => {
+  // Ensure amount is always a string with two decimals
+  const roundedAmount = Number(amount).toFixed(2);
+
   return (
     <PayPalScriptProvider
       options={{
@@ -14,7 +17,7 @@ const PayPalButton = ({ amount, onSuccess, onError }) => {
         style={{ layout: "vertical" }}
         createOrder={(data, actions) => {
           return actions.order.create({
-            purchase_units: [{ amount: { value: amount } }],
+            purchase_units: [{ amount: { value: roundedAmount } }],
           });
         }}
         onApprove={(data, actions) => {

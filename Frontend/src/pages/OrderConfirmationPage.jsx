@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
+import { clearCart, clearCartServer } from "../redux/slices/cartSlice"; // <-- add this
 import { useDispatch, useSelector } from "react-redux";
-
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 // import your getOrderDetails action
 // import { getOrderDetails } from "../redux/actions/orderActions"; // adjust path as needed
@@ -9,12 +9,14 @@ import { useParams } from "react-router-dom";
 const OrderConfirmationPage = () => {
   const { orderId } = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   // Use fallback object to avoid crash if state.order is undefined
   const orderState = useSelector((state) => state.order || {});
   const orderDetails = orderState.order;
   const loading = orderState.loading;
   const error = orderState.error;
+  const { user, guestId } = useSelector((state) => state.auth); // <-- add this
 
   useEffect(() => {
     if (orderId) {
@@ -29,6 +31,17 @@ const OrderConfirmationPage = () => {
     return orderDate.toLocaleDateString();
   };
 
+  const handleGoToProfile = () => {
+    const userId = user ? user._id : null;
+    dispatch(clearCartServer({ userId, guestId }));
+    dispatch(clearCart());
+    navigate("/profile"); // or "/my-orders" if that's your profile/orders page
+  };
+
+  const handleGoHome = () => {
+    navigate("/");
+  };
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div className="text-red-500">{error}</div>;
 
@@ -37,77 +50,21 @@ const OrderConfirmationPage = () => {
       <h1 className="text-4xl font-bold text-center text-emerald-700 mb-8">
         Thank You for Your Order!
       </h1>
-      {orderDetails ? (
-        <div className="space-y-6">
-          <div className="border-b pb-4 grid grid-cols-2">
-            <div className="mb-2 text-gray-700 ">
-              <h2 className="text-lg font-semibold">
-                Order ID: {orderDetails._id || "N/A"}
-              </h2>
-              <p className="text-lg">
-                Order Date:{" "}
-                {orderDetails.createdAt
-                  ? new Date(orderDetails.createdAt).toLocaleDateString()
-                  : "N/A"}
-              </p>
-            </div>
-            <div className="text-sm text-gray-600">
-              <p className="text-emerald-700">
-                Estimated Delivery:{" "}
-                {calculateEstimateDelivery(orderDetails.createdAt)}
-              </p>
-            </div>
-          </div>
-          <div className="space-y-4">
-            {orderDetails.orderItems && orderDetails.orderItems.length > 0 ? (
-              orderDetails.orderItems.map((item) => (
-                <div
-                  key={item.productId || item._id}
-                  className="flex items-center mb-4 p-4 rounded-md shadow-sm"
-                >
-                  <img
-                    src={item.images || item.image}
-                    alt={item.name}
-                    className="w-16 h-16 object-cover rounded-md mr-4"
-                  />
-                  <div className="flex-1">
-                    <h4 className="font-medium">{item.name}</h4>
-                    <p className="text-sm text-gray-600">
-                      {item.color} | {item.size}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-semibold text-gray-800">${item.price}</p>
-                    <p className="text-sm text-gray-600">
-                      Quantity: {item.quantity}
-                    </p>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className="text-gray-500">No items found in this order.</div>
-            )}
-          </div>
-          <div className="mt-6 grid grid-cols-2 md:grid-cols-2 gap-8 pt-4">
-            <div>
-              <h4 className="font-semibold text-lg mb-2">Payment</h4>
-              <p className="text-gray-700">{orderDetails.paymentMethod || "N/A"}</p>
-            </div>
-            <div>
-              <h4 className="font-semibold text-lg mb-1">Delivery</h4>
-              <p className="text-gray-700">
-                {orderDetails.shippingAddress?.address || "N/A"}
-              </p>
-              <p className="text-gray-700">
-                {orderDetails.shippingAddress?.city || "N/A"},{" "}
-                {orderDetails.shippingAddress?.country || "N/A"}
-              </p>
-            </div>
-          </div>
-        </div>
-      ) : (
-        <div className="text-gray-500">No order details found.</div>
-      )}
+      {/* Add Go to Home and See My Orders buttons at the bottom */}
+      <div className="mt-8 flex justify-center gap-4">
+        <button
+          onClick={handleGoHome}
+          className="bg-gray-200 hover:bg-gray-300 text-gray-800 font-semibold px-6 py-3 rounded-lg shadow transition-colors"
+        >
+          Go to Home Page
+        </button>
+        <button
+          onClick={handleGoToProfile}
+          className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-6 py-3 rounded-lg shadow transition-colors"
+        >
+          See My Orders
+        </button>
+      </div>
     </div>
   );
 };
