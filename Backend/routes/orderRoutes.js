@@ -106,6 +106,35 @@ router.put('/:id/pay', protect, async (req, res) => {
     }
 });
 
+// PATCH /api/orders/:id/status - Update order status (user or admin)
+router.patch('/:id/status', protect, async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+    if (!order) return res.status(404).json({ message: "Order not found" });
+
+    // Only allow the owner or admin to update
+    if (String(order.user) !== String(req.user._id) && !req.user.isAdmin) {
+      return res.status(403).json({ message: "Not authorized" });
+    }
+
+    // Only allow cancellation if not delivered/cancelled
+    if (req.body.status === "Cancelled") {
+      if (order.isDelivered) {
+        return res.status(400).json({ message: "Cannot cancel a delivered order" });
+      }
+      order.status = "Cancelled";
+      order.isCancelled = true;
+    } else {
+      order.status = req.body.status;
+    }
+
+    await order.save();
+    res.json(order);
+  } catch (err) {
+    res.status(500).json({ message: err.message || "Server error" });
+  }
+});
+
 module.exports = router;
 
 

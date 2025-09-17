@@ -272,7 +272,7 @@ const OrderManagement = () => {
             <div>
               <p className="text-sm text-gray-500">Status</p>
               <span className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${getStatusColor(selectedOrder.status || selectedOrder.orderStatus)}`}>
-                {(selectedOrder.status || selectedOrder.orderStatus)}
+                {(selectedOrder.status || selectedOrder.orderStatus) || "Pending"}
               </span>
             </div>
           </div>

@@ -9,6 +9,7 @@ const MyOrdersPage = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [cancellingOrderId, setCancellingOrderId] = useState(null);
 
   useEffect(() => {
     setLoading(true);
@@ -38,19 +39,53 @@ const MyOrdersPage = () => {
     navigate(`/order/${orderId}`);
   };
 
+  const handleCancelOrder = async (orderId) => {
+    if (!window.confirm("Are you sure you want to cancel this order?")) return;
+    setCancellingOrderId(orderId);
+    try {
+      // Use the status update endpoint instead of /cancel
+      await axios.patch(
+        `${import.meta.env.VITE_BACKEND_URL}/api/orders/${orderId}/status`,
+        { status: "Cancelled" },
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token") || localStorage.getItem("userToken") || ""}`,
+          },
+        }
+      );
+      setOrders((prev) =>
+        prev.map((order) =>
+          order._id === orderId
+            ? { ...order, isCancelled: true, status: "Cancelled" }
+            : order
+        )
+      );
+      alert("Order cancelled successfully.");
+    } catch (err) {
+      alert(
+        err?.response?.data?.message ||
+        err.message ||
+        "Failed to cancel order"
+      );
+    }
+    setCancellingOrderId(null);
+  };
+
   const getStatusIcon = (isPaid, isDelivered) => {
     if (isDelivered) return <CheckCircle className="w-5 h-5 text-emerald-600" />;
     if (isPaid) return <Clock className="w-5 h-5 text-indigo-500" />;
     return <Package className="w-5 h-5 text-slate-400" />;
   };
 
-  const getStatusText = (isPaid, isDelivered) => {
+  const getStatusText = (isPaid, isDelivered, status) => {
+    if (status === "Cancelled") return "Cancelled";
     if (isDelivered) return "Delivered";
     if (isPaid) return "Processing";
     return "Pending Payment";
   };
 
-  const getStatusColor = (isPaid, isDelivered) => {
+  const getStatusColor = (isPaid, isDelivered, status) => {
+    if (status === "Cancelled") return "bg-red-100 text-red-700 border border-red-200";
     if (isDelivered) return "bg-emerald-100 text-emerald-700 border border-emerald-200";
     if (isPaid) return "bg-indigo-100 text-indigo-700 border border-indigo-200";
     return "bg-slate-100 text-slate-600 border border-slate-200";
@@ -58,7 +93,8 @@ const MyOrdersPage = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
+      <div className="flex items-center justify-center 
+      h-64">
         <div className="text-center">
           <Package className="mx-auto h-12 w-12 text-gray-400 animate-pulse" />
           <h3 className="mt-2 text-sm font-medium text-gray-900">Loading your orders...</h3>
@@ -112,6 +148,9 @@ const MyOrdersPage = () => {
                   <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider border border-green-200">
                     Date
                   </th>
+                  <th className="px-6 py-4 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider border border-green-200">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody className="bg-white">
@@ -160,8 +199,8 @@ const MyOrdersPage = () => {
                     <td className="px-6 py-4 whitespace-nowrap border border-green-200">
                       <div className="flex items-center">
                         {getStatusIcon(order.isPaid, order.isDelivered)}
-                        <span className={`ml-2 px-2 py-1 text-xs font-semibold rounded-full border ${getStatusColor(order.isPaid, order.isDelivered)}`}>
-                          {getStatusText(order.isPaid, order.isDelivered)}
+                        <span className={`ml-2 px-2 py-1 text-xs font-semibold rounded-full border ${getStatusColor(order.isPaid, order.isDelivered, order.status)}`}>
+                          {getStatusText(order.isPaid, order.isDelivered, order.status)}
                         </span>
                       </div>
                     </td>
@@ -171,6 +210,24 @@ const MyOrdersPage = () => {
                         month: 'short',
                         day: 'numeric'
                       })}
+                    </td>
+                    <td
+                      className="px-6 py-4 whitespace-nowrap text-sm border border-green-200"
+                      onClick={e => e.stopPropagation()}
+                    >
+                      {order.isDelivered || order.isCancelled ? (
+                        <span className="text-slate-400 text-xs">
+                          {order.isCancelled ? "Cancelled" : "Not allowed"}
+                        </span>
+                      ) : (
+                        <button
+                          className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs font-semibold disabled:opacity-60"
+                          disabled={cancellingOrderId === order._id}
+                          onClick={() => handleCancelOrder(order._id)}
+                        >
+                          {cancellingOrderId === order._id ? "Cancelling..." : "Cancel Order"}
+                        </button>
+                      )}
                     </td>
                   </tr>
                 ))}
