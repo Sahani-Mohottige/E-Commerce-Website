@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { logout, updateProfile } from "../redux/slices/authSlice"; // <-- your real thunk
 import { useDispatch, useSelector } from "react-redux";
 
-import MyOrdersPage from "./MyOrdersPage";
+import MyOrdersPage from "./MyOrderspage";
 import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
